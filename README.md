@@ -1,14 +1,28 @@
 # Auto PPT Prototype
 
+[![Release](https://img.shields.io/github/v/release/lijunliu-gh/auto-ppt-prototype?label=release)](https://github.com/lijunliu-gh/auto-ppt-prototype/releases/tag/v0.3.0)
+[![License](https://img.shields.io/github/license/lijunliu-gh/auto-ppt-prototype)](LICENSE)
+[![Smoke](https://img.shields.io/github/actions/workflow/status/lijunliu-gh/auto-ppt-prototype/smoke.yml?branch=main&label=smoke)](https://github.com/lijunliu-gh/auto-ppt-prototype/actions/workflows/smoke.yml)
+
 Open-source PowerPoint backend for AI agents working from trusted sources, uploaded material, and explicit presentation requirements.
 
 Status: experimental prototype for early open-source integration.
 
 Latest release: `v0.3.0`
 
+Quick links:
+
 - Release notes: https://github.com/lijunliu-gh/auto-ppt-prototype/releases/tag/v0.3.0
 - Changelog: `CHANGELOG.md`
-- Current architecture: Python plans and revises decks, JavaScript renders `.pptx`
+- Product overview: `PRODUCT.en.md`
+- User guide: `USER_GUIDE.en.md`
+- Integration guide: `INTEGRATION_GUIDE.en.md`
+
+Architecture summary:
+
+- Python plans and revises decks
+- JavaScript renders final `.pptx` files
+- deck JSON is the stable contract between both layers
 
 ## Core Positioning
 

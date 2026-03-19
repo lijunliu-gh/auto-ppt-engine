@@ -1,10 +1,4 @@
-# Release Draft: v0.3.0
-
-## Title
-
-`v0.3.0 - Python planning layer with JavaScript PPTX renderer`
-
-## Suggested Release Notes
+# v0.3.0 - Python planning layer with JavaScript PPTX renderer
 
 This release moves Auto PPT Prototype to a Python-first public architecture while keeping the JavaScript renderer as the stable PPTX output engine.
 
