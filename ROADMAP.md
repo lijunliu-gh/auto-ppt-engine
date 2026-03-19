@@ -1,6 +1,6 @@
 # Roadmap
 
-Current version: **v0.4.1**
+Current version: **v0.5.0**
 
 This roadmap reflects the project's current capabilities, known gaps, and planned evolution from experimental prototype to a production-grade AI-agent PowerPoint backend.
 
@@ -60,7 +60,9 @@ This roadmap reflects the project's current capabilities, known gaps, and planne
 
 ---
 
-## Phase 3 — Brand Template Engine → v0.5.0
+## Phase 3 — Brand Template Engine → v0.5.0 ✅
+
+**Status**: Complete — released in v0.5.0
 
 **Goal**: Accept a user-provided `.pptx` master template and produce brand-matched output.
 

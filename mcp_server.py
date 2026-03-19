@@ -38,6 +38,7 @@ mcp = FastMCP(
 def create_deck(
     prompt: Annotated[str, "Natural-language description of the presentation to create"],
     sources: Annotated[list[str] | None, "Optional list of file paths or URLs to use as trusted source material"] = None,
+    template: Annotated[str | None, "Path to a .pptx brand template file. When set, renders via python-pptx instead of JS"] = None,
     mock: Annotated[bool, "Use the offline mock planner instead of calling an LLM"] = False,
     research: Annotated[bool, "Run Tavily web research before planning (requires TAVILY_API_KEY)"] = False,
     output_dir: Annotated[str | None, "Directory for output files (defaults to ./output)"] = None,
@@ -59,6 +60,8 @@ def create_deck(
     }
     if sources:
         request["sources"] = [{"path": s} if not s.startswith(("http://", "https://")) else {"url": s} for s in sources]
+    if template:
+        request["template"] = template
     if output_dir:
         out = Path(output_dir)
         request["outputJson"] = str(out / "mcp-generated-deck.json")
@@ -73,6 +76,7 @@ def revise_deck(
     prompt: Annotated[str, "Natural-language revision instruction"],
     deck_path: Annotated[str, "Path to the existing deck JSON file to revise"],
     sources: Annotated[list[str] | None, "Optional additional source file paths or URLs"] = None,
+    template: Annotated[str | None, "Path to a .pptx brand template file. When set, renders via python-pptx instead of JS"] = None,
     mock: Annotated[bool, "Use the offline mock planner instead of calling an LLM"] = False,
     research: Annotated[bool, "Run Tavily web research before revision (requires TAVILY_API_KEY)"] = False,
     output_dir: Annotated[str | None, "Directory for output files (defaults to ./output)"] = None,
@@ -97,6 +101,8 @@ def revise_deck(
     }
     if sources:
         request["sources"] = [{"path": s} if not s.startswith(("http://", "https://")) else {"url": s} for s in sources]
+    if template:
+        request["template"] = template
     if output_dir:
         out = Path(output_dir)
         request["outputJson"] = str(out / "mcp-revised-deck.json")

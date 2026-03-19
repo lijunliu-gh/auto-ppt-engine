@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog, and this project follows Semantic Versioning while it remains a prototype.
 
+## [0.5.0] - 2026-03-19
+
+### Added
+
+- **Brand Template Engine** (`python_backend/template_engine.py`): Parse .pptx master templates — extracts slide layouts, placeholders, theme colors, fonts, and auto-maps schema layouts to template layout indices
+- **Python-native PPTX Renderer** (`python_backend/pptx_renderer.py`): Full python-pptx renderer supporting all 13 layout types (title, agenda, section, bullet, two-column, comparison, timeline, process, table, chart, quote, summary, closing), charts (bar/line/pie/area), tables, speaker notes, source citations
+- **Dual Render Path**: `template` parameter in request → python-pptx renderer; no template → JS (pptxgenjs) renderer. Both MCP tools (`create_deck`, `revise_deck`) accept `template` parameter
+- `template` field added to deck-schema.json (optional, path to .pptx brand template)
+- `renderer` field in API response indicates which renderer was used (`"python-pptx"` or `"pptxgenjs"`)
+- `describe_template()` helper for diagnostics (lists layouts, placeholders, colors, fonts)
+- `python-pptx>=1.0.0` added to requirements.txt
+- 25 new tests: template parsing (10), PPTX rendering (8), dual render path (3), color helpers (4) — 95 total
+
 ## [0.4.1] - 2026-03-19
 
 ### Added

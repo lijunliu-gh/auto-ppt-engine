@@ -137,7 +137,7 @@ def _fetch_url(url: str) -> str:
     request = Request(
         url,
         headers={
-            "User-Agent": "auto-ppt-prototype/0.4.1",
+            "User-Agent": "auto-ppt-prototype/0.5.0",
             "Accept": "text/html,application/json,text/plain;q=0.9,*/*;q=0.5",
         },
     )

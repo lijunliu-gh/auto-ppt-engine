@@ -8,6 +8,7 @@ from typing import Any, Dict
 from .js_renderer import render_deck_via_node
 from .smart_layer import ROOT_DIR, ensure_parent_dir, execute_planning_flow, read_text_file, resolve_path
 from .source_loader import load_source_contexts
+from .template_engine import parse_template
 
 DEFAULT_REQUEST_PATH = ROOT_DIR / "sample-agent-request.json"
 DEFAULT_RESPONSE_PATH = ROOT_DIR / "output" / "py-agent-response.json"
@@ -75,11 +76,23 @@ def handle_skill_request(request: Dict[str, Any], response_path: str | Path | No
     )
 
     ensure_parent_dir(output_json)
-    render_deck_via_node(deck, output_json, output_pptx, ROOT_DIR)
+
+    # Dual render path: template provided -> python-pptx, otherwise -> Node.js
+    template_path = request.get("template") or deck.get("template")
+    if template_path:
+        resolved_template = resolve_from_base(request_base_dir, template_path)
+        template_config = parse_template(resolved_template)
+        from .pptx_renderer import render_deck_with_template
+        render_deck_with_template(deck, output_json, output_pptx, template_config)
+        renderer_used = "python-pptx"
+    else:
+        render_deck_via_node(deck, output_json, output_pptx, ROOT_DIR)
+        renderer_used = "pptxgenjs"
 
     response = {
         "ok": True,
         "engine": "python-smart-layer",
+        "renderer": renderer_used,
         "action": request["action"],
         "prompt": request["prompt"],
         "deckJsonPath": str(output_json),

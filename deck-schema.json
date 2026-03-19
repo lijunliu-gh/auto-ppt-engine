@@ -44,6 +44,10 @@
     "theme": {
       "type": "string"
     },
+    "template": {
+      "type": "string",
+      "description": "Path to a .pptx brand template file. When set, uses python-pptx renderer."
+    },
     "sourceDisplayMode": {
       "type": "string",
       "enum": [
