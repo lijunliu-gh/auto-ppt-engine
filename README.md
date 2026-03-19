@@ -97,7 +97,7 @@ python py-generate-from-prompt.py --mock --prompt "Create an 8-slide product str
 Revise a deck:
 
 ```bash
-python py-revise-deck.py --mock --deck output/generated-deck.json --prompt "Compress this deck to 6 slides"
+python py-revise-deck.py --mock --deck output/py-generated-deck.json --prompt "Compress this deck to 6 slides"
 ```
 
 ### Compatibility Node CLI

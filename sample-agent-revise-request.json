@@ -4,7 +4,7 @@
   "mock": true,
   "research": false,
   "engine": "python-smart-layer",
-  "deckPath": "output/generated-deck.json",
+  "deckPath": "output/py-generated-deck.json",
   "contextFiles": [],
   "sources": [
     {

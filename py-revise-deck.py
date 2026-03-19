@@ -13,7 +13,7 @@ from python_backend import (
     resolve_path,
 )
 
-DEFAULT_DECK_INPUT = ROOT_DIR / "output" / "generated-deck.json"
+DEFAULT_DECK_INPUT = ROOT_DIR / "output" / "py-generated-deck.json"
 DEFAULT_JSON_OUTPUT = ROOT_DIR / "output" / "py-revised-deck.json"
 DEFAULT_PPTX_OUTPUT = ROOT_DIR / "output" / "py-revised-deck.pptx"
 

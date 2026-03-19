@@ -51,7 +51,7 @@ python py-generate-from-prompt.py --mock --prompt "Create an 8-slide product str
 ### Revise
 
 ```bash
-python py-revise-deck.py --deck output/generated-deck.json --prompt "Compress this deck to 6 slides"
+python py-revise-deck.py --deck output/py-generated-deck.json --prompt "Compress this deck to 6 slides"
 ```
 
 ### Agent skill request mode
@@ -103,7 +103,7 @@ Your agent only needs to:
   "mock": true,
   "research": false,
   "engine": "python-smart-layer",
-  "deckPath": "output/generated-deck.json",
+  "deckPath": "output/py-generated-deck.json",
   "contextFiles": [],
   "sources": [
     {
