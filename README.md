@@ -144,6 +144,32 @@ The practical split is:
 - `generate-ppt.js` is the stable PPTX renderer
 - root-level Node CLIs remain compatibility wrappers for older integrations
 
+## End-To-End Flow
+
+```mermaid
+flowchart LR
+	A[User goal and presentation constraints] --> B[Trusted files and URLs]
+	A --> C[Python entrypoint or skill API]
+	B --> C
+	C --> D[python_backend/source_loader.py]
+	D --> E[python_backend/smart_layer.py]
+	E --> F[Validated deck JSON]
+	F --> G[python_backend/js_renderer.py]
+	G --> H[generate-ppt.js]
+	H --> I[Final PPTX file]
+	F --> J[Presenter notes source metadata]
+	I --> K[Upstream agent feedback loop]
+	K --> C
+```
+
+The operational flow is:
+
+- an upstream agent or caller provides the deck goal and any presentation constraints
+- trusted source material is loaded and normalized before planning
+- the Python layer produces or revises validated deck JSON
+- the JavaScript renderer turns that deck JSON into the final PPTX
+- revision requests loop back into the same Python planning surface
+
 ## Main Interfaces
 
 ### Python-first CLI
