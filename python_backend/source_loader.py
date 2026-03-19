@@ -1,15 +1,20 @@
 from __future__ import annotations
 
 import importlib
+import ipaddress
 import json
+import logging
 import mimetypes
 import os
 import re
+import socket
 from html.parser import HTMLParser
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, TypedDict, cast
 from urllib.parse import urlparse
 from urllib.request import Request, urlopen
+
+MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024  # 50 MB
 
 TEXT_EXTENSIONS = {
     ".txt",
@@ -23,10 +28,13 @@ TEXT_EXTENSIONS = {
 HTML_EXTENSIONS = {".html", ".htm"}
 IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp", ".svg"}
 
+logger = logging.getLogger("auto-ppt")
+
 
 class SourceLoadResult(TypedDict):
     loaded_sources: List[Dict[str, Any]]
     context_texts: List[str]
+    truncated_sources: List[str]
 
 
 class _HtmlTextExtractor(HTMLParser):
@@ -54,9 +62,13 @@ def _is_url(value: str) -> bool:
 
 def _resolve_local_path(value: str, base_dir: Path) -> Path:
     path = Path(value)
-    if path.is_absolute():
-        return path
-    return (base_dir / path).resolve()
+    resolved = (base_dir / path).resolve() if not path.is_absolute() else path.resolve()
+    # Prevent path traversal: resolved path must be inside base_dir
+    try:
+        resolved.relative_to(base_dir.resolve())
+    except ValueError:
+        _fail(f"Path traversal blocked: {value!r} resolves outside base directory")
+    return resolved
 
 
 def _read_text_file(path: Path) -> str:
@@ -66,7 +78,7 @@ def _read_text_file(path: Path) -> str:
         except UnicodeDecodeError:
             continue
     _fail(f"Unable to decode text file: {path}")
-    raise RuntimeError(f"Unable to decode text file: {path}")
+    return ""  # unreachable, satisfies type checker
 
 
 def _html_to_text(text: str) -> str:
@@ -96,11 +108,36 @@ def _read_docx(path: Path) -> str:
     return "\n".join(paragraphs)
 
 
+def _validate_url_target(url: str) -> None:
+    """Block SSRF: reject private/loopback IPs and non-http(s) schemes."""
+    parsed = urlparse(url)
+    if parsed.scheme not in ("http", "https"):
+        _fail(f"URL scheme not allowed: {parsed.scheme!r}")
+    hostname = parsed.hostname
+    if not hostname:
+        _fail(f"Invalid URL: {url!r}")
+    try:
+        addr_info = socket.getaddrinfo(hostname, None, proto=socket.IPPROTO_TCP)
+    except socket.gaierror:
+        _fail(f"Cannot resolve hostname: {hostname!r}")
+    for _family, _type, _proto, _canonname, sockaddr in addr_info:
+        ip = ipaddress.ip_address(sockaddr[0])
+        if ip.is_private or ip.is_loopback or ip.is_reserved or ip.is_link_local:
+            _fail(f"URL target blocked (private/reserved IP): {hostname!r} -> {ip}")
+
+
+def _check_file_size(path: Path) -> None:
+    size = path.stat().st_size
+    if size > MAX_FILE_SIZE_BYTES:
+        _fail(f"File too large ({size / 1024 / 1024:.1f} MB > 50 MB limit): {path}")
+
+
 def _fetch_url(url: str) -> str:
+    _validate_url_target(url)
     request = Request(
         url,
         headers={
-            "User-Agent": "auto-ppt-prototype/0.3.0",
+            "User-Agent": "auto-ppt-prototype/0.3.1",
             "Accept": "text/html,application/json,text/plain;q=0.9,*/*;q=0.5",
         },
     )
@@ -148,6 +185,7 @@ def _read_source_text(spec: Dict[str, Any]) -> str:
     path = Path(spec["location"])
     if not path.exists():
         _fail(f"Source file not found: {path}")
+    _check_file_size(path)
 
     suffix = path.suffix.lower()
     if suffix in TEXT_EXTENSIONS:
@@ -175,10 +213,13 @@ def _read_source_text(spec: Dict[str, Any]) -> str:
     return f"Binary or unsupported source reference: {path.name}"
 
 
-def _build_context_text(spec: Dict[str, Any], source_text: str) -> str:
+def _build_context_text(spec: Dict[str, Any], source_text: str) -> tuple[str, bool]:
+    """Return (context_text, was_truncated)."""
     excerpt = source_text.strip()
+    truncated = False
     if len(excerpt) > 5000:
         excerpt = excerpt[:5000].rstrip() + "\n...[truncated]"
+        truncated = True
     metadata = [
         f"Label: {spec['label']}",
         f"Type: {spec['type']}",
@@ -190,18 +231,24 @@ def _build_context_text(spec: Dict[str, Any], source_text: str) -> str:
         metadata.append(f"Notes: {spec['notes']}")
     if spec["citation"]:
         metadata.append(f"Citation: {spec['citation']}")
-    return "\n".join(metadata) + "\n\nContent:\n" + excerpt
+    return "\n".join(metadata) + "\n\nContent:\n" + excerpt, truncated
 
 
 def load_source_contexts(sources: Iterable[Any], base_dir: str | Path) -> SourceLoadResult:
     base_path = Path(base_dir)
     loaded_sources: List[Dict[str, Any]] = []
     context_texts: List[str] = []
+    truncated_sources: List[str] = []
 
     for source in sources:
         spec = _normalize_source(source, base_path)
+        logger.info("Loading source: %s (%s)", spec["label"], spec["location"])
         source_text = _read_source_text(spec)
-        context_texts.append(_build_context_text(spec, source_text))
+        context_text, was_truncated = _build_context_text(spec, source_text)
+        if was_truncated:
+            truncated_sources.append(spec["label"])
+            logger.warning("Source truncated to 5000 chars: %s", spec["label"])
+        context_texts.append(context_text)
         loaded_sources.append(
             {
                 key: value
@@ -213,4 +260,5 @@ def load_source_contexts(sources: Iterable[Any], base_dir: str | Path) -> Source
     return {
         "loaded_sources": loaded_sources,
         "context_texts": context_texts,
+        "truncated_sources": truncated_sources,
     }

@@ -1,3 +1,9 @@
+// ============================================================================
+// DEPRECATED — This file is kept for reference only.
+// All source-loading logic has moved to python_backend/source_loader.py.
+// Do NOT add new logic here.  This file will be removed in a future release.
+// ============================================================================
+
 // Legacy Node source-ingestion reference.
 // The Python smart layer is now the primary source loading implementation for public entrypoints.
 

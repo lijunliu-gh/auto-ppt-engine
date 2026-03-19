@@ -58,6 +58,11 @@ def handle_skill_request(request: Dict[str, Any], response_path: str | Path | No
         existing_deck=existing_deck,
     )
 
+    # Surface truncated source warnings in deck assumptions
+    if source_data.get("truncated_sources"):
+        trunc_list = ", ".join(source_data["truncated_sources"])
+        deck.setdefault("assumptions", []).append(f"The following sources were truncated to 5000 chars: {trunc_list}")
+
     output_json = resolve_from_base(
         request_base_dir,
         request.get("outputJson")

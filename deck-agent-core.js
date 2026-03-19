@@ -1,3 +1,10 @@
+// ============================================================================
+// DEPRECATED — This file is kept for reference only.
+// All planning, revision, and orchestration logic has moved to the Python
+// smart layer (python_backend/smart_layer.py).  Do NOT add new logic here.
+// This file will be removed in a future release.
+// ============================================================================
+
 // Legacy Node smart-layer reference.
 // Public create, revise, skill, and server entrypoints now route to the Python smart layer.
 // Keep this file only as a transition reference while Node remains the PPTX renderer host.

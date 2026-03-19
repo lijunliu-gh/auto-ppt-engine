@@ -2,11 +2,16 @@ from __future__ import annotations
 
 import importlib
 import json
+import logging
 import os
 import re
 from pathlib import Path
 from typing import Any, Dict, List, cast
 from urllib.request import Request, urlopen
+
+from .llm_provider import LLMProvider, get_default_provider
+
+logger = logging.getLogger("auto-ppt")
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 SKILL_PATH = ROOT_DIR / "SKILL.md"
@@ -31,7 +36,6 @@ MAX_REPAIR_ATTEMPTS = 1
 
 def fail(message: str) -> None:
     raise RuntimeError(message)
-
 
 def resolve_path(file_path: str | Path) -> Path:
     path = Path(file_path)
@@ -188,6 +192,7 @@ def create_slide_source_ref(source: Dict[str, Any], index: int, slide: Dict[str,
 
 def normalize_deck_source_metadata(deck: Dict[str, Any], loaded_sources: List[Dict[str, Any]] | None = None) -> Dict[str, Any]:
     sources = loaded_sources or []
+    deck["schemaVersion"] = "0.3.0"
     deck["sourceDisplayMode"] = deck.get("sourceDisplayMode") or "notes"
     slides = cast(List[Dict[str, Any]], deck.get("slides") if isinstance(deck.get("slides"), list) else [])
     for slide in slides:
@@ -292,6 +297,7 @@ def build_mock_deck(prompt: str, research_notes: List[str], context_texts: List[
     slides[-1]["layout"] = "closing"
 
     return {
+        "schemaVersion": "0.3.0",
         "deckTitle": deck_title,
         "language": language,
         "audience": infer_audience(prompt),
@@ -576,7 +582,9 @@ def apply_heuristic_revision(existing_deck: Dict[str, Any], prompt: str, context
 def maybe_run_research(user_prompt: str) -> List[str]:
     api_key = os.getenv("TAVILY_API_KEY")
     if not api_key:
+        logger.debug("TAVILY_API_KEY not set, skipping research")
         return []
+    logger.info("Running Tavily research for prompt")
     payload = json.dumps(
         {
             "api_key": api_key,
@@ -616,22 +624,8 @@ def create_openai_client() -> Any:
     return OpenAI(api_key=api_key, base_url=base_url or None)
 
 
-def request_deck_json(client: Any, system_prompt: str, user_prompt: str) -> str:
-    model = os.getenv("OPENAI_MODEL") or "gpt-4.1-mini"
-    response = client.chat.completions.create(
-        model=model,
-        temperature=0.3,
-        response_format={"type": "json_object"},
-        messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt},
-        ],
-    )
-    content = response.choices[0].message.content if response.choices else None
-    if not content:
-        fail("Model returned no content.")
-    return str(content)
-
+def request_deck_json(provider: LLMProvider, system_prompt: str, user_prompt: str) -> str:
+    return provider.chat(system_prompt, user_prompt)
 
 def execute_planning_flow(
     prompt: str,
@@ -641,6 +635,7 @@ def execute_planning_flow(
     mock: bool = False,
     mode: str = "create",
     existing_deck: Dict[str, Any] | None = None,
+    llm_provider: LLMProvider | None = None,
 ) -> Dict[str, Any]:
     contexts = context_texts or []
     sources = loaded_sources or []
@@ -648,13 +643,14 @@ def execute_planning_flow(
     validator = create_validator(schema)
     research_notes = maybe_run_research(prompt) if research_enabled else []
 
+    logger.info("execute_planning_flow: mode=%s, mock=%s, sources=%d, contexts=%d", mode, mock, len(sources), len(contexts))
+
     if mock:
         if mode == "create":
             deck = normalize_deck_source_metadata(build_mock_deck(prompt, research_notes, contexts, sources), sources)
         else:
             if existing_deck is None:
                 fail("existingDeck is required for revise mode.")
-                raise RuntimeError("existingDeck is required for revise mode.")
             deck = normalize_deck_source_metadata(apply_heuristic_revision(existing_deck, prompt, contexts), sources)
         errors = sorted(validator.iter_errors(deck), key=lambda error: list(error.path))
         if errors:
@@ -663,13 +659,13 @@ def execute_planning_flow(
 
     skill_instructions = load_skill_instructions()
     system_prompt = build_system_prompt(skill_instructions, schema)
-    client = create_openai_client()
+    provider = llm_provider or get_default_provider()
     base_prompt = (
         build_create_prompt(prompt, contexts, research_notes)
         if mode == "create"
         else build_revise_prompt(existing_deck or {}, prompt, contexts, research_notes)
     )
-    raw_json = request_deck_json(client, system_prompt, base_prompt)
+    raw_json = request_deck_json(provider, system_prompt, base_prompt)
 
     for attempt in range(MAX_REPAIR_ATTEMPTS + 1):
         try:
@@ -677,7 +673,7 @@ def execute_planning_flow(
         except json.JSONDecodeError as error:
             if attempt == MAX_REPAIR_ATTEMPTS:
                 raise
-            raw_json = request_deck_json(client, system_prompt, build_repair_prompt(prompt, raw_json, f"JSON parse error: {error}"))
+            raw_json = request_deck_json(provider, system_prompt, build_repair_prompt(prompt, raw_json, f"JSON parse error: {error}"))
             continue
 
         normalized = normalize_deck_source_metadata(parsed, sources)
@@ -687,10 +683,9 @@ def execute_planning_flow(
         if attempt == MAX_REPAIR_ATTEMPTS:
             fail(f"Schema validation failed: {format_validation_errors(errors)}")
         raw_json = request_deck_json(
-            client,
+            provider,
             system_prompt,
             build_repair_prompt(prompt, json.dumps(normalized), format_validation_errors(errors)),
         )
 
     fail("Unable to produce a valid deck JSON.")
-    raise RuntimeError("Unable to produce a valid deck JSON.")

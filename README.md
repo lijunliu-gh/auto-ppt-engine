@@ -1,6 +1,6 @@
 # Auto PPT Prototype
 
-[![Release](https://img.shields.io/github/v/release/lijunliu-gh/auto-ppt-prototype?label=release)](https://github.com/lijunliu-gh/auto-ppt-prototype/releases/tag/v0.3.0)
+[![Release](https://img.shields.io/github/v/release/lijunliu-gh/auto-ppt-prototype?label=release)](https://github.com/lijunliu-gh/auto-ppt-prototype/releases/tag/v0.3.1)
 [![License](https://img.shields.io/github/license/lijunliu-gh/auto-ppt-prototype)](LICENSE)
 [![Smoke](https://img.shields.io/github/actions/workflow/status/lijunliu-gh/auto-ppt-prototype/smoke.yml?branch=main&label=smoke)](https://github.com/lijunliu-gh/auto-ppt-prototype/actions/workflows/smoke.yml)
 
@@ -8,11 +8,11 @@ Open-source PowerPoint backend for AI agents working from trusted sources, uploa
 
 Status: experimental prototype for early open-source integration.
 
-Latest release: [v0.3.0](https://github.com/lijunliu-gh/auto-ppt-prototype/releases/tag/v0.3.0)
+Latest release: [v0.3.1](https://github.com/lijunliu-gh/auto-ppt-prototype/releases/tag/v0.3.1)
 
 Quick links:
 
-- [Release notes](https://github.com/lijunliu-gh/auto-ppt-prototype/releases/tag/v0.3.0)
+- [Release notes](https://github.com/lijunliu-gh/auto-ppt-prototype/releases/tag/v0.3.1)
 - [Changelog](CHANGELOG.md)
 - [Examples (EN)](EXAMPLES.en.md)
 - [Examples (ZH)](EXAMPLES.zh-CN.md)
@@ -82,6 +82,10 @@ The current implementation supports:
 4. JSON-schema validation before rendering
 5. Agent-callable CLI, JSON skill, and local HTTP service entrypoints
 6. PPTX rendering through the Node renderer
+7. Pluggable LLM provider layer (OpenAI by default, extensible to other models)
+8. Security hardening: path traversal protection, SSRF blocking, file size limits, subprocess timeout
+9. Structured logging across the Python backend
+10. Schema versioning for forward-compatible deck migration
 
 ## Why The Split Exists
 
@@ -162,7 +166,8 @@ auto-ppt-prototype/
 |   |-- smart_layer.py        # planning, revision, validation
 |   |-- source_loader.py      # trusted material ingestion
 |   |-- skill_api.py          # skill request orchestration
-|   `-- js_renderer.py        # bridge into the Node PPTX renderer
+|   |-- js_renderer.py        # bridge into the Node PPTX renderer
+|   `-- llm_provider.py       # LLM provider abstraction (OpenAI default)
 |-- py-generate-from-prompt.py
 |-- py-revise-deck.py
 |-- py-agent-skill.py
@@ -191,6 +196,8 @@ auto-ppt-prototype/
 |-- INTEGRATION_GUIDE.*.md
 |-- CHANGELOG.md
 |-- RELEASE_DRAFT_v0.3.0.md
+|-- tests/
+|   `-- test_smart_layer.py   # pytest unit tests (39 tests)
 |-- output/                   # generated deck JSON and PPTX artifacts
 |   |-- py-generated-deck.json
 |   |-- py-generated-deck.pptx
@@ -206,11 +213,27 @@ auto-ppt-prototype/
 The practical split is:
 
 - `python_backend/` owns planning, revision, source understanding, and agent-facing orchestration
+- `python_backend/llm_provider.py` abstracts the LLM layer so providers can be swapped without touching planning code
 - root-level `py-*.py` files are the primary public entrypoints
 - `generate-ppt.js` is the stable PPTX renderer
 - root-level Node CLIs remain compatibility wrappers for older integrations
 - `EXAMPLES.*.md` and `sample-*` files are the fastest way for a new user to understand how to run the repo
 - `output/` is where generated deck JSON and PPTX files appear after successful runs
+- `tests/` contains pytest unit tests for the Python backend
+
+## Testing
+
+Run the unit test suite:
+
+```bash
+python -m pytest tests/ -v
+```
+
+Run smoke tests:
+
+```bash
+npm run smoke
+```
 
 ## End-To-End Flow
 

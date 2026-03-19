@@ -5,6 +5,7 @@
   "type": "object",
   "additionalProperties": false,
   "required": [
+    "schemaVersion",
     "deckTitle",
     "language",
     "audience",
@@ -18,6 +19,11 @@
     "slides"
   ],
   "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "const": "0.3.0",
+      "description": "Deck schema version for forward compatibility"
+    },
     "deckTitle": {
       "type": "string",
       "minLength": 1
