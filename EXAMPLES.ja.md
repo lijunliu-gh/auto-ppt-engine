@@ -82,7 +82,26 @@ curl -X POST http://localhost:3010/skill -H "Content-Type: application/json" --d
 
 ## どの例から始めるべきか
 
+- Claude Desktop、Cursor、または Windsurf を使用している場合は MCP から —— 最も簡単です
 - 最短で成功させたいなら `sample-source-brief.md`
 - deck brief の形を理解したいなら `sample-deck-brief.md`
 - 他の agent ワークフローに組み込みたいなら `sample-agent-request.json`
 - ローカルサービス呼び出しを使いたいなら `sample-http-request.json`
+
+## MCP の例（Claude Desktop / Cursor / Windsurf）
+
+MCP を設定した後（[統合ガイド](INTEGRATION_GUIDE.ja.md)を参照）、AI アシスタントに直接聞いてください：
+
+> 幹部向けの AI ワークスペース戦略デッキを 8 スライドで作成してください。sample-source-brief.md をソースとして使ってください
+
+アシスタントは自動的に `create_deck` を呼び出します。改訂時は：
+
+> 5 スライドに圧縮して、結論重視にしてください
+
+アシスタントは前に生成したデッキで `revise_deck` を呼び出します。
+
+MCP 開発インスペクターでテスト：
+
+```bash
+mcp dev mcp_server.py
+```

@@ -27,7 +27,48 @@
 
 ## 当前支持的接入方式
 
-## 1. CLI 接入
+## 1. MCP 接入（推荐用于 AI 环境）
+
+如果你使用 Claude Desktop、Cursor、Windsurf 或其他 MCP 兼容客户端，MCP 是最简单的接入方式。MCP 服务器将 `create_deck` 和 `revise_deck` 暴露为原生 MCP 工具，AI 助手可以直接调用，无需管理文件或搭建 HTTP 服务。
+
+### Claude Desktop 配置
+
+添加到 `~/Library/Application Support/Claude/claude_desktop_config.json`（macOS）或 `%APPDATA%\Claude\claude_desktop_config.json`（Windows）：
+
+```json
+{
+  "mcpServers": {
+    "auto-ppt": {
+      "command": "python",
+      "args": ["/absolute/path/to/auto-ppt-prototype/mcp_server.py"]
+    }
+  }
+}
+```
+
+### Cursor / Windsurf 配置
+
+在项目根目录创建 `.cursor/mcp.json` 或 `.windsurf/mcp.json`：
+
+```json
+{
+  "mcpServers": {
+    "auto-ppt": {
+      "command": "python",
+      "args": ["/absolute/path/to/auto-ppt-prototype/mcp_server.py"]
+    }
+  }
+}
+```
+
+### 可用 MCP 工具
+
+| 工具 | 参数 | 描述 |
+|------|------|------|
+| `create_deck` | `prompt`（必填）、`sources`、`mock`、`research`、`output_dir` | 创建新的演示文稿 |
+| `revise_deck` | `prompt`（必填）、`deck_path`（必填）、`sources`、`mock`、`research`、`output_dir` | 修订现有演示文稿 |
+
+## 2. CLI 接入
 
 这是最简单的接入方式，适合：
 
@@ -60,7 +101,7 @@ python py-revise-deck.py --deck output/py-generated-deck.json --prompt "Compress
 python py-agent-skill.py --request sample-agent-request.json --response output/py-agent-response.json
 ```
 
-## 2. JSON skill 接入
+## 3. JSON skill 接入
 
 这是当前最适合 agent 的接入方式之一。
 
@@ -141,7 +182,7 @@ python py-agent-skill.py --request sample-agent-request.json --response output/p
 }
 ```
 
-## 3. HTTP 接入
+## 4. HTTP 接入
 
 如果你的上游系统更适合通过 API 调用，这个项目也支持本地 HTTP 服务。
 

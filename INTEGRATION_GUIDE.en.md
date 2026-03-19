@@ -27,7 +27,66 @@ The recommended model is:
 
 ## Supported Integration Modes
 
-## 1. CLI Integration
+## 1. MCP Integration (Recommended for AI environments)
+
+This is the best option for AI-native workflows. The MCP server exposes `create_deck` and `revise_deck` as native tools, so Claude Desktop, Cursor, Windsurf, and any MCP-compatible client can invoke them directly — no file handling, no HTTP setup.
+
+### Setup
+
+Install dependencies:
+
+```bash
+python -m pip install -r requirements.txt
+npm install
+```
+
+### Claude Desktop
+
+Add to `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) or `%APPDATA%\Claude\claude_desktop_config.json` (Windows):
+
+```json
+{
+  "mcpServers": {
+    "auto-ppt": {
+      "command": "python",
+      "args": ["/absolute/path/to/auto-ppt-prototype/mcp_server.py"]
+    }
+  }
+}
+```
+
+### Cursor / Windsurf
+
+Add to `.cursor/mcp.json` or `.windsurf/mcp.json` in your project:
+
+```json
+{
+  "mcpServers": {
+    "auto-ppt": {
+      "command": "python",
+      "args": ["/absolute/path/to/auto-ppt-prototype/mcp_server.py"]
+    }
+  }
+}
+```
+
+### Available MCP tools
+
+| Tool | Parameters | Description |
+|------|-----------|-------------|
+| `create_deck` | `prompt` (required), `sources`, `mock`, `research`, `output_dir` | Create a new deck |
+| `revise_deck` | `prompt` (required), `deck_path` (required), `sources`, `mock`, `research`, `output_dir` | Revise an existing deck |
+
+Both tools return a JSON string with: `ok`, `action`, `slideCount`, `deckJsonPath`, `pptxPath`, `assumptions`, `sourcesUsed`.
+
+### Why MCP first
+
+- Zero friction: the AI environment calls the tool directly
+- No file management: no request/response JSON files to coordinate
+- Revision is natural: the AI can chain `create_deck` → review → `revise_deck`
+- Works with mock mode for offline testing
+
+## 2. CLI Integration
 
 This is the simplest path. It works well for:
 
@@ -60,7 +119,7 @@ python py-revise-deck.py --deck output/py-generated-deck.json --prompt "Compress
 python py-agent-skill.py --request sample-agent-request.json --response output/py-agent-response.json
 ```
 
-## 2. JSON Skill Integration
+## 3. JSON Skill Integration
 
 This is one of the best current options for agent workflows.
 
@@ -140,7 +199,7 @@ python py-agent-skill.py --request sample-agent-request.json --response output/p
 }
 ```
 
-## 3. HTTP Integration
+## 4. HTTP Integration
 
 If your upstream system prefers API calls, this project also supports a local HTTP service.
 
@@ -317,7 +376,8 @@ rather than as a fully independent end-user product.
 
 Best option:
 
-- CLI invocation
+- MCP integration (if MCP-compatible)
+- CLI invocation (fallback)
 - or JSON request plus `py-agent-skill.py`
 
 Why:
@@ -325,6 +385,18 @@ Why:
 - simple
 - local path handling is straightforward
 - easy to support multi-round revise flows
+
+## For Claude Desktop, Cursor, or Windsurf
+
+Best option:
+
+- MCP integration
+
+Why:
+
+- native tool invocation — no file or HTTP coordination needed
+- supports create + revise loops naturally
+- easiest setup of all integration modes
 
 ## For service-based systems
 
@@ -382,6 +454,7 @@ If you need enterprise-grade template control, more work is still required.
 
 ## Key Files
 
+- `mcp_server.py`: MCP server entrypoint (Claude Desktop, Cursor, Windsurf)
 - `py-agent-skill.py`: primary JSON skill entrypoint
 - `py-skill-server.py`: primary HTTP service entrypoint
 - `skill-manifest.json`: skill contract
@@ -400,4 +473,4 @@ The JavaScript entrypoints still exist for older integrations, but they now forw
 
 If you want to integrate now, the most stable path is:
 
-**start with JSON skill mode, then move to HTTP mode only when you need service-style integration.**
+**If you use Claude Desktop, Cursor, or Windsurf: start with MCP. Otherwise: start with JSON skill mode, then move to HTTP mode only when you need service-style integration.**

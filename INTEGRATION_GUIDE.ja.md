@@ -27,7 +27,48 @@
 
 ## 現在サポートされている統合方式
 
-## 1. CLI 統合
+## 1. MCP 統合（AI 環境向け推奨）
+
+Claude Desktop、Cursor、Windsurf、またはその他の MCP 互換クライアントを使用している場合、MCP が最も簡単な統合方法です。MCP サーバーは `create_deck` と `revise_deck` をネイティブ MCP ツールとして公開し、AI アシスタントが直接呼び出せます。ファイル管理や HTTP サーバーのセットアップは不要です。
+
+### Claude Desktop 設定
+
+`~/Library/Application Support/Claude/claude_desktop_config.json`（macOS）または `%APPDATA%\Claude\claude_desktop_config.json`（Windows）に追加：
+
+```json
+{
+  "mcpServers": {
+    "auto-ppt": {
+      "command": "python",
+      "args": ["/absolute/path/to/auto-ppt-prototype/mcp_server.py"]
+    }
+  }
+}
+```
+
+### Cursor / Windsurf 設定
+
+プロジェクトルートに `.cursor/mcp.json` または `.windsurf/mcp.json` を作成：
+
+```json
+{
+  "mcpServers": {
+    "auto-ppt": {
+      "command": "python",
+      "args": ["/absolute/path/to/auto-ppt-prototype/mcp_server.py"]
+    }
+  }
+}
+```
+
+### 利用可能な MCP ツール
+
+| ツール | パラメータ | 説明 |
+|--------|-----------|------|
+| `create_deck` | `prompt`（必須）、`sources`、`mock`、`research`、`output_dir` | 新しいデッキを作成 |
+| `revise_deck` | `prompt`（必須）、`deck_path`（必須）、`sources`、`mock`、`research`、`output_dir` | 既存デッキを改訂 |
+
+## 2. CLI 統合
 
 最も簡単な方法です。次のようなケースに向いています。
 
@@ -60,7 +101,7 @@ python py-revise-deck.py --deck output/py-generated-deck.json --prompt "Compress
 python py-agent-skill.py --request sample-agent-request.json --response output/py-agent-response.json
 ```
 
-## 2. JSON Skill 統合
+## 3. JSON Skill 統合
 
 これは現在、エージェントワークフローに最も適した方法の一つです。
 
@@ -141,7 +182,7 @@ python py-agent-skill.py --request sample-agent-request.json --response output/p
 }
 ```
 
-## 3. HTTP 統合
+## 4. HTTP 統合
 
 上流システムが API 呼び出しを好む場合、このプロジェクトはローカル HTTP サービスとしても使えます。
 

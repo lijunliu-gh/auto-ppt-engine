@@ -82,7 +82,26 @@ curl -X POST http://localhost:3010/skill -H "Content-Type: application/json" --d
 
 ## 应该先看哪个示例
 
+- 如果你使用 Claude Desktop、Cursor 或 Windsurf，先用 MCP 接入 —— 这是最简单的方式
 - 如果你只是想最快看到成功结果，先看 `sample-source-brief.md`
 - 如果你想理解什么是 deck brief，先看 `sample-deck-brief.md`
 - 如果你要集成进别的 agent 流程，先看 `sample-agent-request.json`
 - 如果你更偏向本地服务调用，先看 `sample-http-request.json`
+
+## MCP 示例（Claude Desktop / Cursor / Windsurf）
+
+配置好 MCP 之后（参见 [接入说明](INTEGRATION_GUIDE.zh-CN.md)），直接对 AI 助手说：
+
+> 帮我做一个 8 页的 AI 工作空间策略报告，面向管理层，用 sample-source-brief.md 作为素材
+
+助手会自动调用 `create_deck`。修订时说：
+
+> 压缩到 5 页，结论导向
+
+助手会自动用之前生成的 deck 调用 `revise_deck`。
+
+用 MCP 开发检查器测试：
+
+```bash
+mcp dev mcp_server.py
+```

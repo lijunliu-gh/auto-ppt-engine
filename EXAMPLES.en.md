@@ -80,7 +80,26 @@ curl -X POST http://localhost:3010/skill -H "Content-Type: application/json" --d
 
 ## Which Example To Start With
 
-- Start with `sample-source-brief.md` if you want the shortest successful demo.
+- Start with MCP if you use Claude Desktop, Cursor, or Windsurf — it's the simplest integration.
+- Start with `sample-source-brief.md` if you want the shortest successful CLI demo.
 - Start with `sample-deck-brief.md` if you want to understand what a deck brief looks like.
 - Start with `sample-agent-request.json` if you are integrating this project into another workflow.
 - Start with `sample-http-request.json` if your system prefers local service calls.
+
+## MCP Example (Claude Desktop / Cursor / Windsurf)
+
+After configuring MCP (see [Integration Guide](INTEGRATION_GUIDE.en.md)), just ask your AI assistant:
+
+> Create an 8-slide AI workspace strategy deck for executives, using sample-source-brief.md as source material
+
+The assistant will call `create_deck` automatically. To revise:
+
+> Compress that deck to 5 slides and make it more conclusion-driven
+
+The assistant will call `revise_deck` with the previously generated deck path.
+
+To test MCP directly without a client:
+
+```bash
+mcp dev mcp_server.py
+```
