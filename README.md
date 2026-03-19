@@ -21,6 +21,12 @@ Quick links:
 - [User guide](USER_GUIDE.en.md)
 - [Integration guide](INTEGRATION_GUIDE.en.md)
 
+## Start Here
+
+- Want the fastest successful run: open `EXAMPLES.en.md` and run the first source-based example.
+- Want to understand the input format: inspect `sample-deck-brief.md` and `sample-deck-brief.json`.
+- Want integration instead of manual CLI usage: start with `sample-agent-request.json` or `sample-http-request.json`.
+
 Architecture summary:
 
 - Python plans and revises decks
@@ -103,7 +109,32 @@ npm install
 python -m pip install -r requirements.txt
 ```
 
-Try the main flows:
+### 1. Local first run
+
+```bash
+python py-generate-from-prompt.py --mock --prompt "Create an 8-slide AI workspace strategy deck for executives" --source sample-source-brief.md
+```
+
+### 2. Revise the generated deck
+
+```bash
+python py-revise-deck.py --mock --deck output/py-generated-deck.json --prompt "Compress this deck to 6 slides and make it more conclusion-driven"
+```
+
+### 3. File-based agent integration
+
+```bash
+python py-agent-skill.py --request sample-agent-request.json --response output/py-agent-response.json
+```
+
+### 4. Local HTTP service
+
+```bash
+python py-skill-server.py
+curl -X POST http://localhost:3010/skill -H "Content-Type: application/json" --data @sample-http-request.json
+```
+
+### 5. npm shortcuts
 
 ```bash
 npm run generate
@@ -111,12 +142,6 @@ npm run generate:source
 npm run revise:mock
 npm run skill:create
 npm run skill:server
-```
-
-First successful run for a new user:
-
-```bash
-python py-generate-from-prompt.py --mock --prompt "Create an 8-slide AI workspace strategy deck for executives" --source sample-source-brief.md
 ```
 
 Useful starter files:

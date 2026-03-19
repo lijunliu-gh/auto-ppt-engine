@@ -1,6 +1,6 @@
 <svg width="960" height="1280" viewBox="0 0 960 1280" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
-  <title id="title">Auto PPT Prototype End-to-End Flow</title>
-  <desc id="desc">A vertical flow diagram showing user requirements and trusted sources entering the Python planning layer, producing validated deck JSON, rendering through JavaScript, and returning a final PPTX with a revision loop.</desc>
+  <title id="title">Auto PPT Prototype Request-to-PPTX Flow</title>
+  <desc id="desc">A vertical flow diagram showing a deck brief or prompt and trusted sources entering the Python planning layer, producing validated deck JSON, rendering through JavaScript, and returning PPTX artifacts with a revision loop.</desc>
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="960" y2="1280" gradientUnits="userSpaceOnUse">
       <stop stop-color="#F6F2E8"/>
@@ -32,28 +32,28 @@
   <rect x="0" y="0" width="960" height="1280" rx="28" fill="url(#bg)"/>
 
   <rect x="80" y="48" width="800" height="108" rx="24" fill="url(#header)"/>
-  <text x="120" y="95" class="title">Auto PPT Prototype End-to-End Flow</text>
-  <text x="120" y="128" class="subtitle">Requirements and trusted material flow through Python planning, deck JSON validation, JavaScript rendering, and revision feedback.</text>
+  <text x="120" y="95" class="title">Auto PPT Prototype Request-to-PPTX Flow</text>
+  <text x="120" y="128" class="subtitle">Deck briefs, prompts, and trusted material flow through Python planning, deck JSON validation, JavaScript rendering, and revision feedback.</text>
 
   <rect x="130" y="208" width="300" height="116" rx="22" fill="#FFF8EF" stroke="#E7C790" stroke-width="2" filter="url(#shadow)"/>
   <text x="160" y="246" class="small">INPUT</text>
-  <text x="160" y="276" class="label">User goal and constraints</text>
+  <text x="160" y="276" class="label">Deck brief, prompt, or revise request</text>
   <text x="160" y="302" class="text">Presentation intent, tone, audience,</text>
-  <text x="160" y="322" class="text">length, and revision requests.</text>
+  <text x="160" y="322" class="text">length, structure, and change requests.</text>
 
   <rect x="530" y="208" width="300" height="116" rx="22" fill="#FFF8EF" stroke="#E7C790" stroke-width="2" filter="url(#shadow)"/>
   <text x="560" y="246" class="small">INPUT</text>
-  <text x="560" y="276" class="label">Trusted files and URLs</text>
+  <text x="560" y="276" class="label">Trusted files, URLs, and notes</text>
   <text x="560" y="302" class="text">Source briefs, documents, PDFs,</text>
-  <text x="560" y="322" class="text">DOCX, HTML, and web references.</text>
+  <text x="560" y="322" class="text">DOCX, HTML, and reference links.</text>
 
   <path d="M280 324V378" stroke="#375A7A" stroke-width="4" marker-end="url(#arrow)"/>
   <path d="M680 324V378" stroke="#375A7A" stroke-width="4" marker-end="url(#arrow)"/>
 
   <rect x="220" y="390" width="520" height="116" rx="24" fill="#F7FBFF" stroke="#9EBED7" stroke-width="2" filter="url(#shadow)"/>
   <text x="252" y="428" class="small">ENTRYPOINT</text>
-  <text x="252" y="458" class="label">Python entrypoint or skill API</text>
-  <text x="252" y="484" class="text">CLI, JSON skill, or local HTTP service receives the request.</text>
+  <text x="252" y="458" class="label">CLI, JSON skill, or HTTP entrypoint</text>
+  <text x="252" y="484" class="text">Python-side entry receives the request and routes the workflow.</text>
 
   <path d="M480 506V560" stroke="#375A7A" stroke-width="4" marker-end="url(#arrow)"/>
 
@@ -74,7 +74,7 @@
   <rect x="220" y="936" width="520" height="116" rx="24" fill="#F9F6FF" stroke="#B5A5D5" stroke-width="2" filter="url(#shadow)"/>
   <text x="252" y="974" class="small">CONTRACT</text>
   <text x="252" y="1004" class="label">Validated deck JSON</text>
-  <text x="252" y="1030" class="text">Stable handoff format between planning and rendering layers.</text>
+  <text x="252" y="1030" class="text">Stable create or revise handoff between planning and rendering layers.</text>
 
   <rect x="756" y="948" width="134" height="92" rx="18" fill="#FFF6E6" stroke="#E6BE78" stroke-width="2" filter="url(#shadow)"/>
   <text x="774" y="985" class="small">OUTPUT</text>
@@ -96,7 +96,7 @@
 
   <rect x="780" y="1118" width="110" height="92" rx="22" fill="#17324D" filter="url(#shadow)"/>
   <text x="807" y="1155" class="small" fill="#C8DCEB">OUTPUT</text>
-  <text x="808" y="1186" style="font:700 22px 'Segoe UI', Arial, sans-serif; fill:#F8FBFD;">PPTX</text>
+  <text x="801" y="1186" style="font:700 22px 'Segoe UI', Arial, sans-serif; fill:#F8FBFD;">PPTX</text>
   <path d="M740 1164H780" stroke="#375A7A" stroke-width="4" marker-end="url(#arrow)"/>
 
   <path d="M835 1118C906 1038 916 894 872 782C835 687 758 602 740 590" stroke="#A2612A" stroke-width="4" stroke-dasharray="10 10" fill="none" marker-end="url(#arrow)"/>
