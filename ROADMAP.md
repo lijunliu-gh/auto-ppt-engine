@@ -1,6 +1,6 @@
 # Roadmap
 
-Current version: **v0.3.1**
+Current version: **v0.4.1**
 
 This roadmap reflects the project's current capabilities, known gaps, and planned evolution from experimental prototype to a production-grade AI-agent PowerPoint backend.
 
@@ -23,7 +23,9 @@ This roadmap reflects the project's current capabilities, known gaps, and planne
 
 ---
 
-## Phase 1 — MCP Server + Ecosystem Integration → v0.4.0
+## Phase 1 — MCP Server + Ecosystem Integration → v0.4.0 ✅
+
+**Status**: Complete — released in v0.4.0
 
 **Goal**: Enable native invocation from Claude Desktop, Cursor, Windsurf, and other MCP-compatible AI environments.
 
@@ -41,7 +43,9 @@ This roadmap reflects the project's current capabilities, known gaps, and planne
 
 ---
 
-## Phase 2 — Chart Data Reliability + Multi-Model Validation → v0.4.1
+## Phase 2 — Chart Data Reliability + Multi-Model Validation → v0.4.1 ✅
+
+**Status**: Complete — released in v0.4.1
 
 **Goal**: Make LLM-generated chart and table data actually usable (not empty placeholders).
 
@@ -93,7 +97,7 @@ This roadmap reflects the project's current capabilities, known gaps, and planne
 
 | Task | Description |
 |------|-------------|
-| Remove legacy JS code | After Phase 1, delete `deck-agent-core.js` and `source-loader.js` entirely |
+| Remove legacy JS code | ~~After Phase 1, delete `deck-agent-core.js` and `source-loader.js` entirely~~ ✅ Done in v0.4.1 |
 | Expand test coverage | Each phase adds integration tests; target 80%+ coverage |
 | API versioning | Add `apiVersion` field to requests / responses for backward compatibility during Phase 3 schema changes |
 | CI hardening | Add pytest + multi-Node-version matrix to GitHub Actions |
