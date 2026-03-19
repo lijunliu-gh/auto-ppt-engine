@@ -1,0 +1,105 @@
+<svg width="960" height="1280" viewBox="0 0 960 1280" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Auto PPT Prototype End-to-End Flow</title>
+  <desc id="desc">A vertical flow diagram showing user requirements and trusted sources entering the Python planning layer, producing validated deck JSON, rendering through JavaScript, and returning a final PPTX with a revision loop.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="960" y2="1280" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F6F2E8"/>
+      <stop offset="1" stop-color="#E9EEF5"/>
+    </linearGradient>
+    <linearGradient id="header" x1="80" y1="48" x2="880" y2="156" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#17324D"/>
+      <stop offset="1" stop-color="#2F5B7C"/>
+    </linearGradient>
+    <filter id="shadow" x="0" y="0" width="200%" height="200%">
+      <feOffset dy="8"/>
+      <feGaussianBlur stdDeviation="12" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0.08 0 0 0 0 0.12 0 0 0 0 0.16 0 0 0 0.12 0"/>
+      <feBlend in="SourceGraphic"/>
+    </filter>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="6" refY="6" orient="auto">
+      <path d="M1 1L11 6L1 11V1Z" fill="#375A7A"/>
+    </marker>
+    <style>
+      .title { font: 700 34px 'Segoe UI', Arial, sans-serif; fill: #F8FBFD; }
+      .subtitle { font: 400 17px 'Segoe UI', Arial, sans-serif; fill: #D9E6EF; }
+      .label { font: 700 18px 'Segoe UI', Arial, sans-serif; fill: #16324A; }
+      .text { font: 400 15px 'Segoe UI', Arial, sans-serif; fill: #355067; }
+      .small { font: 600 13px 'Segoe UI', Arial, sans-serif; fill: #496579; letter-spacing: 0.08em; }
+      .note { font: 600 14px 'Segoe UI', Arial, sans-serif; fill: #6D4A18; }
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="960" height="1280" rx="28" fill="url(#bg)"/>
+
+  <rect x="80" y="48" width="800" height="108" rx="24" fill="url(#header)"/>
+  <text x="120" y="95" class="title">Auto PPT Prototype End-to-End Flow</text>
+  <text x="120" y="128" class="subtitle">Requirements and trusted material flow through Python planning, deck JSON validation, JavaScript rendering, and revision feedback.</text>
+
+  <rect x="130" y="208" width="300" height="116" rx="22" fill="#FFF8EF" stroke="#E7C790" stroke-width="2" filter="url(#shadow)"/>
+  <text x="160" y="246" class="small">INPUT</text>
+  <text x="160" y="276" class="label">User goal and constraints</text>
+  <text x="160" y="302" class="text">Presentation intent, tone, audience,</text>
+  <text x="160" y="322" class="text">length, and revision requests.</text>
+
+  <rect x="530" y="208" width="300" height="116" rx="22" fill="#FFF8EF" stroke="#E7C790" stroke-width="2" filter="url(#shadow)"/>
+  <text x="560" y="246" class="small">INPUT</text>
+  <text x="560" y="276" class="label">Trusted files and URLs</text>
+  <text x="560" y="302" class="text">Source briefs, documents, PDFs,</text>
+  <text x="560" y="322" class="text">DOCX, HTML, and web references.</text>
+
+  <path d="M280 324V378" stroke="#375A7A" stroke-width="4" marker-end="url(#arrow)"/>
+  <path d="M680 324V378" stroke="#375A7A" stroke-width="4" marker-end="url(#arrow)"/>
+
+  <rect x="220" y="390" width="520" height="116" rx="24" fill="#F7FBFF" stroke="#9EBED7" stroke-width="2" filter="url(#shadow)"/>
+  <text x="252" y="428" class="small">ENTRYPOINT</text>
+  <text x="252" y="458" class="label">Python entrypoint or skill API</text>
+  <text x="252" y="484" class="text">CLI, JSON skill, or local HTTP service receives the request.</text>
+
+  <path d="M480 506V560" stroke="#375A7A" stroke-width="4" marker-end="url(#arrow)"/>
+
+  <rect x="220" y="572" width="520" height="116" rx="24" fill="#F3F8F2" stroke="#9DBF9E" stroke-width="2" filter="url(#shadow)"/>
+  <text x="252" y="610" class="small">INGESTION</text>
+  <text x="252" y="640" class="label">python_backend/source_loader.py</text>
+  <text x="252" y="666" class="text">Normalizes trusted material into structured source content.</text>
+
+  <path d="M480 688V742" stroke="#375A7A" stroke-width="4" marker-end="url(#arrow)"/>
+
+  <rect x="220" y="754" width="520" height="116" rx="24" fill="#EEF5FF" stroke="#8FB0D3" stroke-width="2" filter="url(#shadow)"/>
+  <text x="252" y="792" class="small">PLANNING</text>
+  <text x="252" y="822" class="label">python_backend/smart_layer.py</text>
+  <text x="252" y="848" class="text">Plans deck structure, revises content, and applies validation logic.</text>
+
+  <path d="M480 870V924" stroke="#375A7A" stroke-width="4" marker-end="url(#arrow)"/>
+
+  <rect x="220" y="936" width="520" height="116" rx="24" fill="#F9F6FF" stroke="#B5A5D5" stroke-width="2" filter="url(#shadow)"/>
+  <text x="252" y="974" class="small">CONTRACT</text>
+  <text x="252" y="1004" class="label">Validated deck JSON</text>
+  <text x="252" y="1030" class="text">Stable handoff format between planning and rendering layers.</text>
+
+  <rect x="756" y="948" width="134" height="92" rx="18" fill="#FFF6E6" stroke="#E6BE78" stroke-width="2" filter="url(#shadow)"/>
+  <text x="774" y="985" class="small">OUTPUT</text>
+  <text x="774" y="1012" class="note">Presenter notes</text>
+  <text x="774" y="1032" class="note">source metadata</text>
+  <path d="M740 994H756" stroke="#B37C2B" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <path d="M480 1052V1106" stroke="#375A7A" stroke-width="4" marker-end="url(#arrow)"/>
+
+  <rect x="220" y="1118" width="240" height="92" rx="22" fill="#F5FBFA" stroke="#8EBBB5" stroke-width="2" filter="url(#shadow)"/>
+  <text x="248" y="1155" class="small">BRIDGE</text>
+  <text x="248" y="1185" class="label">js_renderer.py</text>
+
+  <rect x="500" y="1118" width="240" height="92" rx="22" fill="#F5FBFA" stroke="#8EBBB5" stroke-width="2" filter="url(#shadow)"/>
+  <text x="528" y="1155" class="small">RENDERER</text>
+  <text x="528" y="1185" class="label">generate-ppt.js</text>
+
+  <path d="M460 1164H500" stroke="#375A7A" stroke-width="4" marker-end="url(#arrow)"/>
+
+  <rect x="780" y="1118" width="110" height="92" rx="22" fill="#17324D" filter="url(#shadow)"/>
+  <text x="807" y="1155" class="small" fill="#C8DCEB">OUTPUT</text>
+  <text x="808" y="1186" style="font:700 22px 'Segoe UI', Arial, sans-serif; fill:#F8FBFD;">PPTX</text>
+  <path d="M740 1164H780" stroke="#375A7A" stroke-width="4" marker-end="url(#arrow)"/>
+
+  <path d="M835 1118C906 1038 916 894 872 782C835 687 758 602 740 590" stroke="#A2612A" stroke-width="4" stroke-dasharray="10 10" fill="none" marker-end="url(#arrow)"/>
+  <text x="744" y="560" class="note">Feedback and revise requests loop back</text>
+  <text x="744" y="580" class="note">into the same Python planning surface.</text>
+</svg>

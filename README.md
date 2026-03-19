@@ -139,21 +139,7 @@ The practical split is:
 
 ## End-To-End Flow
 
-```mermaid
-flowchart LR
-	A[User goal and presentation constraints] --> B[Trusted files and URLs]
-	A --> C[Python entrypoint or skill API]
-	B --> C
-	C --> D[python_backend/source_loader.py]
-	D --> E[python_backend/smart_layer.py]
-	E --> F[Validated deck JSON]
-	F --> G[python_backend/js_renderer.py]
-	G --> H[generate-ppt.js]
-	H --> I[Final PPTX file]
-	F --> J[Presenter notes source metadata]
-	I --> K[Upstream agent feedback loop]
-	K --> C
-```
+![End-to-end flow](assets/end-to-end-flow.svg)
 
 The operational flow is:
 
