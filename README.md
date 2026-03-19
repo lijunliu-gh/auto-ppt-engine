@@ -14,6 +14,7 @@ Quick links:
 
 - [Release notes](https://github.com/lijunliu-gh/auto-ppt-prototype/releases/tag/v0.3.1)
 - [Changelog](CHANGELOG.md)
+- [Roadmap](ROADMAP.md)
 - [Examples (EN)](EXAMPLES.en.md)
 - [Examples (ZH)](EXAMPLES.zh-CN.md)
 - [Examples (JA)](EXAMPLES.ja.md)
@@ -374,6 +375,7 @@ Those responsibilities should remain with the upstream agent or surrounding work
 - `USER_GUIDE.*.md`: end-user usage guidance
 - `INTEGRATION_GUIDE.*.md`: agent and system integration guidance
 - `CHANGELOG.md`: version history and release tracking
+- `ROADMAP.md`: planned evolution and feature priorities
 - `RELEASE_DRAFT_v0.3.0.md`: editable source for the current public release notes
 
 ## Read Next
