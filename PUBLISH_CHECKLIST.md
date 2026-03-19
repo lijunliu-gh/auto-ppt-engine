@@ -65,9 +65,9 @@ If you are unsure, use `.gitignore` as the default rule and avoid committing gen
 
 ## Release Preparation
 
-- [ ] first release tag is chosen
+- [ ] next release tag is chosen
 - [ ] release notes are prepared
-- [ ] `RELEASE_DRAFT_v0.2.0.md` is reviewed and adjusted if needed
+- [ ] the matching `RELEASE_DRAFT_vX.Y.Z.md` file is reviewed and adjusted
 
 ## Suggested Final Step
 

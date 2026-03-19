@@ -1,3 +1,6 @@
+// Legacy Node source-ingestion reference.
+// The Python smart layer is now the primary source loading implementation for public entrypoints.
+
 const fs = require('fs');
 const path = require('path');
 const mammoth = require('mammoth');
@@ -82,7 +85,7 @@ function normalizeSource(input) {
 async function readUrlSource(source) {
   const response = await fetch(source.url, {
     headers: {
-      'User-Agent': 'auto-ppt-prototype/0.2.0'
+      'User-Agent': 'auto-ppt-prototype/0.3.0'
     }
   });
 

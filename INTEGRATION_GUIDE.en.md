@@ -8,7 +8,7 @@ If you want to connect this project to your own AI agent, workflow engine, scrip
 
 This project is best used as a:
 
-- PPT generation backend
+- Python-first PPT generation backend
 - deck planning and rendering engine
 - local skill service
 - agent-callable PPT workflow
@@ -21,7 +21,7 @@ It does not replace a full research agent. Instead, it converts upstream inputs 
 The recommended model is:
 
 1. An upstream agent collects the user request and source material.
-2. The upstream agent calls this project.
+2. The upstream agent calls the Python smart layer in this project.
 3. This project outputs deck JSON and PPTX.
 4. The upstream agent calls the revise flow again when the user requests changes.
 
@@ -39,25 +39,25 @@ This is the simplest path. It works well for:
 ### Create
 
 ```bash
-node generate-from-prompt.js --prompt "Create an 8-slide product strategy deck"
+python py-generate-from-prompt.py --prompt "Create an 8-slide product strategy deck"
 ```
 
 ### Create with sources
 
 ```bash
-node generate-from-prompt.js --mock --prompt "Create an 8-slide product strategy deck" --source sample-source-brief.md
+python py-generate-from-prompt.py --mock --prompt "Create an 8-slide product strategy deck" --source sample-source-brief.md
 ```
 
 ### Revise
 
 ```bash
-node revise-deck.js --deck output/generated-deck.json --prompt "Compress this deck to 6 slides"
+python py-revise-deck.py --deck output/generated-deck.json --prompt "Compress this deck to 6 slides"
 ```
 
 ### Agent skill request mode
 
 ```bash
-node agent-skill.js --request sample-agent-request.json --response output/agent-response.json
+python py-agent-skill.py --request sample-agent-request.json --response output/py-agent-response.json
 ```
 
 ## 2. JSON Skill Integration
@@ -67,7 +67,7 @@ This is one of the best current options for agent workflows.
 Your agent only needs to:
 
 1. write a request JSON file
-2. call `agent-skill.js`
+2. call `py-agent-skill.py`
 3. read the response JSON file
 
 ### Create request format
@@ -78,6 +78,7 @@ Your agent only needs to:
   "prompt": "Create an 8-slide AI agent product strategy deck for executives in a professional tone",
   "mock": true,
   "research": false,
+  "engine": "python-smart-layer",
   "contextFiles": [],
   "sources": [
     {
@@ -88,8 +89,8 @@ Your agent only needs to:
       "priority": "high"
     }
   ],
-  "outputJson": "output/agent-generated-deck.json",
-  "outputPptx": "output/agent-generated-deck.pptx"
+  "outputJson": "output/py-agent-generated-deck.json",
+  "outputPptx": "output/py-agent-generated-deck.pptx"
 }
 ```
 
@@ -101,6 +102,7 @@ Your agent only needs to:
   "prompt": "Compress this deck, make it more conclusion-driven, and emphasize the execution plan",
   "mock": true,
   "research": false,
+  "engine": "python-smart-layer",
   "deckPath": "output/generated-deck.json",
   "contextFiles": [],
   "sources": [
@@ -112,15 +114,15 @@ Your agent only needs to:
       "priority": "high"
     }
   ],
-  "outputJson": "output/agent-revised-deck.json",
-  "outputPptx": "output/agent-revised-deck.pptx"
+  "outputJson": "output/py-agent-revised-deck.json",
+  "outputPptx": "output/py-agent-revised-deck.pptx"
 }
 ```
 
 ### Invocation
 
 ```bash
-node agent-skill.js --request sample-agent-request.json --response output/agent-response.json
+python py-agent-skill.py --request sample-agent-request.json --response output/py-agent-response.json
 ```
 
 ### Response format
@@ -316,7 +318,7 @@ rather than as a fully independent end-user product.
 Best option:
 
 - CLI invocation
-- or JSON request plus `agent-skill.js`
+- or JSON request plus `py-agent-skill.py`
 
 Why:
 
@@ -380,15 +382,19 @@ If you need enterprise-grade template control, more work is still required.
 
 ## Key Files
 
-- `agent-skill.js`: JSON skill entrypoint
-- `skill-server.js`: HTTP service entrypoint
+- `py-agent-skill.py`: primary JSON skill entrypoint
+- `py-skill-server.py`: primary HTTP service entrypoint
 - `skill-manifest.json`: skill contract
-- `generate-from-prompt.js`: create CLI
-- `revise-deck.js`: revise CLI
-- `source-loader.js`: source loading layer
-- `deck-agent-core.js`: planning core
+- `py-generate-from-prompt.py`: primary create CLI
+- `py-revise-deck.py`: primary revise CLI
+- `python_backend/source_loader.py`: primary source loading layer
+- `python_backend/smart_layer.py`: primary planning core
 - `generate-ppt.js`: PPT renderer
 - `deck-schema.json`: deck schema contract
+
+## Compatibility Note
+
+The JavaScript entrypoints still exist for older integrations, but they now forward to the Python smart layer. New integrations should treat Python as the primary entrypoint surface.
 
 ## One-Line Integration Advice
 

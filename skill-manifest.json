@@ -1,10 +1,10 @@
 {
   "name": "auto-ppt-prototype",
-  "version": "0.2.0",
-  "description": "Agent-callable workflow for planning, revising, validating, and rendering PowerPoint decks from natural-language requests.",
-  "entrypoint": "node agent-skill.js --request <request-json>",
+  "version": "0.3.0",
+  "description": "Python-first smart layer for planning, revising, validating, and rendering PowerPoint decks through a Node PPTX renderer.",
+  "entrypoint": "python py-agent-skill.py --request <request-json>",
   "service": {
-    "command": "node skill-server.js",
+    "command": "python py-skill-server.py",
     "health": "GET /health",
     "invoke": "POST /skill"
   },

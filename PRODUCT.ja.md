@@ -2,29 +2,26 @@
 
 ## 現在の製品ポジション
 
-Auto PPT Prototype は、AI エージェント向けのオープンソース PowerPoint 生成バックエンドです。
+Auto PPT Prototype は、AI エージェント向けのオープンソース PowerPoint バックエンドです。
 
-現在提供している機能:
+現在は明確な二層構成になっています。
 
-- プロンプトからの deck planning
-- 自然言語指示による deck revise
-- JSON Schema による構造検証
-- `.pptx` レンダリング
-- エージェントから呼び出せる JSON request / response フロー
-- ローカル HTTP skill エンドポイント
+- Python スマートレイヤー: planning、revise、source handling、model orchestration、agent 統合
+- JavaScript レンダラーレイヤー: deck JSON を `.pptx` に変換
 
 ## これは何か
 
-本質的には planning-and-rendering engine です。
+本質的には、agent 向けの planning-and-rendering backend です。
 
-次の役割を持つ AI エージェントの後段に置くことを想定しています。
+想定している構成は次のとおりです。
 
-- 要件収集
-- 不足情報の確認
-- 信頼できる資料の取得
-- アップロード文書の読解
-- スクリーンショットや画像の確認
-- 各スライドに何を載せるべきかの判断
+- 上流の AI エージェントが要件収集、追加質問、資料収集、判断を行う
+- このプロジェクトが deck JSON を計画または改訂し、最終的な PPTX を出力する
+
+つまり責務分担は次のとおりです。
+
+- 上流エージェントが research と workflow 制御を担当する
+- このリポジトリが planning、revision、validation、rendering を担当する
 
 ## これは何ではないか
 
@@ -39,16 +36,49 @@ Auto PPT Prototype は、AI エージェント向けのオープンソース Pow
 3. 明示的なユーザー指示
 4. Web 検索は最後の補助手段
 
-## 現在の公開インターフェース
+## 現在の機能
 
-- CLI create
-- CLI revise
-- JSON request / response skill wrapper
-- HTTP service wrapper
+- プロンプトからの deck planning
+- 自然言語指示による deck revise
+- ローカルファイルと URL からの trusted source ingestion
+- deck JSON の validation
+- Node renderer による PPTX 出力
+- エージェントから呼び出せる JSON request / response フロー
+- ローカル HTTP skill エンドポイント
+
+## 現在の公開エントリーポイント
+
+推奨される主要エントリーポイント:
+
+- `py-generate-from-prompt.py`
+- `py-revise-deck.py`
+- `py-agent-skill.py`
+- `py-skill-server.py`
+
+後方互換のために残しているエントリーポイント:
+
+- `generate-from-prompt.js`
+- `revise-deck.js`
+- `agent-skill.js`
+- `skill-server.js`
+
+これらの Node エントリーポイントは現在 Python スマートレイヤーへ転送します。
+
+## なぜこの方向なのか
+
+次のフェーズの能力は Python に置く方が自然だからです。
+
+- より強い文書解析
+- model routing と orchestration
+- retrieval と source reasoning
+- OCR と multimodal 拡張
+- より高度な revise 品質
+
+一方で JavaScript は既存 renderer がすでに機能しているため、安定した出力層として残しています。
 
 ## 現在のプロダクトギャップ
 
-- PDF、DOCX、HTML、CSV、表計算資料に対するより強い ingestion
+- 表計算や複雑な構造化資料へのより強い ingestion
 - 画像とスクリーンショットの理解
 - より細かな provenance tracking
 - より強いテーマとテンプレート対応
@@ -60,4 +90,4 @@ Auto PPT Prototype は、AI エージェント向けのオープンソース Pow
 
 推奨 GitHub description:
 
-> Open-source PowerPoint planning and rendering backend for AI agents working from trusted sources, uploaded materials, and explicit user requirements.
+> Open-source PowerPoint backend for AI agents using a Python smart layer for planning and a JavaScript renderer for PPTX output.

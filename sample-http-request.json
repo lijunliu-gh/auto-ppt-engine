@@ -3,6 +3,7 @@
   "prompt": "Create an 8-slide AI agent product strategy deck for executives in a professional tone",
   "mock": true,
   "research": false,
+  "engine": "python-smart-layer",
   "contextFiles": [],
   "sources": [
     {

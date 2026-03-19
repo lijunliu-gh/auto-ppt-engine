@@ -3,6 +3,7 @@
   "prompt": "Compress this deck, make it more conclusion-driven, and emphasize the execution plan",
   "mock": true,
   "research": false,
+  "engine": "python-smart-layer",
   "deckPath": "output/generated-deck.json",
   "contextFiles": [],
   "sources": [
@@ -15,6 +16,6 @@
       "notes": "Use this as the factual basis when tightening the revised deck."
     }
   ],
-  "outputJson": "output/agent-revised-deck.json",
-  "outputPptx": "output/agent-revised-deck.pptx"
+  "outputJson": "output/py-agent-revised-deck.json",
+  "outputPptx": "output/py-agent-revised-deck.pptx"
 }

@@ -4,3 +4,7 @@ output/
 .DS_Store
 Thumbs.db
 npm-debug.log*
+__pycache__/
+*.pyc
+.venv/
+venv/

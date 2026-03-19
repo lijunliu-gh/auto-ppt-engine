@@ -6,9 +6,9 @@
 
 ## 这个项目在接入链路里的角色
 
-这个项目更适合做：
+这个项目现在更适合被描述成：
 
-- PPT generation backend
+- Python-first 的 PPT generation backend
 - deck planning and rendering engine
 - local skill service
 - agent-callable PPT workflow
@@ -18,10 +18,10 @@
 - deck JSON
 - `.pptx`
 
-所以推荐接入模型是：
+推荐接入模型是：
 
 1. 上游 agent 负责收集需求和资料
-2. 上游 agent 调这个项目
+2. 上游 agent 调用 Python 智能层
 3. 这个项目输出 deck JSON 和 PPTX
 4. 上游 agent 根据用户反馈再次调用 revise 流程
 
@@ -39,25 +39,25 @@
 ### Create
 
 ```bash
-node generate-from-prompt.js --prompt "Create an 8-slide product strategy deck"
+python py-generate-from-prompt.py --prompt "Create an 8-slide product strategy deck"
 ```
 
 ### Create with sources
 
 ```bash
-node generate-from-prompt.js --mock --prompt "Create an 8-slide product strategy deck" --source sample-source-brief.md
+python py-generate-from-prompt.py --mock --prompt "Create an 8-slide product strategy deck" --source sample-source-brief.md
 ```
 
 ### Revise
 
 ```bash
-node revise-deck.js --deck output/generated-deck.json --prompt "Compress this deck to 6 slides"
+python py-revise-deck.py --deck output/generated-deck.json --prompt "Compress this deck to 6 slides"
 ```
 
 ### Agent skill request mode
 
 ```bash
-node agent-skill.js --request sample-agent-request.json --response output/agent-response.json
+python py-agent-skill.py --request sample-agent-request.json --response output/py-agent-response.json
 ```
 
 ## 2. JSON skill 接入
@@ -67,7 +67,7 @@ node agent-skill.js --request sample-agent-request.json --response output/agent-
 你的 agent 只需要：
 
 1. 写一个 request JSON
-2. 调用 `agent-skill.js`
+2. 调用 `py-agent-skill.py`
 3. 读取 response JSON
 
 ### Create 请求格式
@@ -78,6 +78,7 @@ node agent-skill.js --request sample-agent-request.json --response output/agent-
   "prompt": "Create an 8-slide AI agent product strategy deck for executives in a professional tone",
   "mock": true,
   "research": false,
+  "engine": "python-smart-layer",
   "contextFiles": [],
   "sources": [
     {
@@ -88,8 +89,8 @@ node agent-skill.js --request sample-agent-request.json --response output/agent-
       "priority": "high"
     }
   ],
-  "outputJson": "output/agent-generated-deck.json",
-  "outputPptx": "output/agent-generated-deck.pptx"
+  "outputJson": "output/py-agent-generated-deck.json",
+  "outputPptx": "output/py-agent-generated-deck.pptx"
 }
 ```
 
@@ -101,6 +102,7 @@ node agent-skill.js --request sample-agent-request.json --response output/agent-
   "prompt": "Compress this deck, make it more conclusion-driven, and emphasize the execution plan",
   "mock": true,
   "research": false,
+  "engine": "python-smart-layer",
   "deckPath": "output/generated-deck.json",
   "contextFiles": [],
   "sources": [
@@ -112,15 +114,15 @@ node agent-skill.js --request sample-agent-request.json --response output/agent-
       "priority": "high"
     }
   ],
-  "outputJson": "output/agent-revised-deck.json",
-  "outputPptx": "output/agent-revised-deck.pptx"
+  "outputJson": "output/py-agent-revised-deck.json",
+  "outputPptx": "output/py-agent-revised-deck.pptx"
 }
 ```
 
 ### 调用命令
 
 ```bash
-node agent-skill.js --request sample-agent-request.json --response output/agent-response.json
+python py-agent-skill.py --request sample-agent-request.json --response output/py-agent-response.json
 ```
 
 ### 响应格式
@@ -128,6 +130,7 @@ node agent-skill.js --request sample-agent-request.json --response output/agent-
 ```json
 {
   "ok": true,
+  "engine": "python-smart-layer",
   "action": "create",
   "prompt": "string",
   "deckJsonPath": "absolute path",
@@ -160,27 +163,6 @@ curl http://localhost:3010/health
 curl -X POST http://localhost:3010/skill -H "Content-Type: application/json" --data @sample-http-request.json
 ```
 
-### HTTP 请求体示例
-
-```json
-{
-  "action": "create",
-  "prompt": "Create an 8-slide AI agent product strategy deck for executives in a professional tone",
-  "mock": true,
-  "research": false,
-  "contextFiles": [],
-  "sources": [
-    {
-      "path": "sample-source-brief.md",
-      "type": "text",
-      "label": "Sample product brief",
-      "trustLevel": "user-provided",
-      "priority": "high"
-    }
-  ]
-}
-```
-
 ### HTTP 路由
 
 - `GET /health`
@@ -195,29 +177,11 @@ curl -X POST http://localhost:3010/skill -H "Content-Type: application/json" --d
 - 定义这次演示文稿的目标
 - 说明目标受众、风格、页数、用途
 
-建议写法：
-
-- 目标明确
-- 受众明确
-- 风格明确
-- 页数明确
-
-例如：
-
-```text
-Create an 8-slide strategy deck for executives. Keep it concise, decision-oriented, and focused on execution priorities.
-```
-
 ## 2. `contextFiles`
 
 作用：
 
-- 给额外上下文材料
-- 适合纯文本说明、补充需求、内部备注
-
-类型：
-
-- 文件路径数组
+- 提供额外上下文材料
 
 ## 3. `sources`
 
@@ -252,12 +216,6 @@ Create an 8-slide strategy deck for executives. Keep it concise, decision-orient
 
 - 是否使用本地 mock planner
 
-适合：
-
-- 离线测试
-- 本地联调
-- 不想调用模型时快速验证链路
-
 ## 5. `research`
 
 作用：
@@ -277,9 +235,7 @@ Create an 8-slide strategy deck for executives. Keep it concise, decision-orient
 - `slides[].sources`
 - `slides[].speakerNotes`
 
-### 默认行为
-
-当前默认：
+默认行为：
 
 - `sourceDisplayMode = notes`
 
@@ -296,7 +252,7 @@ Create an 8-slide strategy deck for executives. Keep it concise, decision-orient
 1. agent 收集用户目标
 2. agent 收集资料来源
 3. agent 组织成 request JSON
-4. 调 `agent-skill.js`
+4. 调 `py-agent-skill.py`
 5. 读取 response JSON
 6. 把生成结果回给用户
 7. 如需优化，再走 revise
@@ -307,8 +263,6 @@ Create an 8-slide strategy deck for executives. Keep it concise, decision-orient
 - 本地 deck backend
 - agent tool
 
-而不是一个完全独立的最终用户产品。
-
 ## 不同接入方的建议
 
 ## 对 Claude Code / Coding Agent 类工具
@@ -316,13 +270,7 @@ Create an 8-slide strategy deck for executives. Keep it concise, decision-orient
 最推荐：
 
 - CLI 调用
-- 或 JSON request + `agent-skill.js`
-
-原因：
-
-- 简单
-- 本地路径处理直观
-- 容易做多轮 revise
+- 或 JSON request + `py-agent-skill.py`
 
 ## 对服务化系统
 
@@ -330,34 +278,23 @@ Create an 8-slide strategy deck for executives. Keep it concise, decision-orient
 
 - HTTP 调用
 
-原因：
-
-- 更容易和已有后端系统集成
-- 可与外部 workflow engine 对接
-
 ## 对本地自动化脚本
 
 最推荐：
 
 - CLI 模式
 
-原因：
-
-- 调试简单
-- 不需要额外 server 生命周期管理
-
 ## 当前边界和注意事项
 
 ## 1. 它不是完整 research agent
 
-不要指望它自己做完整的：
+不要指望它自己完成官网发现、多源比对、证据冲突处理或多模态分析。
 
-- 官网发现
-- 多源比对
-- 证据冲突处理
-- 多模态分析
+这些应由上游 agent 完成。
 
-这些应由上游 agent 做。
+## 兼容说明
+
+`generate-from-prompt.js`、`revise-deck.js`、`agent-skill.js`、`skill-server.js` 仍然保留，用于兼容旧接入，但现在它们会转发到 Python 智能层。新接入应把 Python 入口视为主入口。
 
 ## 2. 图片目前只是“引用”，不是完整视觉理解
 

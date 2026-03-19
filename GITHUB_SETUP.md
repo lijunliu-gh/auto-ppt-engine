@@ -12,27 +12,27 @@ Recommended repository name:
 
 Recommended short description:
 
-> Open-source PowerPoint planning and rendering backend for AI agents working from trusted sources, uploaded materials, and explicit user requirements.
+> Open-source PowerPoint backend for AI agents using a Python smart layer for planning and a JavaScript renderer for PPTX output.
 
 Shorter variant:
 
-> AI-agent-ready PowerPoint planning and rendering backend with source-aware deck generation.
+> Python-first AI-agent-ready PowerPoint backend with source-aware deck generation.
 
 ## Copy-Paste GitHub About Text
 
 Use this directly in the GitHub repository About field:
 
-`Open-source PowerPoint planning and rendering backend for AI agents working from trusted sources, uploaded materials, and explicit user requirements.`
+`Open-source PowerPoint backend for AI agents using a Python smart layer for planning and a JavaScript renderer for PPTX output.`
 
 Use this if you want a shorter About field:
 
-`AI-agent-ready PowerPoint planning and rendering backend with source-aware deck generation.`
+`Python-first AI-agent-ready PowerPoint backend with source-aware deck generation.`
 
 ## Copy-Paste Repository Intro
 
 Use this in the top of the repository description, project page, or announcement post:
 
-> Auto PPT Prototype is an experimental open-source backend for AI-agent-driven PowerPoint generation. It turns prompts, trusted source materials, and revision instructions into validated deck JSON and rendered `.pptx` files through CLI, JSON skill, and HTTP integration modes.
+> Auto PPT Prototype is an experimental open-source backend for AI-agent-driven PowerPoint generation. It uses a Python smart layer for planning and revision, then a JavaScript renderer for final `.pptx` output through CLI, JSON skill, and HTTP integration modes.
 
 ## Suggested Topics
 
@@ -43,6 +43,7 @@ Recommended GitHub topics:
 - `ai-agent`
 - `agent-workflow`
 - `presentation-generation`
+- `python`
 - `nodejs`
 - `openai`
 - `prompt-engineering`
@@ -54,6 +55,7 @@ Suggested minimal topic set if you want fewer tags:
 - `powerpoint`
 - `pptx`
 - `ai-agent`
+- `python`
 - `nodejs`
 - `presentation-generation`
 
@@ -80,8 +82,8 @@ Avoid screenshots that imply fully autonomous or fact-guaranteed research.
 
 Use these in the repo body or release notes:
 
-- prompt-to-deck generation
-- revise flow for existing decks
+- Python-first smart layer for planning and revision
+- JavaScript PPTX renderer retained as a stable output engine
 - source-aware planning from files and URLs
 - presenter-note source export with clean slides
 - JSON skill and HTTP integration modes
@@ -90,13 +92,13 @@ Use these in the repo body or release notes:
 
 Use this short release summary when creating the first GitHub release:
 
-> This release publishes Auto PPT Prototype as an open-source, AI-agent-ready PPT backend with prompt-based generation, revise flow, source-aware planning, multilingual docs, and smoke CI.
+> This release promotes Auto PPT Prototype to a Python-first, AI-agent-ready PPT backend with a dedicated Python smart layer, compatibility Node wrappers, source-aware planning, multilingual docs, and smoke validation.
 
 ## Suggested Repository Announcement Copy
 
 Use this for a short social or team announcement:
 
-> Published Auto PPT Prototype: an experimental open-source backend for AI-agent-powered PowerPoint workflows. It supports prompt-to-deck generation, revise flows, trusted source ingestion, JSON skill mode, and local HTTP integration.
+> Published Auto PPT Prototype v0.3.0: an experimental open-source backend for AI-agent-powered PowerPoint workflows. It now uses a Python smart layer for planning and revision with a JavaScript renderer for final PPTX output.
 
 ## Suggested Repository Positioning
 
@@ -112,19 +114,20 @@ Avoid positioning it as:
 - guaranteed factual presentation generator
 - production-ready hosted SaaS
 
-## Suggested First Public Tag
+## Suggested Next Public Tag
 
-Recommended first tag:
+Recommended next tag:
 
-- `v0.2.0`
+- `v0.3.0`
 
 Reason:
 
-- the repo already includes create, revise, source ingestion, skill mode, HTTP mode, multilingual docs, and smoke CI
-- it still reads more like a prototype than a stable `1.0`
+- the repo has now shifted to a Python-first public architecture
+- Node entrypoints are compatibility wrappers rather than the primary smart layer
+- multilingual docs and integration guidance were updated to match the new surface
 
-## Suggested First GitHub Release Title
+## Suggested GitHub Release Title
 
 Recommended title:
 
-- `v0.2.0 - open-source release preparation and agent-ready PPT workflow`
+- `v0.3.0 - Python-first smart layer and compatibility release`

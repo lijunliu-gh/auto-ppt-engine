@@ -1,23 +1,19 @@
-# Product Capability Summary
+# Product Summary
 
 ## Current Product
 
-Auto PPT Prototype is an open-source PowerPoint generation backend for AI agents.
+Auto PPT Prototype is an open-source PowerPoint backend for AI agents.
 
-It provides:
+Its current architecture is deliberate:
 
-- deck planning from prompts
-- deck revision from natural-language instructions
-- JSON schema validation
-- `.pptx` rendering
-- agent-callable JSON request and response flow
-- local HTTP skill endpoint
+- Python smart layer for planning, revision, source handling, and agent orchestration
+- JavaScript render layer for final PPTX generation
 
 ## What It Is
 
-It is a planning-and-rendering engine.
+It is a planning-and-rendering backend.
 
-It is meant to sit behind an AI agent that can:
+It is meant to sit behind an upstream agent that can:
 
 - collect requirements
 - ask clarifying questions
@@ -25,6 +21,11 @@ It is meant to sit behind an AI agent that can:
 - read uploaded documents
 - inspect screenshots or images
 - decide what content belongs on each slide
+
+The product boundary is clear:
+
+- the upstream agent owns research and workflow control
+- this repository owns deck planning, revision, validation, and rendering
 
 ## What It Is Not
 
@@ -37,27 +38,60 @@ For serious use cases, the system should rely on:
 1. official sources
 2. user-uploaded source material
 3. explicit user instructions
-4. general web search only as a fallback
+4. web search only as a fallback
 
-## Current Interfaces
+## Current Capabilities
 
-- CLI generation
-- CLI revision
-- JSON request/response skill wrapper
-- HTTP service wrapper
+- deck planning from prompts
+- deck revision from natural-language instructions
+- trusted source ingestion from files and URLs
+- deck JSON validation
+- PPTX rendering through the Node renderer
+- agent-callable JSON request and response flow
+- local HTTP skill endpoint
+
+## Public Entry Points
+
+Preferred entry points:
+
+- `py-generate-from-prompt.py`
+- `py-revise-deck.py`
+- `py-agent-skill.py`
+- `py-skill-server.py`
+
+Compatibility entry points retained for older integrations:
+
+- `generate-from-prompt.js`
+- `revise-deck.js`
+- `agent-skill.js`
+- `skill-server.js`
+
+These Node entrypoints now forward to the Python smart layer.
+
+## Why This Direction Makes Sense
+
+Python is the right home for the next phase of the product:
+
+- stronger document parsing
+- model routing and orchestration
+- retrieval and source reasoning
+- OCR and multimodal expansion
+- more advanced revision quality
+
+JavaScript remains in the project because the renderer already works and should stay stable.
 
 ## Production Gaps
 
-- source ingestion for PDF, DOCX, HTML, CSV, and spreadsheets
-- image and screenshot understanding
-- provenance tracking
-- stronger theme/template support
+- richer spreadsheet and tabular source handling
+- true image and screenshot understanding
+- finer-grained provenance tracking
+- stronger theme and template support
 - better layout quality and typography control
-- automated testing
+- broader automated testing
 - hosted deployment hardening
 
 ## Recommended Open-Source Framing
 
 Recommended GitHub description:
 
-> Open-source PowerPoint planning and rendering backend for AI agents working from trusted sources, uploaded materials, and explicit user requirements.
+> Open-source PowerPoint backend for AI agents using a Python smart layer for planning and a JavaScript renderer for PPTX output.

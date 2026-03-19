@@ -1,3 +1,7 @@
+// Legacy Node smart-layer reference.
+// Public create, revise, skill, and server entrypoints now route to the Python smart layer.
+// Keep this file only as a transition reference while Node remains the PPTX renderer host.
+
 const fs = require('fs');
 const path = require('path');
 const dotenv = require('dotenv');
