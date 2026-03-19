@@ -31,9 +31,9 @@ The current version is a good fit for:
 
 ## What To Use By Default
 
-Use the Python entrypoints first.
+**If you use Claude Desktop, Cursor, or Windsurf**, MCP is the fastest way to get started. Add the server to your MCP config and ask it to create a deck directly from conversation.
 
-Primary commands:
+Otherwise, use the Python entrypoints:
 
 ```bash
 npm run generate:source
@@ -125,6 +125,26 @@ curl http://localhost:3010/health
 curl -X POST http://localhost:3010/skill -H "Content-Type: application/json" --data @sample-http-request.json
 ```
 
+### 7. Use it via MCP (Claude Desktop, Cursor, Windsurf)
+
+This is the recommended path for AI-native workflows.
+
+Add to your MCP client config:
+
+```json
+{
+  "mcpServers": {
+    "auto-ppt": {
+      "command": "python",
+      "args": ["mcp_server.py"],
+      "cwd": "/path/to/auto-ppt-prototype"
+    }
+  }
+}
+```
+
+Then ask your AI assistant to create or revise a deck. The MCP server exposes `create_deck` and `revise_deck` tools.
+
 ## How Source Material Works
 
 Supported source types include:
@@ -203,6 +223,14 @@ Useful brief fields include:
 - `agent-skill.js`
 - `skill-server.js`
 
+## Chart Data Handling
+
+When slides use the `chart` layout, the system validates chart data automatically:
+
+- Charts must have non-empty categories and series with numeric data
+- If chart data is invalid, the slide automatically falls back to a bullet layout
+- Source material is scanned for numerical data (percentages, currency, metrics) and injected as chart hints to the LLM
+
 ## Where It Is Still Weak
 
 The project is still a prototype, not a production-grade product.
@@ -222,5 +250,6 @@ Today this project can already complete:
 - `prompt -> deck -> pptx`
 - `prompt + sources -> deck -> pptx`
 - `existing deck + revise prompt -> revised deck -> pptx`
+- `MCP tool call -> deck + pptx`
 - `agent request -> skill response`
 - `HTTP request -> generated PPT artifacts`

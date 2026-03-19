@@ -21,6 +21,8 @@ Use this checklist before making the repository public.
 
 - [ ] `README.md` reflects the current product scope
 - [ ] multilingual docs are present and linked
+- [ ] docs mention MCP, chart validation, and security features
+- [ ] no references to deleted files (e.g. `deck-agent-core.js`, `source-loader.js`)
 - [ ] no internal-only comments or secrets remain in docs
 - [ ] generated files under `output/` are not committed
 
@@ -53,7 +55,10 @@ If you are unsure, use `.gitignore` as the default rule and avoid committing gen
 ## Validation
 
 - [ ] `npm install` works on a clean machine
+- [ ] `pip install -r requirements.txt` works on a clean machine
 - [ ] `node scripts/run-smoke.js` passes
+- [ ] `python -m pytest tests/ -v` passes (all tests green)
+- [ ] MCP server starts without error: `python mcp_server.py`
 - [ ] GitHub Actions smoke workflow is enabled
 
 ## Final Git Review
@@ -67,8 +72,8 @@ If you are unsure, use `.gitignore` as the default rule and avoid committing gen
 
 - [ ] next release tag is chosen
 - [ ] release notes are prepared
-- [ ] the matching `RELEASE_DRAFT_vX.Y.Z.md` file is reviewed and adjusted
+- [ ] GitHub Release is created from the tag with release notes
 
 ## Suggested Final Step
 
-After publishing, create the first GitHub release from the chosen tag and paste the edited release notes into the release body.
+After publishing, create the GitHub release from the chosen tag and paste the release notes into the release body.

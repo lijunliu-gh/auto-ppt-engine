@@ -127,6 +127,8 @@ When using chart layout, always populate concrete data:
 - If no real data is available, use realistic placeholders and note it in assumptions
 - Never leave categories or series as empty arrays
 
+The system automatically validates chart data after generation. If a chart slide has invalid data (empty categories, missing series, or non-numeric values), it falls back to a bullet layout and records the fallback in assumptions.
+
 ## Narrative Guidance
 
 Prefer a narrative structure such as:

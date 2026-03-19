@@ -31,9 +31,9 @@
 
 ## 默认应该怎么用
 
-现在推荐优先使用 Python 入口。
+**如果你用 Claude Desktop、Cursor 或 Windsurf**，推荐用 MCP 接入，配好之后直接在对话里让它生成 deck。
 
-最常用的命令：
+如果不用 MCP，优先使用 Python 入口：
 
 ```bash
 npm run generate:source
@@ -123,6 +123,26 @@ curl http://localhost:3010/health
 curl -X POST http://localhost:3010/skill -H "Content-Type: application/json" --data @sample-http-request.json
 ```
 
+### 7. 通过 MCP 使用（Claude Desktop、Cursor、Windsurf）
+
+这是 AI 原生工作流的推荐接入方式。
+
+在你的 MCP 客户端配置中添加：
+
+```json
+{
+  "mcpServers": {
+    "auto-ppt": {
+      "command": "python",
+      "args": ["mcp_server.py"],
+      "cwd": "/path/to/auto-ppt-prototype"
+    }
+  }
+}
+```
+
+然后直接让 AI 助手帮你创建或修订 deck。MCP 服务暴露 `create_deck` 和 `revise_deck` 两个 tool。
+
 ## 资料来源现在怎么处理
 
 当前支持的来源包括：
@@ -186,6 +206,14 @@ npm run revise:mock
 - `agent-skill.js`
 - `skill-server.js`
 
+## 图表数据处理
+
+当 slide 使用 `chart` 布局时，系统会自动验证图表数据：
+
+- 图表必须有非空的 categories 和含数值数据的 series
+- 如果图表数据无效，slide 会自动降级为 bullet 布局
+- 系统会扫描资料来源中的数值数据（百分比、金额、指标），并作为图表提示注入 LLM
+
 ## 现在还不够强的地方
 
 这个项目已经能跑通完整原型链路，但还不是生产级成品。
@@ -205,8 +233,7 @@ npm run revise:mock
 - `prompt -> deck -> pptx`
 - `prompt + sources -> deck -> pptx`
 - `existing deck + revise prompt -> revised deck -> pptx`
-- `agent request -> skill response`
-- `HTTP request -> generated PPT artifacts`
+- `MCP tool call -> deck + pptx`
 - `agent request -> skill response`
 - `HTTP request -> generated PPT artifacts`
 

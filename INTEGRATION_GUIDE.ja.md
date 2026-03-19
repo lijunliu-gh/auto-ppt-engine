@@ -337,13 +337,25 @@ deck 出力にはすでに次が含まれます。
 
 企業向けの高度なテンプレート制御が必要なら、まだ追加実装が必要です。
 
+## 5. チャートデータの検証とフォールバック
+
+v0.4.1 以降、システムはチャートスライドを自動検証します:
+
+- チャートには空でない `categories` と数値 `series` データが必要
+- 無効なチャートは自動的に `bullet` レイアウトにダウングレードされ、元のコンテンツは保持
+- ソース資料から数値データ（パーセンテージ、通貨、指標）をスキャンし、LLM にチャートヒントとして注入
+- フォールバック決定は deck の `assumptions` フィールドに記録
+
 ## 重要ファイル
 
-- `agent-skill.js`: JSON skill エントリーポイント
-- `skill-server.js`: HTTP サービスエントリーポイント
+- `mcp_server.py`: MCP サーバーエントリーポイント（Claude Desktop、Cursor、Windsurf）
+- `py-agent-skill.py`: JSON skill エントリーポイント
+- `py-skill-server.py`: HTTP サービスエントリーポイント
 - `skill-manifest.json`: skill 契約
-- `generate-from-prompt.js`: create CLI
-- `revise-deck.js`: revise CLI
+- `py-generate-from-prompt.py`: create CLI
+- `py-revise-deck.py`: revise CLI
+- `python_backend/source_loader.py`: ソースローディングレイヤー
+- `python_backend/smart_layer.py`: コアプランニングエンジン
 - `generate-ppt.js`: PPT レンダラー
 - `deck-schema.json`: deck schema 契約
 
@@ -351,4 +363,4 @@ deck 出力にはすでに次が含まれます。
 
 今すぐ統合するなら、最も安定した道は次です。
 
-**まず JSON skill モードで接続し、サービス型統合が必要になった時点で HTTP モードに上げることです。**
+**Claude Desktop、Cursor、Windsurf を使っているなら MCP から始めてください。それ以外はまず JSON skill モードで接続し、サービス型統合が必要になった時点で HTTP モードに上げてください。**

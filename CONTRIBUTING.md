@@ -11,13 +11,15 @@ Thanks for contributing to Auto PPT Prototype.
 ## Development Setup
 
 1. Install Node.js 18 or newer.
-2. Install dependencies:
+2. Install Python 3.10 or newer.
+3. Install dependencies:
 
 ```bash
 npm install
+pip install -r requirements.txt
 ```
 
-3. Copy `.env.example` to `.env` only if you need model-backed runs.
+4. Copy `.env.example` to `.env` only if you need model-backed runs.
 
 ## Local Validation
 
@@ -27,12 +29,17 @@ Run the smoke checks before opening a pull request:
 npm run ci:smoke
 ```
 
-This validates the main prototype paths:
+Run the full test suite:
 
-- structured deck rendering
-- source-aware generation
-- revise flow
-- JSON skill flow
+```bash
+python -m pytest tests/ -v
+```
+
+The test suite includes:
+
+- `tests/test_smart_layer.py` — unit tests for planning, revision, chart validation, source loading
+- `tests/test_mcp_server.py` — MCP server tool tests
+- `tests/test_mcp_integration.py` — MCP stdio integration tests
 
 ## Contribution Scope
 
@@ -40,7 +47,9 @@ Good contribution areas:
 
 - deck planning quality
 - revise quality
-- source ingestion
+- source ingestion (see `python_backend/source_loader.py`)
+- chart data reliability and validation
+- MCP server integration (`mcp_server.py`)
 - schema validation
 - docs and examples
 - integration stability

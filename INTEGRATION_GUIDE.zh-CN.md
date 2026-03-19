@@ -356,13 +356,25 @@ curl -X POST http://localhost:3010/skill -H "Content-Type: application/json" --d
 
 如果你要企业级模板控制，还要继续做。
 
+## 5. 图表数据验证与降级
+
+v0.4.1 起，系统会自动验证图表 slide：
+
+- 图表必须有非空的 `categories` 和含数值的 `series` 数据
+- 无效图表会自动降级为 `bullet` 布局，原始内容保留
+- 系统会扫描资料来源中的数值数据（百分比、金额、指标）作为图表提示注入 LLM
+- 降级决策会记录在 deck 的 `assumptions` 字段中
+
 ## 关键文件
 
-- `agent-skill.js`: JSON skill 接入入口
-- `skill-server.js`: HTTP 服务入口
+- `mcp_server.py`: MCP 服务入口（Claude Desktop、Cursor、Windsurf）
+- `py-agent-skill.py`: JSON skill 接入入口
+- `py-skill-server.py`: HTTP 服务入口
 - `skill-manifest.json`: skill 契约说明
-- `generate-from-prompt.js`: create CLI
-- `revise-deck.js`: revise CLI
+- `py-generate-from-prompt.py`: create CLI
+- `py-revise-deck.py`: revise CLI
+- `python_backend/source_loader.py`: 资料加载层
+- `python_backend/smart_layer.py`: 核心规划引擎
 - `generate-ppt.js`: PPT 渲染器
 - `deck-schema.json`: deck 结构约束
 
@@ -370,6 +382,4 @@ curl -X POST http://localhost:3010/skill -H "Content-Type: application/json" --d
 
 如果你现在就要接，最稳的路径是：
 
-**先用 JSON skill 模式接入，再根据需要升级到 HTTP 模式。**
-
-这是目前最清晰、最稳定、最适合 agent 工作流的一种方式。
+**如果用 Claude Desktop、Cursor 或 Windsurf：直接用 MCP。否则先用 JSON skill 模式接入，再根据需要升级到 HTTP 模式。**

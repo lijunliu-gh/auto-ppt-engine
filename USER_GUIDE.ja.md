@@ -31,7 +31,9 @@
 
 ## まず何を使うべきか
 
-既定では Python エントリーポイントを使ってください。
+**Claude Desktop、Cursor、Windsurf を使っている場合は** MCP が最も素早い方法です。MCP 設定を追加すれば、会話から直接 deck を作成できます。
+
+それ以外の場合は、Python エントリーポイントを使ってください。
 
 最もよく使うコマンド:
 
@@ -103,6 +105,26 @@ curl http://localhost:3010/health
 curl -X POST http://localhost:3010/skill -H "Content-Type: application/json" --data @sample-http-request.json
 ```
 
+### 7. MCP で使う（Claude Desktop、Cursor、Windsurf）
+
+AI ネイティブワークフローに推奨。
+
+MCP クライアントの設定に追加:
+
+```json
+{
+  "mcpServers": {
+    "auto-ppt": {
+      "command": "python",
+      "args": ["mcp_server.py"],
+      "cwd": "/path/to/auto-ppt-prototype"
+    }
+  }
+}
+```
+
+その後、AI アシスタントに deck の作成・改訂を依頼できます。MCP サーバーは `create_deck` と `revise_deck` ツールを提供します。
+
 ## ソース資料の扱い
 
 対応しているソース種別:
@@ -166,6 +188,14 @@ npm run revise:mock
 - `agent-skill.js`
 - `skill-server.js`
 
+## チャートデータの処理
+
+スライドが `chart` レイアウトを使う場合、システムが自動的にデータを検証します:
+
+- チャートには空でない categories と数値データを含む series が必要
+- チャートデータが無効な場合、スライドは自動的に bullet レイアウトにフォールバック
+- ソース資料から数値データ（パーセンテージ、通貨、指標）をスキャンし、チャートヒントとして LLM に注入
+
 ## まだ弱い部分
 
 このプロジェクトは完全なプロトタイプの流れを通せますが、まだ本番品質の製品ではありません。
@@ -177,6 +207,17 @@ npm run revise:mock
 - スライド単位のソース結び付けはまだ粗い
 - ブランドテンプレートと見た目の制御はまだ基本的
 - 複雑なケースでは上流モデルとエージェント品質への依存が大きい
+
+## サマリー
+
+現在このプロジェクトで完了できること:
+
+- `prompt -> deck -> pptx`
+- `prompt + sources -> deck -> pptx`
+- `existing deck + revise prompt -> revised deck -> pptx`
+- `MCP tool call -> deck + pptx`
+- `agent request -> skill response`
+- `HTTP request -> generated PPT artifacts`
 
 ## 一行まとめ
 

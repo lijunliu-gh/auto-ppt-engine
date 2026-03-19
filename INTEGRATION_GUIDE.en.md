@@ -452,6 +452,15 @@ But it does not yet map:
 
 If you need enterprise-grade template control, more work is still required.
 
+## 5. Chart data validation and fallback
+
+As of v0.4.1, the system automatically validates chart slides:
+
+- Charts must have non-empty `categories` and numeric `series` data
+- Invalid charts are automatically downgraded to `bullet` layout with the original content preserved
+- Source material is scanned for numerical data (percentages, currency, metrics) and injected as chart hints to the LLM
+- Fallback decisions are logged in the deck's `assumptions` field
+
 ## Key Files
 
 - `mcp_server.py`: MCP server entrypoint (Claude Desktop, Cursor, Windsurf)
