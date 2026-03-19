@@ -247,7 +247,6 @@ class TestExtractJson:
 class TestLLMProvider:
     def test_reasoning_model_detection(self):
         from python_backend.llm_provider import OpenAIProvider
-        # Patch __init__ to skip OpenAI client creation
         provider = object.__new__(OpenAIProvider)
         for model, expected in [
             ("o3", True),
@@ -274,6 +273,38 @@ class TestLLMProvider:
         provider = object.__new__(OpenAIProvider)
         provider._model = "o3"
         assert provider._is_reasoning_model()
+
+    def test_provider_auto_detection(self):
+        from python_backend.llm_provider import (
+            _detect_provider_class,
+            OpenAIProvider,
+            AnthropicProvider,
+            GeminiProvider,
+        )
+        # OpenAI family
+        assert _detect_provider_class("gpt-4.1-mini") is OpenAIProvider
+        assert _detect_provider_class("gpt-4o") is OpenAIProvider
+        assert _detect_provider_class("o3") is OpenAIProvider
+        # Chinese models go through OpenAI-compatible
+        assert _detect_provider_class("qwen-plus") is OpenAIProvider
+        assert _detect_provider_class("deepseek-chat") is OpenAIProvider
+        assert _detect_provider_class("glm-4-plus") is OpenAIProvider
+        assert _detect_provider_class("MiniMax-Text-01") is OpenAIProvider
+        # Anthropic
+        assert _detect_provider_class("claude-sonnet-4-20250514") is AnthropicProvider
+        assert _detect_provider_class("claude-3.5-sonnet") is AnthropicProvider
+        assert _detect_provider_class("claude-3-opus") is AnthropicProvider
+        # Gemini
+        assert _detect_provider_class("gemini-2.5-pro") is GeminiProvider
+        assert _detect_provider_class("gemini-2.0-flash") is GeminiProvider
+
+    def test_anthropic_provider_class_exists(self):
+        from python_backend.llm_provider import AnthropicProvider
+        assert hasattr(AnthropicProvider, "chat")
+
+    def test_gemini_provider_class_exists(self):
+        from python_backend.llm_provider import GeminiProvider
+        assert hasattr(GeminiProvider, "chat")
 
 
 # ── Source Loader ─────────────────────────────────────────────────────────────

@@ -4,3 +4,7 @@ pypdf>=5.4.0
 python-docx>=1.1.2
 pytest>=8.0.0
 mcp>=1.26.0
+
+# Optional LLM providers (install as needed)
+# anthropic>=0.40.0        # for Claude models
+# google-generativeai>=0.8 # for Gemini models
