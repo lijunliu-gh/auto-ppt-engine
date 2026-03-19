@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog, and this project follows Semantic Versioning while it remains a prototype.
 
+## [0.4.0] - 2026-03-19
+
+### Added
+
+- `mcp_server.py`: MCP Server exposing `create_deck` and `revise_deck` as native MCP tools for Claude Desktop, Cursor, Windsurf, and other MCP-compatible AI environments
+- `tests/test_mcp_server.py`: 9 pytest tests covering MCP tool invocation, output validation, source handling, custom output directories, and revision workflows
+- `mcp>=1.26.0` added to `requirements.txt`
+- MCP Server section in README with configuration examples for Claude Desktop, Cursor, and Windsurf
+- MCP quick-start step in README Quick Start section
+
 ## [0.3.1] - 2026-03-19
 
 ### Added

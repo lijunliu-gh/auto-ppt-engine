@@ -1,6 +1,6 @@
 {
   "name": "auto-ppt-prototype",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "Python-first smart layer for planning, revising, validating, and rendering PowerPoint decks through a Node PPTX renderer.",
   "entrypoint": "python py-agent-skill.py --request <request-json>",
   "service": {

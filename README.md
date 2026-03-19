@@ -1,6 +1,6 @@
 # Auto PPT Prototype
 
-[![Release](https://img.shields.io/github/v/release/lijunliu-gh/auto-ppt-prototype?label=release)](https://github.com/lijunliu-gh/auto-ppt-prototype/releases/tag/v0.3.1)
+[![Release](https://img.shields.io/github/v/release/lijunliu-gh/auto-ppt-prototype?label=release)](https://github.com/lijunliu-gh/auto-ppt-prototype/releases/tag/v0.4.0)
 [![License](https://img.shields.io/github/license/lijunliu-gh/auto-ppt-prototype)](LICENSE)
 [![Smoke](https://img.shields.io/github/actions/workflow/status/lijunliu-gh/auto-ppt-prototype/smoke.yml?branch=main&label=smoke)](https://github.com/lijunliu-gh/auto-ppt-prototype/actions/workflows/smoke.yml)
 
@@ -8,11 +8,11 @@ Open-source PowerPoint backend for AI agents working from trusted sources, uploa
 
 Status: experimental prototype for early open-source integration.
 
-Latest release: [v0.3.1](https://github.com/lijunliu-gh/auto-ppt-prototype/releases/tag/v0.3.1)
+Latest release: [v0.4.0](https://github.com/lijunliu-gh/auto-ppt-prototype/releases/tag/v0.4.0)
 
 Quick links:
 
-- [Release notes](https://github.com/lijunliu-gh/auto-ppt-prototype/releases/tag/v0.3.1)
+- [Release notes](https://github.com/lijunliu-gh/auto-ppt-prototype/releases/tag/v0.4.0)
 - [Changelog](CHANGELOG.md)
 - [Roadmap](ROADMAP.md)
 - [Examples (EN)](EXAMPLES.en.md)
@@ -39,6 +39,7 @@ Architecture summary:
 - [Core Positioning](#core-positioning)
 - [What It Does](#what-it-does)
 - [Quick Start](#quick-start)
+- [MCP Server](#mcp-server)
 - [Repository Map](#repository-map)
 - [Main Interfaces](#main-interfaces)
 - [Source Handling](#source-handling)
@@ -87,6 +88,7 @@ The current implementation supports:
 8. Security hardening: path traversal protection, SSRF blocking, file size limits, subprocess timeout
 9. Structured logging across the Python backend
 10. Schema versioning for forward-compatible deck migration
+11. MCP Server for native integration with Claude Desktop, Cursor, Windsurf, and other MCP-compatible environments
 
 ## Why The Split Exists
 
@@ -139,7 +141,21 @@ python py-skill-server.py
 curl -X POST http://localhost:3010/skill -H "Content-Type: application/json" --data @sample-http-request.json
 ```
 
-### 5. npm shortcuts
+### 5. MCP Server (Claude Desktop / Cursor / Windsurf)
+
+```bash
+python mcp_server.py
+```
+
+Or use the MCP dev inspector:
+
+```bash
+mcp dev mcp_server.py
+```
+
+See [MCP Server](#mcp-server) below for client configuration.
+
+### 6. npm shortcuts
 
 ```bash
 npm run generate
@@ -159,6 +175,49 @@ Useful starter files:
 
 If you want copy-paste usage flows, start with `EXAMPLES.en.md`, `EXAMPLES.zh-CN.md`, or `EXAMPLES.ja.md`.
 
+## MCP Server
+
+The MCP server exposes `create_deck` and `revise_deck` as native MCP tools, enabling direct integration with Claude Desktop, Cursor, Windsurf, and other MCP-compatible AI environments.
+
+### Claude Desktop configuration
+
+Add to `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) or `%APPDATA%\Claude\claude_desktop_config.json` (Windows):
+
+```json
+{
+  "mcpServers": {
+    "auto-ppt": {
+      "command": "python",
+      "args": ["/absolute/path/to/auto-ppt-prototype/mcp_server.py"]
+    }
+  }
+}
+```
+
+### Cursor / Windsurf configuration
+
+Add to `.cursor/mcp.json` or `.windsurf/mcp.json` in your project root:
+
+```json
+{
+  "mcpServers": {
+    "auto-ppt": {
+      "command": "python",
+      "args": ["/absolute/path/to/auto-ppt-prototype/mcp_server.py"]
+    }
+  }
+}
+```
+
+### Available tools
+
+| Tool | Description |
+|------|-------------|
+| `create_deck` | Create a new PowerPoint deck from a natural-language prompt |
+| `revise_deck` | Revise an existing deck based on a natural-language instruction |
+
+Both tools accept `sources` (file paths or URLs), `mock` mode for offline testing, and optional `output_dir`.
+
 ## Repository Map
 
 ```text
@@ -169,6 +228,7 @@ auto-ppt-prototype/
 |   |-- skill_api.py          # skill request orchestration
 |   |-- js_renderer.py        # bridge into the Node PPTX renderer
 |   `-- llm_provider.py       # LLM provider abstraction (OpenAI default)
+|-- mcp_server.py              # MCP server (Claude Desktop, Cursor, Windsurf)
 |-- py-generate-from-prompt.py
 |-- py-revise-deck.py
 |-- py-agent-skill.py
@@ -198,7 +258,8 @@ auto-ppt-prototype/
 |-- CHANGELOG.md
 |-- RELEASE_DRAFT_v0.3.0.md
 |-- tests/
-|   `-- test_smart_layer.py   # pytest unit tests (39 tests)
+|   |-- test_smart_layer.py   # pytest unit tests (39 tests)
+|   `-- test_mcp_server.py    # MCP server tests (9 tests)
 |-- output/                   # generated deck JSON and PPTX artifacts
 |   |-- py-generated-deck.json
 |   |-- py-generated-deck.pptx
