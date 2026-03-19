@@ -81,6 +81,48 @@
     }
   },
   "$defs": {
+    "visualObject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "image",
+            "placeholder"
+          ]
+        },
+        "path": {
+          "type": "string",
+          "description": "Local file path to an image (for type=image)"
+        },
+        "url": {
+          "type": "string",
+          "description": "URL to a remote image (for type=image)"
+        },
+        "prompt": {
+          "type": "string",
+          "description": "Generation prompt for external image agent (for type=placeholder)"
+        },
+        "alt": {
+          "type": "string",
+          "description": "Alt text description for the image"
+        },
+        "position": {
+          "type": "string",
+          "enum": [
+            "right",
+            "left",
+            "full",
+            "center"
+          ],
+          "description": "Preferred position on the slide"
+        }
+      }
+    },
     "chartSeries": {
       "type": "object",
       "additionalProperties": false,
@@ -286,7 +328,14 @@
         "visuals": {
           "type": "array",
           "items": {
-            "type": "string"
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/$defs/visualObject"
+              }
+            ]
           }
         },
         "sources": {

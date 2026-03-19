@@ -1,6 +1,6 @@
 # Roadmap
 
-Current version: **v0.5.0**
+Current version: **v0.5.1**
 
 This roadmap reflects the project's current capabilities, known gaps, and planned evolution from experimental prototype to a production-grade AI-agent PowerPoint backend.
 
@@ -80,7 +80,9 @@ This roadmap reflects the project's current capabilities, known gaps, and planne
 
 ---
 
-## Phase 4 — Image Asset Pipeline → v0.5.1
+## Phase 4 — Image Asset Pipeline → v0.5.1 ✅
+
+**Status**: Complete — released in v0.5.1
 
 **Goal**: Support image insertion and lay the groundwork for multi-agent image collaboration.
 
@@ -113,7 +115,7 @@ This roadmap reflects the project's current capabilities, known gaps, and planne
 v0.4.0   MCP Server               ← Highest leverage, do first
 v0.4.1   Chart reliability         ← Prove core quality
 v0.5.0   Brand template engine     ← Usability breakthrough
-v0.5.1   Image pipeline            ← Ecosystem expansion
+v0.5.1   Image pipeline            ← Ecosystem expansion    ✅ All phases complete
 ```
 
 ---

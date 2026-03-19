@@ -1,6 +1,6 @@
 # Auto PPT Prototype
 
-[![Release](https://img.shields.io/github/v/release/lijunliu-gh/auto-ppt-prototype?label=release)](https://github.com/lijunliu-gh/auto-ppt-prototype/releases/tag/v0.5.0)
+[![Release](https://img.shields.io/github/v/release/lijunliu-gh/auto-ppt-prototype?label=release)](https://github.com/lijunliu-gh/auto-ppt-prototype/releases/tag/v0.5.1)
 [![License](https://img.shields.io/github/license/lijunliu-gh/auto-ppt-prototype)](LICENSE)
 [![Smoke](https://img.shields.io/github/actions/workflow/status/lijunliu-gh/auto-ppt-prototype/smoke.yml?branch=main&label=smoke)](https://github.com/lijunliu-gh/auto-ppt-prototype/actions/workflows/smoke.yml)
 
@@ -8,11 +8,11 @@ Open-source PowerPoint backend for AI agents working from trusted sources, uploa
 
 Status: experimental prototype for early open-source integration.
 
-Latest release: [v0.5.0](https://github.com/lijunliu-gh/auto-ppt-prototype/releases/tag/v0.5.0)
+Latest release: [v0.5.1](https://github.com/lijunliu-gh/auto-ppt-prototype/releases/tag/v0.5.1)
 
 Quick links:
 
-- [Release notes](https://github.com/lijunliu-gh/auto-ppt-prototype/releases/tag/v0.5.0)
+- [Release notes](https://github.com/lijunliu-gh/auto-ppt-prototype/releases/tag/v0.5.1)
 - [Changelog](CHANGELOG.md)
 - [Roadmap](ROADMAP.md)
 - [Examples (EN)](EXAMPLES.en.md)

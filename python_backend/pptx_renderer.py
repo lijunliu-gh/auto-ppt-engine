@@ -5,6 +5,7 @@ Used when a brand template is provided. Falls back to JS renderer when no templa
 
 from __future__ import annotations
 
+import io
 import json
 import logging
 from pathlib import Path
@@ -70,6 +71,7 @@ def render_deck_with_template(
     output_json_path: str | Path,
     output_pptx_path: str | Path,
     template: TemplateConfig,
+    base_dir: str | Path | None = None,
 ) -> None:
     """Render a deck JSON to PPTX using a brand template.
 
@@ -78,6 +80,7 @@ def render_deck_with_template(
         output_json_path: Where to save the deck JSON.
         output_pptx_path: Where to save the output PPTX.
         template: Parsed template configuration.
+        base_dir: Base directory for resolving relative image paths.
     """
     json_path = Path(output_json_path)
     pptx_path = Path(output_pptx_path)
@@ -100,8 +103,9 @@ def render_deck_with_template(
         prs.slides._sldIdLst.remove(prs.slides._sldIdLst[0])
 
     # Render each slide
+    resolved_base = Path(base_dir).resolve() if base_dir else json_path.parent.resolve()
     for slide_def in deck.get("slides", []):
-        _render_slide(prs, deck, slide_def, template, colors, fonts)
+        _render_slide(prs, deck, slide_def, template, colors, fonts, resolved_base)
 
     # Set presentation metadata
     prs.core_properties.author = "auto-ppt-prototype"
@@ -128,6 +132,7 @@ def _render_slide(
     template: TemplateConfig,
     colors: Dict[str, str],
     fonts: tuple,
+    base_dir: Optional[Path] = None,
 ) -> None:
     """Render a single slide based on its layout type."""
     layout_name = slide_def.get("layout", "bullet")
@@ -135,7 +140,7 @@ def _render_slide(
     slide = prs.slides.add_slide(layout)
 
     renderer = _LAYOUT_RENDERERS.get(layout_name, _render_bullet)
-    renderer(slide, deck, slide_def, colors, fonts)
+    renderer(slide, deck, slide_def, colors, fonts, base_dir=base_dir)
 
     # Speaker notes
     _add_notes(slide, deck, slide_def)
@@ -343,9 +348,74 @@ def _add_rect(
         shape.line.fill.background()
 
 
+# ── Image Insertion ───────────────────────────────────────────────
+
+def _insert_visuals_on_slide(
+    slide,
+    visuals: List,
+    base_dir: Optional[Path],
+    colors: Dict[str, str],
+    fonts: tuple,
+) -> bool:
+    """Process visuals list: insert images, render placeholders, or show text suggestions.
+
+    Returns True if at least one image was inserted.
+    """
+    from .image_handler import partition_visuals, resolve_image, get_position, classify_visual
+
+    descriptions, images, placeholders = partition_visuals(visuals)
+    inserted_any = False
+
+    # Insert actual images
+    for img_visual in images:
+        if base_dir is None:
+            continue
+        result = resolve_image(img_visual, base_dir)
+        if result:
+            data, ext = result
+            left, top, width, height = get_position(img_visual)
+            _insert_image_bytes(slide, data, left, top, width, height)
+            inserted_any = True
+        else:
+            # Failed to load → treat as description
+            alt = img_visual.get("alt") or img_visual.get("path") or img_visual.get("url") or "Image"
+            descriptions.append({"kind": "description", "text": f"[Image: {alt}]"})
+
+    # Render placeholders as labeled boxes
+    for ph in placeholders:
+        left, top, width, height = get_position(ph)
+        _add_rect(slide, left, top, width, height, fill_color=colors["bg_card"], line_color=colors["border"], radius=0.05)
+        prompt_text = ph.get("prompt", "Image placeholder")
+        _add_textbox(
+            slide, f"🖼 {prompt_text}",
+            left + 0.15, top + 0.15, width - 0.3, height - 0.3,
+            font_name=fonts[1], font_size=11, italic=True, color=colors["text_muted"],
+        )
+
+    # Show remaining text descriptions as suggestion box (only if no images inserted)
+    if descriptions and not inserted_any:
+        desc_texts = [d.get("text", "") for d in descriptions if d.get("text")]
+        if desc_texts:
+            _add_rect(slide, 8.95, 1.65, 3.35, 3.2, fill_color=colors["bg_card"], line_color=colors["border"])
+            _add_label(slide, "Visual Suggestions", 9.2, 1.92, 2.7, colors, fonts)
+            _add_bullet_list(slide, desc_texts, 9.08, 2.25, 2.9, 2.2, fonts[1], 12, colors["text_body"])
+
+    return inserted_any
+
+
+def _insert_image_bytes(
+    slide, data: bytes, left: float, top: float, width: float, height: float
+) -> None:
+    """Insert image bytes onto a slide."""
+    image_stream = io.BytesIO(data)
+    slide.shapes.add_picture(
+        image_stream, Inches(left), Inches(top), Inches(width), Inches(height)
+    )
+
+
 # ── Layout Renderers ──────────────────────────────────────────────
 
-def _render_title(slide, deck: Dict, sd: Dict, colors: Dict, fonts: tuple) -> None:
+def _render_title(slide, deck: Dict, sd: Dict, colors: Dict, fonts: tuple, **kwargs) -> None:
     """Title slide: large title, subtitle, metadata."""
     # Background
     slide.background.fill.solid()
@@ -383,26 +453,27 @@ def _render_title(slide, deck: Dict, sd: Dict, colors: Dict, fonts: tuple) -> No
         )
 
 
-def _render_agenda(slide, deck: Dict, sd: Dict, colors: Dict, fonts: tuple) -> None:
+def _render_agenda(slide, deck: Dict, sd: Dict, colors: Dict, fonts: tuple, **kwargs) -> None:
     """Agenda / section / summary slide."""
     _add_slide_header(slide, deck, sd, colors, fonts)
     items = [f"{i+1}. {b}" for i, b in enumerate(sd.get("bullets", []))]
     _add_bullet_list(slide, items, 0.95, 1.7, 7.8, 4.8, fonts[1], 20, colors["text_body"])
 
 
-def _render_bullet(slide, deck: Dict, sd: Dict, colors: Dict, fonts: tuple) -> None:
-    """Standard bullet slide with optional visuals box."""
+def _render_bullet(slide, deck: Dict, sd: Dict, colors: Dict, fonts: tuple, **kwargs) -> None:
+    """Standard bullet slide with optional visuals — images, placeholders, or text."""
     _add_slide_header(slide, deck, sd, colors, fonts)
     _add_bullet_list(slide, sd.get("bullets", []), 0.9, 1.72, 7.5, 4.9, fonts[1], 20, colors["text_body"])
 
     visuals = sd.get("visuals", [])
-    if visuals:
-        _add_rect(slide, 8.95, 1.65, 3.35, 3.2, fill_color=colors["bg_card"], line_color=colors["border"])
-        _add_label(slide, "Visual Suggestions", 9.2, 1.92, 2.7, colors, fonts)
-        _add_bullet_list(slide, visuals, 9.08, 2.25, 2.9, 2.2, fonts[1], 12, colors["text_body"])
+    if not visuals:
+        return
+
+    base_dir = kwargs.get("base_dir")
+    inserted = _insert_visuals_on_slide(slide, visuals, base_dir, colors, fonts)
 
 
-def _render_two_column(slide, deck: Dict, sd: Dict, colors: Dict, fonts: tuple) -> None:
+def _render_two_column(slide, deck: Dict, sd: Dict, colors: Dict, fonts: tuple, **kwargs) -> None:
     _add_slide_header(slide, deck, sd, colors, fonts)
     _add_label(slide, "Left", 0.9, 1.55, 4.8, colors, fonts)
     _add_label(slide, "Right", 6.8, 1.55, 4.8, colors, fonts)
@@ -414,7 +485,7 @@ def _render_two_column(slide, deck: Dict, sd: Dict, colors: Dict, fonts: tuple) 
     _add_bullet_list(slide, sd.get("right", []), 6.8, 1.9, 5.1, 4.8, fonts[1], 18, colors["text_body"])
 
 
-def _render_comparison(slide, deck: Dict, sd: Dict, colors: Dict, fonts: tuple) -> None:
+def _render_comparison(slide, deck: Dict, sd: Dict, colors: Dict, fonts: tuple, **kwargs) -> None:
     _add_slide_header(slide, deck, sd, colors, fonts)
     _add_rect(slide, 0.85, 1.7, 5.45, 4.7, fill_color=colors["bg_light"], line_color=colors["border"], radius=0.05)
     _add_rect(slide, 6.95, 1.7, 5.45, 4.7, fill_color=colors["bg_light"], line_color=colors["border"], radius=0.05)
@@ -424,7 +495,7 @@ def _render_comparison(slide, deck: Dict, sd: Dict, colors: Dict, fonts: tuple) 
     _add_bullet_list(slide, sd.get("right", []), 7.1, 2.35, 4.9, 3.7, fonts[1], 16, colors["text_body"])
 
 
-def _render_timeline(slide, deck: Dict, sd: Dict, colors: Dict, fonts: tuple) -> None:
+def _render_timeline(slide, deck: Dict, sd: Dict, colors: Dict, fonts: tuple, **kwargs) -> None:
     _add_slide_header(slide, deck, sd, colors, fonts)
     milestones = (sd.get("bullets") or [])[:5]
     if not milestones:
@@ -466,7 +537,7 @@ def _render_timeline(slide, deck: Dict, sd: Dict, colors: Dict, fonts: tuple) ->
         )
 
 
-def _render_process(slide, deck: Dict, sd: Dict, colors: Dict, fonts: tuple) -> None:
+def _render_process(slide, deck: Dict, sd: Dict, colors: Dict, fonts: tuple, **kwargs) -> None:
     _add_slide_header(slide, deck, sd, colors, fonts)
     steps = (sd.get("bullets") or [])[:4]
     if not steps:
@@ -492,7 +563,7 @@ def _render_process(slide, deck: Dict, sd: Dict, colors: Dict, fonts: tuple) -> 
         )
 
 
-def _render_table(slide, deck: Dict, sd: Dict, colors: Dict, fonts: tuple) -> None:
+def _render_table(slide, deck: Dict, sd: Dict, colors: Dict, fonts: tuple, **kwargs) -> None:
     _add_slide_header(slide, deck, sd, colors, fonts)
     table_data = sd.get("table") or {}
     columns = table_data.get("columns", [])
@@ -538,7 +609,7 @@ def _render_table(slide, deck: Dict, sd: Dict, colors: Dict, fonts: tuple) -> No
                 p.font.color.rgb = _rgb(colors["text_body"])
 
 
-def _render_chart(slide, deck: Dict, sd: Dict, colors: Dict, fonts: tuple) -> None:
+def _render_chart(slide, deck: Dict, sd: Dict, colors: Dict, fonts: tuple, **kwargs) -> None:
     _add_slide_header(slide, deck, sd, colors, fonts)
     chart_data_def = sd.get("chart") or {}
     categories = chart_data_def.get("categories", [])
@@ -598,7 +669,7 @@ def _render_chart(slide, deck: Dict, sd: Dict, colors: Dict, fonts: tuple) -> No
         _add_bullet_list(slide, bullets, 9.45, 2.45, 2.45, 2.7, fonts[1], 12, colors["text_body"])
 
 
-def _render_quote(slide, deck: Dict, sd: Dict, colors: Dict, fonts: tuple) -> None:
+def _render_quote(slide, deck: Dict, sd: Dict, colors: Dict, fonts: tuple, **kwargs) -> None:
     _add_slide_header(slide, deck, sd, colors, fonts)
     _add_rect(slide, 1.0, 1.95, 11.0, 3.2, fill_color=colors["bg_light"], line_color=colors["border"], radius=0.08)
     quote_text = (sd.get("bullets") or [sd.get("subtitle") or ""])[0] or ""
@@ -617,7 +688,7 @@ def _render_quote(slide, deck: Dict, sd: Dict, colors: Dict, fonts: tuple) -> No
         )
 
 
-def _render_closing(slide, deck: Dict, sd: Dict, colors: Dict, fonts: tuple) -> None:
+def _render_closing(slide, deck: Dict, sd: Dict, colors: Dict, fonts: tuple, **kwargs) -> None:
     slide.background.fill.solid()
     slide.background.fill.fore_color.rgb = _rgb(colors["closing_bg"])
     _add_textbox(

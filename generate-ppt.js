@@ -262,23 +262,101 @@ function renderAgendaSlide(slide, deck, current) {
   addBulletList(slide, agendaItems, { x: 0.95, y: 1.7, w: 7.8, h: 4.8, fontSize: 20 });
 }
 
+const VISUAL_POSITION_PRESETS = {
+  right:  { x: 8.95, y: 1.65, w: 3.35, h: 4.0 },
+  left:   { x: 0.6,  y: 1.65, w: 4.5,  h: 4.0 },
+  center: { x: 3.5,  y: 1.8,  w: 6.33, h: 4.5 },
+  full:   { x: 0.5,  y: 1.4,  w: 12.33, h: 5.8 },
+};
+
+const SUPPORTED_IMAGE_EXTS = new Set([
+  '.png', '.jpg', '.jpeg', '.gif', '.bmp', '.tiff', '.tif', '.svg', '.webp'
+]);
+
+function classifyVisual(item) {
+  if (typeof item === 'string') {
+    const lower = item.trim().toLowerCase();
+    if (SUPPORTED_IMAGE_EXTS.has(path.extname(lower))) {
+      return { kind: 'image', path: item, position: 'right' };
+    }
+    return { kind: 'description', text: item };
+  }
+  if (item && typeof item === 'object') {
+    if (item.type === 'image') {
+      return { kind: 'image', path: item.path || null, url: item.url || null, alt: item.alt || '', position: item.position || 'right' };
+    }
+    if (item.type === 'placeholder') {
+      return { kind: 'placeholder', prompt: item.prompt || '', alt: item.alt || '', position: item.position || 'right' };
+    }
+  }
+  return { kind: 'description', text: String(item) };
+}
+
+function getVisualPosition(visual) {
+  return VISUAL_POSITION_PRESETS[visual.position] || VISUAL_POSITION_PRESETS.right;
+}
+
+function renderVisualsOnSlide(slide, visuals) {
+  const descriptions = [];
+  const images = [];
+  const placeholders = [];
+
+  for (const item of visuals) {
+    const classified = classifyVisual(item);
+    if (classified.kind === 'description') descriptions.push(classified);
+    else if (classified.kind === 'image') images.push(classified);
+    else if (classified.kind === 'placeholder') placeholders.push(classified);
+  }
+
+  let insertedAny = false;
+
+  // Insert local images (PptxGenJS supports path-based insertion)
+  for (const img of images) {
+    const imgPath = img.path;
+    if (imgPath && fs.existsSync(imgPath)) {
+      const pos = getVisualPosition(img);
+      slide.addImage({ path: imgPath, x: pos.x, y: pos.y, w: pos.w, h: pos.h });
+      insertedAny = true;
+    } else {
+      descriptions.push({ kind: 'description', text: `[Image: ${img.alt || img.path || img.url || 'Unknown'}]` });
+    }
+  }
+
+  // Render placeholders as labeled boxes
+  for (const ph of placeholders) {
+    const pos = getVisualPosition(ph);
+    slide.addShape('roundRect', {
+      x: pos.x, y: pos.y, w: pos.w, h: pos.h,
+      rectRadius: 0.05,
+      fill: { color: 'F1F5F9' },
+      line: { color: 'CBD5E1', pt: 1 }
+    });
+    addTextBox(slide, `🖼 ${ph.prompt || 'Image placeholder'}`, {
+      x: pos.x + 0.15, y: pos.y + 0.15, w: pos.w - 0.3, h: pos.h - 0.3,
+      fontSize: 11, italic: true, color: '475569'
+    });
+  }
+
+  // Show text descriptions as suggestion box (only if no images were inserted)
+  const descTexts = descriptions.map(d => d.text).filter(Boolean);
+  if (descTexts.length > 0 && !insertedAny) {
+    slide.addShape('roundRect', {
+      x: 8.95, y: 1.65, w: 3.35, h: 3.2,
+      rectRadius: 0.08,
+      fill: { color: 'F1F5F9' },
+      line: { color: 'CBD5E1', pt: 1 }
+    });
+    addLabel(slide, 'Visual Suggestions', 9.2, 1.92, 2.7);
+    addBulletList(slide, descTexts, { x: 9.08, y: 2.25, w: 2.9, h: 2.2, fontSize: 12 });
+  }
+}
+
 function renderBulletSlide(slide, deck, current) {
   addSlideHeader(slide, deck, current);
   addBulletList(slide, current.bullets, { x: 0.9, y: 1.72, w: 7.5, h: 4.9, fontSize: 20 });
 
   if (Array.isArray(current.visuals) && current.visuals.length > 0) {
-    slide.addShape('roundRect', {
-      x: 8.95,
-      y: 1.65,
-      w: 3.35,
-      h: 3.2,
-      rectRadius: 0.08,
-      fill: { color: 'F1F5F9' },
-      line: { color: 'CBD5E1', pt: 1 }
-    });
-
-    addLabel(slide, 'Visual Suggestions', 9.2, 1.92, 2.7);
-    addBulletList(slide, current.visuals, { x: 9.08, y: 2.25, w: 2.9, h: 2.2, fontSize: 12 });
+    renderVisualsOnSlide(slide, current.visuals);
   }
 }
 

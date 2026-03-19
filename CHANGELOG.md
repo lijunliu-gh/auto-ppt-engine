@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog, and this project follows Semantic Versioning while it remains a prototype.
 
+## [0.5.1] - 2026-03-19
+
+### Added
+
+- **Image Asset Pipeline** (`python_backend/image_handler.py`): Classify, resolve, and load images for slide rendering with full security (path traversal protection, SSRF validation, 10 MB size limit, extension whitelist)
+- **Visual Object Schema** (`deck-schema.json`): New `visualObject` definition supporting `type: "image"` (with `path`/`url`) and `type: "placeholder"` (with `prompt`), plus `alt` and `position` fields. The `visuals` array now accepts both plain strings and visual objects via `oneOf`
+- **Python Renderer Image Support** (`python_backend/pptx_renderer.py`): `_insert_visuals_on_slide()` partitions visuals into descriptions/images/placeholders, inserts actual images via `python-pptx`, renders placeholders as labeled boxes, and falls back to text suggestion boxes when no images resolve
+- **JS Renderer Image Support** (`generate-ppt.js`): `renderVisualsOnSlide()` with `classifyVisual()` helper — inserts local images via PptxGenJS `addImage()`, renders placeholder boxes, falls back to text suggestions
+- **LLM Visual Instructions**: System prompt now includes `VISUAL RULES` section explaining the three visual item types and position presets
+- 48 new tests: classify_visual (10), partition_visuals (4), get_position (4), resolve_image/security (9), detect_image_ext (4), schema validation (4), looks_like_image_path (13) — **143 total**
+
+### Changed
+
+- `visuals` schema items changed from `{"type": "string"}` to `oneOf [string, visualObject]` (backward compatible)
+- `render_deck_with_template()` and `_render_slide()` accept `base_dir` parameter for image path resolution
+- `skill_api.py` passes `base_dir` to the Python renderer
+- All 12 Python layout renderers now accept `**kwargs` for forward compatibility
+
 ## [0.5.0] - 2026-03-19
 
 ### Added

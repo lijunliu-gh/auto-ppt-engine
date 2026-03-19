@@ -83,7 +83,7 @@ def handle_skill_request(request: Dict[str, Any], response_path: str | Path | No
         resolved_template = resolve_from_base(request_base_dir, template_path)
         template_config = parse_template(resolved_template)
         from .pptx_renderer import render_deck_with_template
-        render_deck_with_template(deck, output_json, output_pptx, template_config)
+        render_deck_with_template(deck, output_json, output_pptx, template_config, base_dir=request_base_dir)
         renderer_used = "python-pptx"
     else:
         render_deck_via_node(deck, output_json, output_pptx, ROOT_DIR)
