@@ -133,3 +133,43 @@ class TestMain:
         error = capsys.readouterr().err
         assert exit_code == 1
         assert "auto-ppt: error: boom" in error
+
+    def test_missing_api_key_error_is_actionable(self, monkeypatch, capsys):
+        def raise_error(request, response_path=None):
+            raise RuntimeError("OPENAI_API_KEY is not set. Use mock mode for offline testing or configure the API key.")
+
+        monkeypatch.setattr(auto_ppt_cli, "handle_skill_request", raise_error)
+        exit_code = auto_ppt_cli.main(["generate", "--prompt", "Create a deck"])
+        error = capsys.readouterr().err
+
+        assert exit_code == 1
+        assert "run ./auto-ppt init" in error
+        assert "--mock" in error
+
+    def test_missing_deck_path_is_actionable(self, capsys):
+        exit_code = auto_ppt_cli.main(["revise", "--prompt", "Tighten the flow", "--deck", "missing.json"])
+        error = capsys.readouterr().err
+
+        assert exit_code == 1
+        assert "Deck file not found" in error
+        assert "Run ./auto-ppt generate first" in error
+
+    def test_missing_source_path_is_actionable(self, capsys):
+        exit_code = auto_ppt_cli.main(["generate", "--prompt", "Create a deck", "--source", "missing-source.md"])
+        error = capsys.readouterr().err
+
+        assert exit_code == 1
+        assert "Source file not found" in error
+        assert "Check --source" in error
+
+    def test_renderer_error_is_actionable(self, monkeypatch, capsys):
+        def raise_error(request, response_path=None):
+            raise RuntimeError("Node renderer failed: command not found: node")
+
+        monkeypatch.setattr(auto_ppt_cli, "handle_skill_request", raise_error)
+        exit_code = auto_ppt_cli.main(["generate", "--prompt", "Create a deck"])
+        error = capsys.readouterr().err
+
+        assert exit_code == 1
+        assert "run npm install" in error.lower()
+        assert "Node.js 18+" in error

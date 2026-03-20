@@ -113,6 +113,51 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     return args
 
 
+def _is_url(value: str) -> bool:
+    return value.startswith(("http://", "https://"))
+
+
+def _resolve_user_path(value: str) -> Path:
+    path = Path(value)
+    return path if path.is_absolute() else (Path.cwd() / path).resolve()
+
+
+def validate_runtime_inputs(args: argparse.Namespace) -> None:
+    if args.command == "revise":
+        deck_path = _resolve_user_path(args.deck)
+        if not deck_path.exists():
+            raise RuntimeError(
+                f"Deck file not found: {deck_path}. "
+                "Run ./auto-ppt generate first or pass --deck with an existing deck JSON file."
+            )
+
+    if getattr(args, "template", None):
+        template_path = _resolve_user_path(args.template)
+        if not template_path.exists():
+            raise RuntimeError(
+                f"Template file not found: {template_path}. "
+                "Check --template or remove it to use the default renderer."
+            )
+
+    for source in getattr(args, "source", []) or []:
+        if _is_url(source):
+            continue
+        source_path = _resolve_user_path(source)
+        if not source_path.exists():
+            raise RuntimeError(
+                f"Source file not found: {source_path}. "
+                "Check --source or remove it from the command."
+            )
+
+    for context_file in getattr(args, "context_file", []) or []:
+        context_path = _resolve_user_path(context_file)
+        if not context_path.exists():
+            raise RuntimeError(
+                f"Context file not found: {context_path}. "
+                "Check --context-file or remove it from the command."
+            )
+
+
 def build_request(args: argparse.Namespace) -> dict:
     base_dir = Path.cwd()
     request: dict = {
@@ -289,15 +334,76 @@ def run_init(args: argparse.Namespace) -> int:
     return 0
 
 
+def format_user_error(error: Exception) -> str:
+    message = str(error).strip()
+
+    if "API_KEY is not set" in message:
+        return (
+            f"auto-ppt: error: {message}\n"
+            "Hint: run ./auto-ppt init to configure a provider, or add --mock to test the pipeline without a model."
+        )
+
+    if message.startswith("Deck file not found:"):
+        return f"auto-ppt: error: {message}"
+
+    if message.startswith("Template file not found:"):
+        return f"auto-ppt: error: {message}"
+
+    if message.startswith("Source file not found:"):
+        return f"auto-ppt: error: {message}"
+
+    if message.startswith("Context file not found:"):
+        return f"auto-ppt: error: {message}"
+
+    if message.startswith("File not found:"):
+        return (
+            f"auto-ppt: error: {message}\n"
+            "Hint: check the file path and run the command from the repository root, or pass an absolute path."
+        )
+
+    if message.startswith("Template not found:"):
+        return (
+            f"auto-ppt: error: {message}\n"
+            "Hint: verify the template path, or remove --template to use the default renderer."
+        )
+
+    if message.startswith("Node renderer timed out"):
+        return (
+            f"auto-ppt: error: {message}\n"
+            "Hint: try a smaller deck, then rerun. If the problem persists, verify Node.js is installed and working."
+        )
+
+    if message.startswith("Node renderer failed:"):
+        return (
+            f"auto-ppt: error: {message}\n"
+            "Hint: run npm install, verify Node.js 18+ is available, and rerun the command."
+        )
+
+    if message == "Model output did not contain a JSON object.":
+        return (
+            "auto-ppt: error: The model response was not valid deck JSON.\n"
+            "Hint: rerun the command, try a different model, or use --mock to verify the local pipeline first."
+        )
+
+    if message == "Model returned no content.":
+        return (
+            "auto-ppt: error: The model returned no usable content.\n"
+            "Hint: rerun the command, check your provider/model configuration, or switch models with ./auto-ppt init."
+        )
+
+    return f"auto-ppt: error: {message}"
+
+
 def main(argv: list[str] | None = None) -> int:
     try:
         load_local_env()
         args = parse_args(argv)
         if args.command == "init":
             return run_init(args)
+        validate_runtime_inputs(args)
         response = handle_skill_request(build_request(args), response_path=None)
     except Exception as error:  # noqa: BLE001
-        print(f"auto-ppt: error: {error}", file=sys.stderr)
+        print(format_user_error(error), file=sys.stderr)
         return 1
 
     verb = "Generated" if response.get("action") == "create" else "Revised"
