@@ -20,7 +20,7 @@ All four planned phases are complete. All 14 GitHub issues are closed. Phase 5 (
 | Pluggable LLM provider abstraction | ✅ Added in v0.3.1 |
 | Structured logging | ✅ Added in v0.3.1 |
 | Schema versioning | ✅ Added in v0.3.1 |
-| Unit tests (39 pytest cases) | ✅ Added in v0.3.1 (now 263 tests, 84% coverage as of v0.7.0) |
+| Unit tests (39 pytest cases) | ✅ Added in v0.3.1 (now 282 tests, 85% coverage as of v0.7.0) |
 | CLI / JSON Skill / HTTP Server | ✅ |
 
 ---
@@ -108,7 +108,7 @@ All four planned phases are complete. All 14 GitHub issues are closed. Phase 5 (
 | Task | Description | Complexity |
 |------|-------------|------------|
 | Docker packaging | `Dockerfile` (Python 3.12 + Node.js 20) + `docker-compose.yml` for one-command launch | Medium |
-| Chart auto-repair | `repair_chart_data()` — fix invalid types, coerce string numbers, align data/category lengths before fallback | Medium |
+| Chart auto-repair | `repair_chart_data()` — fix invalid types, coerce string-formatted numbers, trim excess data; degrade to bullet on irreparable data | Medium |
 | Stricter chart schema | `enum` for chart types, `minItems` on categories/series, `oneOf` for empty vs valid charts | Low |
 | Remote MCP transport | `--transport streamable-http --host --port` CLI args for hosted deployments | Low |
 | Documentation sync | Docker, remote MCP, and smoke command fixes across all multilingual docs | Low |
@@ -122,7 +122,7 @@ All four planned phases are complete. All 14 GitHub issues are closed. Phase 5 (
 | Task | Description |
 |------|-------------|
 | Remove legacy JS code | ~~After Phase 1, delete `deck-agent-core.js` and `source-loader.js` entirely~~ ✅ Done in v0.4.1 |
-| Expand test coverage | ✅ Achieved 84% coverage with 255 tests in v0.6.0 (Issue #12) |
+| Expand test coverage | ✅ Achieved 85% coverage with 282 tests in v0.7.0 (Issue #12) |
 | API versioning | ✅ `apiVersion: "1.0"` in all requests and responses (v0.6.0, Issue #13) |
 | CI hardening | ✅ pytest on Python 3.10/3.11/3.12 + Node.js 18/20/22 smoke matrix (v0.6.0, Issue #14) |
 | Documentation sync | Update EN / ZH / JA docs with each release |

@@ -304,7 +304,7 @@ The practical split is:
 
 ## Testing
 
-Run the unit test suite (263 tests, 84% coverage):
+Run the unit test suite (282 tests, 85% coverage):
 
 ```bash
 python -m pytest tests/ -v

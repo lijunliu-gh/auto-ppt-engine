@@ -31,7 +31,9 @@ from python_backend.smart_layer import (
     normalize_closing_slide,
     normalize_deck_source_metadata,
     renumber_slides,
+    repair_chart_data,
     validate_chart_slides,
+    _coerce_numeric,
     _is_valid_chart,
     apply_heuristic_revision,
     execute_planning_flow,
@@ -446,6 +448,121 @@ class TestChartValidation:
         assert len(chart_slides) >= 1
         chart = chart_slides[0]["chart"]
         assert _is_valid_chart(chart)
+
+
+# ── Chart Repair ─────────────────────────────────────────────────────────────
+
+class TestCoerceNumeric:
+    def test_int_passthrough(self):
+        assert _coerce_numeric(42) == 42.0
+
+    def test_float_passthrough(self):
+        assert _coerce_numeric(3.14) == 3.14
+
+    def test_string_number(self):
+        assert _coerce_numeric("100") == 100.0
+
+    def test_string_with_commas_and_dollar(self):
+        assert _coerce_numeric("$1,200") == 1200.0
+
+    def test_string_with_percent(self):
+        assert _coerce_numeric("45%") == 45.0
+
+    def test_non_numeric_returns_none(self):
+        assert _coerce_numeric("hello") is None
+
+    def test_none_returns_none(self):
+        assert _coerce_numeric(None) is None
+
+    def test_list_returns_none(self):
+        assert _coerce_numeric([1, 2]) is None
+
+
+class TestRepairChartData:
+    def test_valid_chart_unchanged(self):
+        chart = {
+            "type": "bar", "categories": ["Q1", "Q2"],
+            "series": [{"name": "A", "data": [10, 20]}],
+        }
+        notes = repair_chart_data(chart)
+        assert notes == []
+        assert chart["series"][0]["data"] == [10, 20]
+
+    def test_coerces_string_numbers(self):
+        chart = {
+            "type": "bar", "categories": ["Q1", "Q2"],
+            "series": [{"name": "Rev", "data": ["$1,200", "2,500"]}],
+        }
+        notes = repair_chart_data(chart)
+        assert chart["series"][0]["data"] == [1200.0, 2500.0]
+        assert any("Coerced" in n for n in notes)
+
+    def test_irreparable_data_degrades_chart(self):
+        """Non-numeric data that can't be coerced should empty the chart so it degrades."""
+        chart = {
+            "type": "bar", "categories": ["Q1", "Q2"],
+            "series": [{"name": "S", "data": ["hello", "world"]}],
+        }
+        notes = repair_chart_data(chart)
+        # Chart should be emptied so _is_valid_chart fails
+        assert chart["categories"] == []
+        assert chart["series"] == []
+        assert any("Irreparable" in n for n in notes)
+        assert not _is_valid_chart(chart)
+
+    def test_mixed_good_and_bad_data_degrades(self):
+        chart = {
+            "type": "bar", "categories": ["A", "B"],
+            "series": [{"name": "S", "data": [100, "N/A"]}],
+        }
+        notes = repair_chart_data(chart)
+        assert chart["categories"] == []
+        assert any("degrade" in n.lower() for n in notes)
+
+    def test_invalid_chart_type_corrected(self):
+        chart = {
+            "type": "scatter", "categories": ["A"],
+            "series": [{"name": "S", "data": [10]}],
+        }
+        repair_chart_data(chart)
+        assert chart["type"] == "bar"
+
+    def test_excess_data_trimmed(self):
+        chart = {
+            "type": "bar", "categories": ["Q1", "Q2"],
+            "series": [{"name": "S", "data": [10, 20, 30, 40]}],
+        }
+        notes = repair_chart_data(chart)
+        assert chart["series"][0]["data"] == [10, 20]
+        assert any("Trimmed" in n for n in notes)
+
+    def test_fewer_data_than_categories_degrades(self):
+        """Cannot synthesize missing data points — degrade instead of padding zeros."""
+        chart = {
+            "type": "bar", "categories": ["Q1", "Q2", "Q3"],
+            "series": [{"name": "S", "data": [10]}],
+        }
+        notes = repair_chart_data(chart)
+        assert chart["categories"] == []
+        assert chart["series"] == []
+        assert any("cannot pad" in n.lower() for n in notes)
+
+    def test_end_to_end_degradation_via_validate(self):
+        """A chart with irreparable data should degrade to bullet through validate_chart_slides."""
+        deck = {
+            "slides": [{
+                "page": 1, "layout": "chart", "title": "Bad data chart",
+                "chart": {
+                    "type": "bar", "title": "Revenue",
+                    "categories": ["Q1", "Q2"],
+                    "series": [{"name": "S", "data": ["unknown", "N/A"]}],
+                },
+                "bullets": [], "objective": "",
+            }],
+        }
+        notes = validate_chart_slides(deck)
+        assert deck["slides"][0]["layout"] == "bullet"
+        assert any("converted to bullet" in n.lower() for n in notes)
 
 
 class TestNumericalExtraction:

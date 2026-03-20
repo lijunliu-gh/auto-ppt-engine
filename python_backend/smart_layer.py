@@ -463,6 +463,11 @@ def _coerce_numeric(value: Any) -> float | None:
 def repair_chart_data(chart: Dict[str, Any]) -> List[str]:
     """Attempt to fix common chart data issues in-place.
 
+    Only performs *format-level* repairs (e.g. "$1,200" → 1200).
+    If any value cannot be interpreted as a number the chart is
+    marked as irreparable by clearing its categories/series so that
+    downstream validation will degrade it to a bullet layout.
+
     Returns a list of repair notes describing what was fixed.
     """
     notes: List[str] = []
@@ -488,26 +493,51 @@ def repair_chart_data(chart: Dict[str, Any]) -> List[str]:
             data = []
             entry["data"] = data
 
-        # Coerce string numbers to actual numbers
+        # Coerce string numbers to actual numbers; reject unconvertible values
         coerced = []
+        bad_values: List[Any] = []
         for v in data:
             num = _coerce_numeric(v)
-            coerced.append(num if num is not None else 0)
+            if num is not None:
+                coerced.append(num)
+            else:
+                bad_values.append(v)
+                coerced.append(v)  # keep original so _is_valid_chart fails
+
+        if bad_values:
+            # Unconvertible data found — mark chart as irreparable
+            series_name = entry.get("name", "?")
+            chart["categories"] = []
+            chart["series"] = []
+            notes.append(
+                f"Irreparable data in series '{series_name}': "
+                f"cannot convert {bad_values!r} to numbers — chart will degrade to bullet"
+            )
+            return notes
+
         if coerced != data:
             entry["data"] = coerced
             data = coerced
-            notes.append(f"Coerced non-numeric data values in series '{entry.get('name', '?')}'")
+            notes.append(f"Coerced string-formatted numbers in series '{entry.get('name', '?')}'")
 
-        # Pad or trim data to match categories length
+        # Trim data to match categories length (never pad with synthetic zeros)
         if cat_len > 0 and len(data) != cat_len:
             original_len = len(data)
-            if len(data) < cat_len:
-                entry["data"] = data + [0] * (cat_len - len(data))
-            else:
+            if len(data) > cat_len:
                 entry["data"] = data[:cat_len]
-            notes.append(
-                f"Adjusted series '{entry.get('name', '?')}' data length from {original_len} to {cat_len}"
-            )
+                notes.append(
+                    f"Trimmed series '{entry.get('name', '?')}' data from {original_len} to {cat_len}"
+                )
+            else:
+                # Fewer data points than categories — cannot invent values
+                series_name = entry.get("name", "?")
+                chart["categories"] = []
+                chart["series"] = []
+                notes.append(
+                    f"Series '{series_name}' has {original_len} data points but {cat_len} categories "
+                    f"— cannot pad with synthetic values, chart will degrade to bullet"
+                )
+                return notes
 
     return notes
 

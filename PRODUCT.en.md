@@ -59,7 +59,7 @@ For serious use cases, the system should rely on:
 - LLM provider abstraction (OpenAI, OpenRouter, Claude, Gemini, Qwen, DeepSeek, GLM, MiniMax)
 - image asset pipeline: local image insertion, URL images, placeholder protocol for multi-agent collaboration
 - security: path traversal prevention, SSRF blocking, file size limits, subprocess timeout, image extension whitelist
-- 263 automated tests (84% coverage: unit, MCP server, MCP integration, template engine, image handler, cross-module)
+- 282 automated tests (85% coverage: unit, MCP server, MCP integration, template engine, image handler, cross-module)
 - API versioning (`apiVersion: "1.0"`) in all requests and responses
 - CI matrix: pytest on Python 3.10/3.11/3.12 + Node.js 18/20/22 smoke tests
 - Docker packaging: Dockerfile + docker-compose.yml for one-command containerized deployment

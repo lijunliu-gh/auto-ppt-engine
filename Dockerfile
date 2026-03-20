@@ -23,6 +23,10 @@ COPY . .
 # Default output directory
 RUN mkdir -p /app/output
 
+# In Docker, bind to all interfaces and use port 5000
+ENV HOST=0.0.0.0
+ENV PORT=5000
+
 # Expose HTTP skill server port
 EXPOSE 5000
 

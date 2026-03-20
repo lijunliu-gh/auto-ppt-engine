@@ -7,6 +7,7 @@ from pathlib import Path
 
 from python_backend.skill_api import API_VERSION, handle_skill_request
 
+HOST = os.getenv("HOST", "127.0.0.1")
 PORT = int(os.getenv("PORT", "3010"))
 
 
@@ -52,10 +53,10 @@ class SkillRequestHandler(BaseHTTPRequestHandler):
 
 
 def main() -> None:
-    server = HTTPServer(("127.0.0.1", PORT), SkillRequestHandler)
-    print(f"Python skill server listening on http://127.0.0.1:{PORT}")
-    print(f"Health: http://127.0.0.1:{PORT}/health")
-    print(f"Skill endpoint: POST http://127.0.0.1:{PORT}/skill")
+    server = HTTPServer((HOST, PORT), SkillRequestHandler)
+    print(f"Python skill server listening on http://{HOST}:{PORT}")
+    print(f"Health: http://{HOST}:{PORT}/health")
+    print(f"Skill endpoint: POST http://{HOST}:{PORT}/skill")
     server.serve_forever()
 
 

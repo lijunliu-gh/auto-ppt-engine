@@ -60,7 +60,7 @@ Auto PPT Prototype 是一个面向 AI Agent 的开源 PowerPoint 后端。
 - LLM 提供者抽象（OpenAI、OpenRouter、Claude、Gemini、Qwen、DeepSeek、GLM、MiniMax）
 - 图片资产管线：本地图片插入、URL 图片、多 Agent 协作占位符协议
 - 安全防护：路径穿越防护、SSRF 拦截、文件大小限制、子进程超时、图片扩展名白名单
-- 263 条自动化测试（84% 覆盖率：单元测试、MCP 服务测试、MCP 集成测试、模板引擎测试、图片处理测试、跨模块测试）
+- 282 条自动化测试（85% 覆盖率：单元测试、MCP 服务测试、MCP 集成测试、模板引擎测试、图片处理测试、跨模块测试）
 - API 版本控制（`apiVersion: "1.0"`）包含在所有请求和响应中
 - CI 矩阵：Python 3.10/3.11/3.12 上的 pytest + Node.js 18/20/22 烟雾测试
 - Docker 打包：Dockerfile + docker-compose.yml，一键容器化部署

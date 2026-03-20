@@ -8,7 +8,7 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ### Added
 
-- **Chart Determinism** (`python_backend/smart_layer.py`): New `repair_chart_data()` auto-repair function — automatically corrects invalid chart types, coerces string numbers to numeric values, and pads/trims data arrays to match category length before falling back to bullet layout
+- **Chart Determinism** (`python_backend/smart_layer.py`): New `repair_chart_data()` auto-repair function — corrects invalid chart types, coerces string-formatted numbers (e.g. `"$1,200"` → `1200`), and trims excess data arrays to match category length. Irreparable data (non-numeric values, missing data points) triggers automatic degradation to bullet layout instead of synthesizing false zero values
 - Stricter chart schema (`deck-schema.json`): `enum` validation for chart types (`bar`, `line`, `pie`, `area`), `minItems` constraints on `categories` and `series`, `oneOf` to distinguish empty placeholders from valid chart data
 - `MAX_REPAIR_ATTEMPTS` increased from 1 to 2 for more reliable LLM output recovery
 - **Docker Packaging**: `Dockerfile` (Python 3.12 + Node.js 20), `docker-compose.yml` for one-command launch, `.dockerignore`
@@ -28,7 +28,7 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 - **OpenRouter Provider** (`python_backend/llm_provider.py`): New `OpenRouterProvider` class — access 200+ models (OpenAI, Anthropic, Google, Meta, Mistral, etc.) through a single API key via OpenRouter's OpenAI-compatible gateway
 - OpenRouter auto-detection: when `OPENROUTER_API_KEY` is set, it takes priority over direct provider keys
 - `.env.example` updated with `OPENROUTER_API_KEY`
-- 8 new tests for OpenRouterProvider (init, chat, error handling, factory priority) — **263 total**
+- 8 new tests for OpenRouterProvider (init, chat, error handling, factory priority) — **282 total**
 
 ### Changed
 
@@ -41,7 +41,7 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 - **API Versioning**: `apiVersion: "1.0"` field in all requests and responses for forward-compatible API evolution
 - **CI Hardening**: pytest matrix (Python 3.10/3.11/3.12) + Node.js 18/20/22 smoke matrix in GitHub Actions
-- **Test Coverage Expansion**: 255 automated tests achieving 84% line coverage (up from 143 tests / 72%)
+- **Test Coverage Expansion**: 255 automated tests achieving 85% line coverage (up from 143 tests / 72%)
   - `tests/test_coverage_boost.py`: 111 new cross-module tests covering llm_provider, skill_api, source_loader, smart_layer
 - All 14 GitHub issues closed
 

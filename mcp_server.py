@@ -131,6 +131,8 @@ if __name__ == "__main__":
 
     if args.transport == "streamable-http":
         logger.info("Starting MCP server on %s:%d (streamable-http)", args.host, args.port)
-        mcp.run(transport="streamable-http", host=args.host, port=args.port)
+        mcp.settings.host = args.host
+        mcp.settings.port = args.port
+        mcp.run(transport="streamable-http")
     else:
         mcp.run()
