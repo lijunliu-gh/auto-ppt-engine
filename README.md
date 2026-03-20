@@ -508,7 +508,7 @@ Those responsibilities should remain with the upstream agent or surrounding work
 - `USER_GUIDE.en.md` for user-oriented instructions
 - `INTEGRATION_GUIDE.en.md` for integration details
 - `GITHUB_SETUP.md` for repository metadata and release copy
-- `PUBLISH_CHECKLIST.md` for the pre-publish checklist
+- `RELEASE_CHECKLIST.md` for the release checklist
 
 ## License
 

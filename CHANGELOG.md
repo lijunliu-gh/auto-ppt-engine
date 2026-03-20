@@ -14,12 +14,12 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 - **Docker Packaging**: `Dockerfile` (Python 3.12 + Node.js 20), `docker-compose.yml` for one-command launch, `.dockerignore`
 - **Remote MCP Transport** (`mcp_server.py`): `--transport streamable-http`, `--host`, `--port` CLI arguments for hosted/remote MCP deployments
 - Docker and remote MCP sections added to `README.md`, all three Integration Guides, and all three Examples docs
-- Docker build verification step added to `PUBLISH_CHECKLIST.md`
+- Docker build verification step added to `RELEASE_CHECKLIST.md`
 
 ### Fixed
 
 - **Documentation Drift**: README smoke test command corrected from `npm run smoke` to `npm run ci:smoke` with individual smoke step listing
-- `PUBLISH_CHECKLIST.md` validation command updated to `npm run ci:smoke`
+- `RELEASE_CHECKLIST.md` validation command updated to `npm run ci:smoke`
 
 ## [0.6.1] - 2026-03-20
 
