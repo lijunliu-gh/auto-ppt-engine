@@ -17,6 +17,10 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 - **5 Built-in Themes** (`assets/themes/`): `business-clean` (default), `corporate-blue`, `dark-executive`, `warm-modern`, `minimal`, `tech` — each with distinct color palette, fonts, and chart colors
 - **`--theme` CLI flag** (`auto_ppt_cli.py`): Override theme via command line (e.g., `--theme dark-executive`)
 - **Smart theme inference** (`smart_layer.py`): `infer_theme()` now maps to actual built-in themes based on prompt keywords (tech → `tech`, investor/board → `dark-executive`, training → `warm-modern`, internal → `minimal`, corporate → `corporate-blue`)
+- **4 New Layout Types**: `kpi` (dashboard metric cards), `swot` (2×2 strategic grid), `image-text` (image + text sidebar), `funnel` (vertical pipeline visualization)
+- New schema fields: `kpis`, `quadrants`, `imagePosition`, `funnel` for new layout data
+- LLM prompt updated with instructions for new layout types
+- Test input: `examples/inputs/new-layouts-test.json`
 
 ### Changed
 

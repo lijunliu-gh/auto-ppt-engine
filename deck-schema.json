@@ -310,7 +310,11 @@
             "chart",
             "quote",
             "summary",
-            "closing"
+            "closing",
+            "kpi",
+            "swot",
+            "image-text",
+            "funnel"
           ]
         },
         "title": {
@@ -370,6 +374,42 @@
           "type": "array",
           "items": {
             "type": "string"
+          }
+        },
+        "kpis": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "label": { "type": "string" },
+              "value": { "type": "string" },
+              "delta": { "type": "string" }
+            },
+            "required": ["label", "value"]
+          }
+        },
+        "quadrants": {
+          "type": "object",
+          "properties": {
+            "strengths": { "type": "array", "items": { "type": "string" } },
+            "weaknesses": { "type": "array", "items": { "type": "string" } },
+            "opportunities": { "type": "array", "items": { "type": "string" } },
+            "threats": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "imagePosition": {
+          "type": "string",
+          "enum": ["left", "right"]
+        },
+        "funnel": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "label": { "type": "string" },
+              "value": { "type": "string" }
+            },
+            "required": ["label"]
           }
         }
       }

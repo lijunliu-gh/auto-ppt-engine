@@ -204,9 +204,9 @@ The first five roadmap phases are complete. Phase 7 quality control is complete.
 
 ---
 
-## Phase 11 — Layout Variants + New Layout Types → v0.9.0
+## Phase 11 — Layout Variants + New Layout Types → v0.7.2 ✅
 
-**Status**: Planned (GitHub Issue #33)
+**Status**: Done (v0.7.2, GitHub Issue #33 closed)
 
 **Goal**: Enrich layout variety with new types (KPI, SWOT, funnel) and variants of existing layouts.
 

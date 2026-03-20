@@ -30,6 +30,10 @@ SUPPORTED_LAYOUTS = [
     "quote",
     "summary",
     "closing",
+    "kpi",
+    "swot",
+    "image-text",
+    "funnel",
 ]
 MAX_REPAIR_ATTEMPTS = 2
 VALID_CHART_TYPES = frozenset({"bar", "line", "pie", "area"})
@@ -361,6 +365,12 @@ def build_system_prompt(skill_instructions: str, schema: Dict[str, Any]) -> str:
             "If no numerical data is available, use realistic placeholder values and note this in assumptions.",
             "Do NOT leave chart.categories or chart.series as empty arrays — this renders as a blank placeholder.",
             'Example chart slide fragment: {"layout": "chart", "chart": {"type": "bar", "title": "Q1-Q4 Revenue", "categories": ["Q1", "Q2", "Q3", "Q4"], "series": [{"name": "2025", "data": [120, 145, 160, 180]}, {"name": "2024", "data": [100, 110, 130, 150]}]}}',
+            # New layout instructions
+            "ADVANCED LAYOUTS:",
+            "- 'kpi': Dashboard with 3-6 metric cards. Set 'kpis' array with objects: {\"label\": \"Revenue\", \"value\": \"$2.4M\", \"delta\": \"+12%\"}. Use for executive dashboards and scorecards.",
+            "- 'swot': 2x2 SWOT grid. Set 'quadrants' object with keys: strengths, weaknesses, opportunities, threats (each an array of strings). Use for strategic analysis.",
+            "- 'image-text': Large image area with text sidebar. Set 'imagePosition' to 'left' or 'right', text in 'bullets'. Use when visuals dominate.",
+            "- 'funnel': Vertical funnel visualization. Set 'funnel' array with objects: {\"label\": \"Leads\", \"value\": \"10,000\"}. Use for pipeline/conversion data.",
             # Visual / image instructions
             "VISUAL RULES:",
             "The 'visuals' array on each slide supports three kinds of items:",

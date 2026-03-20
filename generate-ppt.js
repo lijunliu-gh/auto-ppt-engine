@@ -89,7 +89,11 @@ const allowedLayouts = new Set([
   'chart',
   'quote',
   'summary',
-  'closing'
+  'closing',
+  'kpi',
+  'swot',
+  'image-text',
+  'funnel'
 ]);
 
 function fail(message) {
@@ -144,7 +148,7 @@ function validateDeck(deck) {
     }
 
     if (!Array.isArray(slide.sources)) {
-      fail(`slides[${index}].sources must be an array.`);
+      slide.sources = [];
     }
   });
 }
@@ -809,6 +813,173 @@ function renderQuoteSlide(slide, deck, current) {
   }
 }
 
+// ---------------------------------------------------------------------------
+// KPI dashboard layout: 3-6 metric cards in a grid
+// ---------------------------------------------------------------------------
+function renderKpiSlide(slide, deck, current) {
+  addSlideHeader(slide, deck, current);
+  const kpis = Array.isArray(current.kpis) ? current.kpis : [];
+  if (kpis.length === 0) {
+    addTextBox(slide, 'No KPI data provided.', { x: 1.0, y: 2.5, w: 5.0, h: 0.4, fontSize: 16, color: _t.colors.textMuted });
+    return;
+  }
+
+  const cols = kpis.length <= 3 ? kpis.length : Math.min(kpis.length, 3);
+  const rows = Math.ceil(kpis.length / cols);
+  const cardW = 10.6 / cols - 0.2;
+  const cardH = rows === 1 ? 3.2 : 1.8;
+  const startY = 1.85;
+
+  kpis.forEach((kpi, i) => {
+    const col = i % cols;
+    const row = Math.floor(i / cols);
+    const x = 1.0 + col * (cardW + 0.2);
+    const y = startY + row * (cardH + 0.2);
+
+    slide.addShape('roundRect', {
+      x, y, w: cardW, h: cardH,
+      rectRadius: 0.06,
+      fill: { color: _t.colors.background },
+      line: { color: _t.colors.border, pt: 1 }
+    });
+
+    // Value (large)
+    addTextBox(slide, String(kpi.value || '—'), {
+      x: x + 0.2, y: y + 0.25, w: cardW - 0.4, h: 0.65,
+      fontSize: 28, bold: true, color: _t.colors.primary, align: 'center'
+    });
+
+    // Label
+    addTextBox(slide, kpi.label || '', {
+      x: x + 0.2, y: y + 0.95, w: cardW - 0.4, h: 0.35,
+      fontSize: 12, color: _t.colors.textMuted, align: 'center'
+    });
+
+    // Delta (optional)
+    if (kpi.delta) {
+      const isPositive = kpi.delta.startsWith('+') || kpi.delta.startsWith('↑');
+      addTextBox(slide, kpi.delta, {
+        x: x + 0.2, y: y + 1.3, w: cardW - 0.4, h: 0.3,
+        fontSize: 11, bold: true, align: 'center',
+        color: isPositive ? '059669' : 'DC2626'
+      });
+    }
+  });
+}
+
+// ---------------------------------------------------------------------------
+// SWOT 2x2 grid layout
+// ---------------------------------------------------------------------------
+function renderSwotSlide(slide, deck, current) {
+  addSlideHeader(slide, deck, current);
+  const q = current.quadrants || {};
+  const sections = [
+    { label: 'Strengths', items: q.strengths || [], color: '059669' },
+    { label: 'Weaknesses', items: q.weaknesses || [], color: 'DC2626' },
+    { label: 'Opportunities', items: q.opportunities || [], color: '2563EB' },
+    { label: 'Threats', items: q.threats || [], color: 'D97706' },
+  ];
+
+  const gridX = 0.9, gridY = 1.8;
+  const cellW = 5.5, cellH = 2.2, gap = 0.2;
+
+  sections.forEach((sec, i) => {
+    const col = i % 2;
+    const row = Math.floor(i / 2);
+    const x = gridX + col * (cellW + gap);
+    const y = gridY + row * (cellH + gap);
+
+    slide.addShape('roundRect', {
+      x, y, w: cellW, h: cellH,
+      rectRadius: 0.06,
+      fill: { color: _t.colors.slideBg },
+      line: { color: sec.color, pt: 2 }
+    });
+
+    // Section header
+    addTextBox(slide, sec.label, {
+      x: x + 0.15, y: y + 0.1, w: cellW - 0.3, h: 0.35,
+      fontSize: 14, bold: true, color: sec.color
+    });
+
+    // Bullet items
+    if (sec.items.length > 0) {
+      addBulletList(slide, sec.items, {
+        x: x + 0.15, y: y + 0.5, w: cellW - 0.3, h: cellH - 0.65, fontSize: 11
+      });
+    }
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Image-text layout: large image placeholder + text sidebar
+// ---------------------------------------------------------------------------
+function renderImageTextSlide(slide, deck, current) {
+  addSlideHeader(slide, deck, current);
+  const pos = (current.imagePosition || 'left').toLowerCase();
+  const imgX = pos === 'right' ? 6.8 : 0.9;
+  const txtX = pos === 'right' ? 0.9 : 6.8;
+  const imgW = 5.6, txtW = 5.0;
+
+  // Image placeholder
+  slide.addShape('roundRect', {
+    x: imgX, y: 1.8, w: imgW, h: 4.4,
+    rectRadius: 0.06,
+    fill: { color: _t.colors.background },
+    line: { color: _t.colors.border, pt: 1 }
+  });
+  addTextBox(slide, '🖼 ' + (current.subtitle || 'Image'), {
+    x: imgX + 0.3, y: 3.5, w: imgW - 0.6, h: 0.5,
+    fontSize: 14, italic: true, color: _t.colors.textMuted, align: 'center'
+  });
+
+  // Text content
+  if (Array.isArray(current.bullets) && current.bullets.length > 0) {
+    addBulletList(slide, current.bullets, {
+      x: txtX + 0.1, y: 1.9, w: txtW - 0.2, h: 4.0, fontSize: 14
+    });
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Funnel layout: vertical funnel stages
+// ---------------------------------------------------------------------------
+function renderFunnelSlide(slide, deck, current) {
+  addSlideHeader(slide, deck, current);
+  const stages = Array.isArray(current.funnel) ? current.funnel : [];
+  if (stages.length === 0) {
+    addTextBox(slide, 'No funnel data provided.', { x: 1.0, y: 2.5, w: 5.0, h: 0.4, fontSize: 16, color: _t.colors.textMuted });
+    return;
+  }
+
+  const maxW = 10.0, minW = 4.0;
+  const stageH = Math.min(0.75, 4.0 / stages.length);
+  const gap = 0.08;
+  const startY = 1.85;
+  const centerX = 6.5;
+  const chartColors = _t.chartColors;
+
+  stages.forEach((stage, i) => {
+    const fraction = stages.length === 1 ? 1 : 1 - (i / (stages.length - 1)) * 0.6;
+    const w = minW + (maxW - minW) * fraction;
+    const x = centerX - w / 2;
+    const y = startY + i * (stageH + gap);
+    const color = chartColors[i % chartColors.length];
+
+    slide.addShape('roundRect', {
+      x, y, w, h: stageH,
+      rectRadius: 0.04,
+      fill: { color },
+    });
+
+    const label = stage.value ? `${stage.label}  —  ${stage.value}` : stage.label;
+    addTextBox(slide, label, {
+      x, y, w, h: stageH,
+      fontSize: 13, bold: true, color: 'FFFFFF', align: 'center', valign: 'mid'
+    });
+  });
+}
+
 function renderClosingSlide(slide, deck, current) {
   slide.background = { color: _t.colors.closingBg };
   addTextBox(slide, current.title, {
@@ -869,6 +1040,18 @@ function renderSlide(pptx, deck, current) {
       break;
     case 'quote':
       renderQuoteSlide(slide, deck, current);
+      break;
+    case 'kpi':
+      renderKpiSlide(slide, deck, current);
+      break;
+    case 'swot':
+      renderSwotSlide(slide, deck, current);
+      break;
+    case 'image-text':
+      renderImageTextSlide(slide, deck, current);
+      break;
+    case 'funnel':
+      renderFunnelSlide(slide, deck, current);
       break;
     case 'closing':
       renderClosingSlide(slide, deck, current);
