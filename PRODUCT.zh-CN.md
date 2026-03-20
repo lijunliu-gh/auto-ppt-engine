@@ -47,12 +47,14 @@ Auto PPT Prototype 是一个面向 AI Agent 的开源 PowerPoint 后端。
 - 基于自然语言指令的 deck revise
 - 本地文件与 URL 的可信来源 ingestion
 - 图表数据验证，无效图表自动降级为 bullet 布局
+- 图表自动修复：无效类型纠正、字符串→数值转换、数据/分类长度自动对齐（降级前先尝试修复）
 - 从资料来源中提取数值数据作为图表提示
 - 基于 JSON Schema 的结构校验
 - 通过 Node renderer 输出 `.pptx`
 - 品牌模板引擎：传入 .pptx 模板即可生成品牌匹配的输出（基于 python-pptx）
 - 双渲染路径：python-pptx（有模板）或 pptxgenjs（无模板）
 - MCP Server，支持 Claude Desktop、Cursor、Windsurf（`create_deck`、`revise_deck`）
+- MCP 远程传输：Streamable HTTP 模式，支持托管部署（`--transport streamable-http`）
 - 可被 agent 调用的 JSON request/response 流程
 - 本地 HTTP skill 接口
 - LLM 提供者抽象（OpenAI、OpenRouter、Claude、Gemini、Qwen、DeepSeek、GLM、MiniMax）
@@ -61,6 +63,7 @@ Auto PPT Prototype 是一个面向 AI Agent 的开源 PowerPoint 后端。
 - 263 条自动化测试（84% 覆盖率：单元测试、MCP 服务测试、MCP 集成测试、模板引擎测试、图片处理测试、跨模块测试）
 - API 版本控制（`apiVersion: "1.0"`）包含在所有请求和响应中
 - CI 矩阵：Python 3.10/3.11/3.12 上的 pytest + Node.js 18/20/22 烟雾测试
+- Docker 打包：Dockerfile + docker-compose.yml，一键容器化部署
 
 ## 当前对外入口
 

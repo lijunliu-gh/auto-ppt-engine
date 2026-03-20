@@ -46,12 +46,14 @@ For serious use cases, the system should rely on:
 - deck revision from natural-language instructions
 - trusted source ingestion from files and URLs
 - chart data validation with automatic fallback to bullet layout
+- chart auto-repair: invalid type correction, string-to-number coercion, data/category length alignment before fallback
 - numerical data extraction from sources for chart hints
 - deck JSON validation
 - PPTX rendering through the Node renderer
 - Brand template engine: pass a .pptx template for brand-matched output via python-pptx
 - Dual render path: python-pptx (with template) or pptxgenjs (without template)
 - MCP Server for Claude Desktop, Cursor, and Windsurf (`create_deck`, `revise_deck`)
+- MCP remote transport: streamable HTTP mode for hosted deployments (`--transport streamable-http`)
 - agent-callable JSON request and response flow
 - local HTTP skill endpoint
 - LLM provider abstraction (OpenAI, OpenRouter, Claude, Gemini, Qwen, DeepSeek, GLM, MiniMax)
@@ -60,6 +62,7 @@ For serious use cases, the system should rely on:
 - 263 automated tests (84% coverage: unit, MCP server, MCP integration, template engine, image handler, cross-module)
 - API versioning (`apiVersion: "1.0"`) in all requests and responses
 - CI matrix: pytest on Python 3.10/3.11/3.12 + Node.js 18/20/22 smoke tests
+- Docker packaging: Dockerfile + docker-compose.yml for one-command containerized deployment
 
 ## Public Entry Points
 

@@ -42,12 +42,14 @@ Auto PPT Prototype は、AI エージェント向けのオープンソース Pow
 - 自然言語指示による deck revise
 - ローカルファイルと URL からの trusted source ingestion
 - チャートデータ検証、無効なチャートは自動的に bullet レイアウトにフォールバック
+- チャート自動修復: 無効なタイプ補正、文字列→数値変換、データ/カテゴリ長の自動調整（フォールバック前に実行）
 - ソース資料から数値データを抽出しチャートヒントとして注入
 - deck JSON の validation
 - Node renderer による PPTX 出力
 - ブランドテンプレートエンジン: .pptx テンプレートを渡してブランドに合った出力を生成（python-pptx ベース）
 - デュアルレンダーパス: python-pptx（テンプレートあり）または pptxgenjs（テンプレートなし）
 - MCP Server（Claude Desktop、Cursor、Windsurf 対応、`create_deck`・`revise_deck`）
+- MCP リモートトランスポート: ホスト型デプロイ向けの Streamable HTTP モード（`--transport streamable-http`）
 - エージェントから呼び出せる JSON request / response フロー
 - ローカル HTTP skill エンドポイント
 - LLM プロバイダー抽象（OpenAI、OpenRouter、Claude、Gemini、Qwen、DeepSeek、GLM、MiniMax）
@@ -56,6 +58,7 @@ Auto PPT Prototype は、AI エージェント向けのオープンソース Pow
 - 263 件の自動テスト（84% カバレッジ: ユニット、MCP サーバー、MCP 統合、テンプレートエンジン、画像ハンドラー、クロスモジュール）
 - API バージョニング（`apiVersion: "1.0"`）をすべてのリクエストとレスポンスに含む
 - CI マトリックス: Python 3.10/3.11/3.12 での pytest + Node.js 18/20/22 スモークテスト
+- Docker パッケージング: Dockerfile + docker-compose.yml によるワンコマンドコンテナデプロイ
 
 ## 現在の公開エントリーポイント
 
