@@ -105,3 +105,28 @@ curl -X POST http://localhost:3010/skill -H "Content-Type: application/json" --d
 ```bash
 mcp dev mcp_server.py
 ```
+
+### 远程 MCP（Streamable HTTP）
+
+```bash
+python mcp_server.py --transport streamable-http --host 0.0.0.0 --port 8080
+```
+
+MCP 客户端连接 `http://<server-host>:8080/mcp` 即可。
+
+## Docker 示例
+
+通过 Docker Compose 构建并启动：
+
+```bash
+export OPENAI_API_KEY="sk-..."
+docker compose up --build
+curl http://localhost:5000/health
+```
+
+或者执行一次性生成：
+
+```bash
+docker run --rm -e OPENAI_API_KEY -v $(pwd)/output:/app/output auto-ppt-prototype \
+  python py-generate-from-prompt.py --mock --prompt "做一个8页的AI策略汇报"
+```

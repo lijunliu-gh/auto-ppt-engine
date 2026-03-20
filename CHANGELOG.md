@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog, and this project follows Semantic Versioning while it remains a prototype.
 
+## [0.7.0] - 2026-03-20
+
+### Added
+
+- **Chart Determinism** (`python_backend/smart_layer.py`): New `repair_chart_data()` auto-repair function — automatically corrects invalid chart types, coerces string numbers to numeric values, and pads/trims data arrays to match category length before falling back to bullet layout
+- Stricter chart schema (`deck-schema.json`): `enum` validation for chart types (`bar`, `line`, `pie`, `area`), `minItems` constraints on `categories` and `series`, `oneOf` to distinguish empty placeholders from valid chart data
+- `MAX_REPAIR_ATTEMPTS` increased from 1 to 2 for more reliable LLM output recovery
+- **Docker Packaging**: `Dockerfile` (Python 3.12 + Node.js 20), `docker-compose.yml` for one-command launch, `.dockerignore`
+- **Remote MCP Transport** (`mcp_server.py`): `--transport streamable-http`, `--host`, `--port` CLI arguments for hosted/remote MCP deployments
+- Docker and remote MCP sections added to `README.md`, all three Integration Guides, and all three Examples docs
+- Docker build verification step added to `PUBLISH_CHECKLIST.md`
+
+### Fixed
+
+- **Documentation Drift**: README smoke test command corrected from `npm run smoke` to `npm run ci:smoke` with individual smoke step listing
+- `PUBLISH_CHECKLIST.md` validation command updated to `npm run ci:smoke`
+
 ## [0.6.1] - 2026-03-20
 
 ### Added

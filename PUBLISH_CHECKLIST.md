@@ -34,6 +34,7 @@ Files and folders that should normally be committed:
 - repository docs such as `README.md`, `PRODUCT.*.md`, `USER_GUIDE.*.md`, and `INTEGRATION_GUIDE.*.md`
 - GitHub workflow and template files under `.github/`
 - `LICENSE`, `CONTRIBUTING.md`, `SECURITY.md`, `GITHUB_SETUP.md`, `PUBLISH_CHECKLIST.md`, and release draft files
+- `Dockerfile`, `docker-compose.yml`, `.dockerignore`
 - `package.json` and `package-lock.json`
 - sample input files such as `sample-input.json`, `sample-agent-request.json`, and `sample-source-brief.md`
 
@@ -56,8 +57,9 @@ If you are unsure, use `.gitignore` as the default rule and avoid committing gen
 
 - [ ] `npm install` works on a clean machine
 - [ ] `pip install -r requirements.txt` works on a clean machine
-- [ ] `node scripts/run-smoke.js` passes
+- [ ] `npm run ci:smoke` passes (smoke tests)
 - [ ] `python -m pytest tests/ -v` passes (all tests green)
+- [ ] `docker build -t auto-ppt-prototype .` succeeds
 - [ ] MCP server starts without error: `python mcp_server.py`
 - [ ] GitHub Actions smoke workflow is enabled
 

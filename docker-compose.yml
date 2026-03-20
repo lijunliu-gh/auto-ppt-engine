@@ -1,0 +1,26 @@
+services:
+  auto-ppt:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      # --- Choose ONE LLM provider ---
+      # OpenAI / reasoning models (default)
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - OPENAI_MODEL=${OPENAI_MODEL:-gpt-4.1-mini}
+      #- OPENAI_BASE_URL=              # For Qwen, DeepSeek, GLM, MiniMax, etc.
+
+      # Anthropic Claude
+      #- ANTHROPIC_API_KEY=
+
+      # Google Gemini
+      #- GOOGLE_API_KEY=
+
+      # OpenRouter (200+ models via one key)
+      #- OPENROUTER_API_KEY=
+
+      # Optional: Tavily web research
+      #- TAVILY_API_KEY=
+    volumes:
+      - ./output:/app/output
+    restart: unless-stopped

@@ -313,10 +313,38 @@ python -m pytest tests/ -v
 Run smoke tests:
 
 ```bash
-npm run smoke
+npm run ci:smoke
+```
+
+Or run individual smoke steps:
+
+```bash
+npm run smoke:generate   # JS renderer smoke
+npm run smoke:source     # Source-grounded generation
+npm run smoke:revise     # Revision flow
+npm run smoke:skill      # Agent skill workflow
 ```
 
 CI runs pytest across Python 3.10, 3.11, and 3.12, plus Node.js 18, 20, and 22 smoke tests.
+
+## Docker
+
+Single-command launch via Docker Compose:
+
+```bash
+# Set your LLM provider key
+export OPENAI_API_KEY="sk-..."
+
+# Build and start the HTTP skill server
+docker compose up --build
+
+# Or run the MCP server (stdio) directly
+docker run --rm -it -e OPENAI_API_KEY auto-ppt-prototype python mcp_server.py
+
+# Or run with remote MCP transport (Streamable HTTP)
+docker run --rm -p 8080:8080 -e OPENAI_API_KEY auto-ppt-prototype \
+  python mcp_server.py --transport streamable-http --host 0.0.0.0 --port 8080
+```
 
 ## End-To-End Flow
 

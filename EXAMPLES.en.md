@@ -103,3 +103,28 @@ To test MCP directly without a client:
 ```bash
 mcp dev mcp_server.py
 ```
+
+### Remote MCP (Streamable HTTP)
+
+```bash
+python mcp_server.py --transport streamable-http --host 0.0.0.0 --port 8080
+```
+
+Then point your MCP client to `http://<server-host>:8080/mcp`.
+
+## Docker Example
+
+Build and run with Docker Compose:
+
+```bash
+export OPENAI_API_KEY="sk-..."
+docker compose up --build
+curl http://localhost:5000/health
+```
+
+Or run a one-off generation:
+
+```bash
+docker run --rm -e OPENAI_API_KEY -v $(pwd)/output:/app/output auto-ppt-prototype \
+  python py-generate-from-prompt.py --mock --prompt "Create an 8-slide AI strategy deck"
+```

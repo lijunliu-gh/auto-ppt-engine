@@ -31,7 +31,8 @@ SUPPORTED_LAYOUTS = [
     "summary",
     "closing",
 ]
-MAX_REPAIR_ATTEMPTS = 1
+MAX_REPAIR_ATTEMPTS = 2
+VALID_CHART_TYPES = frozenset({"bar", "line", "pie", "area"})
 
 
 def fail(message: str) -> None:
@@ -446,6 +447,71 @@ def normalize_closing_slide(deck: Dict[str, Any]) -> None:
     closing_slide["title"] = closing_slide.get("title") or "Next steps"
 
 
+def _coerce_numeric(value: Any) -> float | None:
+    """Try to convert a value to a number, returning None on failure."""
+    if isinstance(value, (int, float)):
+        return float(value)
+    if isinstance(value, str):
+        cleaned = value.replace(",", "").replace("$", "").replace("%", "").strip()
+        try:
+            return float(cleaned)
+        except ValueError:
+            return None
+    return None
+
+
+def repair_chart_data(chart: Dict[str, Any]) -> List[str]:
+    """Attempt to fix common chart data issues in-place.
+
+    Returns a list of repair notes describing what was fixed.
+    """
+    notes: List[str] = []
+    chart_type = chart.get("type", "")
+    if chart_type not in VALID_CHART_TYPES:
+        chart["type"] = "bar"
+        notes.append(f"Corrected invalid chart type '{chart_type}' to 'bar'")
+
+    categories = chart.get("categories", [])
+    if not isinstance(categories, list):
+        categories = []
+        chart["categories"] = categories
+
+    series = chart.get("series", [])
+    if not isinstance(series, list):
+        series = []
+        chart["series"] = series
+
+    cat_len = len(categories)
+    for entry in series:
+        data = entry.get("data", [])
+        if not isinstance(data, list):
+            data = []
+            entry["data"] = data
+
+        # Coerce string numbers to actual numbers
+        coerced = []
+        for v in data:
+            num = _coerce_numeric(v)
+            coerced.append(num if num is not None else 0)
+        if coerced != data:
+            entry["data"] = coerced
+            data = coerced
+            notes.append(f"Coerced non-numeric data values in series '{entry.get('name', '?')}'")
+
+        # Pad or trim data to match categories length
+        if cat_len > 0 and len(data) != cat_len:
+            original_len = len(data)
+            if len(data) < cat_len:
+                entry["data"] = data + [0] * (cat_len - len(data))
+            else:
+                entry["data"] = data[:cat_len]
+            notes.append(
+                f"Adjusted series '{entry.get('name', '?')}' data length from {original_len} to {cat_len}"
+            )
+
+    return notes
+
+
 def _is_valid_chart(chart: Dict[str, Any]) -> bool:
     """Check whether a chart object has usable data for rendering."""
     categories = chart.get("categories", [])
@@ -453,6 +519,8 @@ def _is_valid_chart(chart: Dict[str, Any]) -> bool:
     if not isinstance(categories, list) or len(categories) == 0:
         return False
     if not isinstance(series, list) or len(series) == 0:
+        return False
+    if chart.get("type") not in VALID_CHART_TYPES:
         return False
     for entry in series:
         data = entry.get("data", [])
@@ -473,6 +541,12 @@ def validate_chart_slides(deck: Dict[str, Any]) -> List[str]:
         if slide.get("layout") != "chart":
             continue
         chart = slide.get("chart", {})
+        # Attempt auto-repair before validation
+        repair_notes = repair_chart_data(chart)
+        if repair_notes:
+            logger.info("Chart repair applied on slide %d: %s",
+                        slide.get("page", 0), "; ".join(repair_notes))
+            fallback_notes.extend(repair_notes)
         if _is_valid_chart(chart):
             continue
         # Degrade to bullet layout

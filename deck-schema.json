@@ -132,10 +132,12 @@
       ],
       "properties": {
         "name": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         },
         "data": {
           "type": "array",
+          "minItems": 1,
           "items": {
             "type": "number"
           }
@@ -143,34 +145,46 @@
       }
     },
     "chart": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "type",
-        "title",
-        "categories",
-        "series"
-      ],
-      "properties": {
-        "type": {
-          "type": "string"
-        },
-        "title": {
-          "type": "string"
-        },
-        "categories": {
-          "type": "array",
-          "items": {
-            "type": "string"
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Empty chart placeholder for non-chart slides",
+          "required": ["type", "title", "categories", "series"],
+          "properties": {
+            "type": { "type": "string", "const": "" },
+            "title": { "type": "string", "maxLength": 0 },
+            "categories": { "type": "array", "maxItems": 0 },
+            "series": { "type": "array", "maxItems": 0 }
           }
         },
-        "series": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/chartSeries"
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Fully populated chart with valid data",
+          "required": ["type", "title", "categories", "series"],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["bar", "line", "pie", "area"]
+            },
+            "title": {
+              "type": "string",
+              "minLength": 1
+            },
+            "categories": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "type": "string" }
+            },
+            "series": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "$ref": "#/$defs/chartSeries" }
+            }
           }
         }
-      }
+      ]
     },
     "table": {
       "type": "object",

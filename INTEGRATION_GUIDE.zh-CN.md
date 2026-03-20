@@ -68,6 +68,16 @@
 | `create_deck` | `prompt`（必填）、`sources`、`mock`、`research`、`output_dir` | 创建新的演示文稿 |
 | `revise_deck` | `prompt`（必填）、`deck_path`（必填）、`sources`、`mock`、`research`、`output_dir` | 修订现有演示文稿 |
 
+### Streamable HTTP 传输（用于远程部署）
+
+远程或托管环境中，MCP 服务器支持 Streamable HTTP 传输：
+
+```bash
+python mcp_server.py --transport streamable-http --host 0.0.0.0 --port 8080
+```
+
+MCP 客户端连接 `http://<server-host>:8080/mcp` 即可。
+
 ## 2. CLI 接入
 
 这是最简单的接入方式，适合：
@@ -423,6 +433,30 @@ v0.4.1 起，系统会自动验证图表 slide：
 如果你现在就要接，最稳的路径是：
 
 **如果用 Claude Desktop、Cursor 或 Windsurf：直接用 MCP。否则先用 JSON skill 模式接入，再根据需要升级到 HTTP 模式。**
+
+## 5. Docker 部署
+
+项目包含 `Dockerfile` 和 `docker-compose.yml`，支持容器化部署。
+
+### Docker Compose 快速启动
+
+```bash
+export OPENAI_API_KEY="sk-..."
+docker compose up --build
+```
+
+HTTP skill 服务启动在端口 5000。
+
+### Docker 运行 MCP 服务器
+
+```bash
+# 本地 stdio MCP
+docker run --rm -it -e OPENAI_API_KEY auto-ppt-prototype python mcp_server.py
+
+# 远程 Streamable HTTP MCP
+docker run --rm -p 8080:8080 -e OPENAI_API_KEY auto-ppt-prototype \
+  python mcp_server.py --transport streamable-http --host 0.0.0.0 --port 8080
+```
 
 ## API 版本控制
 

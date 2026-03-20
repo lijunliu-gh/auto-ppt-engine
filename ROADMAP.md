@@ -1,10 +1,10 @@
 # Roadmap
 
-Current version: **v0.6.1**
+Current version: **v0.7.0**
 
 This roadmap reflects the project's current capabilities, known gaps, and planned evolution from experimental prototype to a production-grade AI-agent PowerPoint backend.
 
-All four planned phases are complete. All 14 GitHub issues are closed.
+All four planned phases are complete. All 14 GitHub issues are closed. Phase 5 (v0.7.0) adds deployment packaging and chart determinism improvements.
 
 ---
 
@@ -99,6 +99,24 @@ All four planned phases are complete. All 14 GitHub issues are closed.
 
 ---
 
+## Phase 5 — Deployment Packaging + Chart Determinism + Remote MCP → v0.7.0 ✅
+
+**Status**: Complete — released in v0.7.0
+
+**Goal**: Lower deployment friction, improve chart reliability, and enable remote MCP access.
+
+| Task | Description | Complexity |
+|------|-------------|------------|
+| Docker packaging | `Dockerfile` (Python 3.12 + Node.js 20) + `docker-compose.yml` for one-command launch | Medium |
+| Chart auto-repair | `repair_chart_data()` — fix invalid types, coerce string numbers, align data/category lengths before fallback | Medium |
+| Stricter chart schema | `enum` for chart types, `minItems` on categories/series, `oneOf` for empty vs valid charts | Low |
+| Remote MCP transport | `--transport streamable-http --host --port` CLI args for hosted deployments | Low |
+| Documentation sync | Docker, remote MCP, and smoke command fixes across all multilingual docs | Low |
+
+**Why here**: Evaluation report identified deployment friction, chart determinism, remote MCP, and documentation drift as the four highest-priority gaps.
+
+---
+
 ## Ongoing (Across All Phases)
 
 | Task | Description |
@@ -119,6 +137,7 @@ v0.4.1   Chart reliability         ← Prove core quality             ✅
 v0.5.0   Brand template engine     ← Usability breakthrough         ✅
 v0.5.1   Image pipeline            ← Ecosystem expansion            ✅
 v0.6.0   API versioning + CI + coverage ← All issues resolved       ✅
+v0.7.0   Docker + chart repair + remote MCP ← Deployment-ready      ✅
 ```
 
 ---

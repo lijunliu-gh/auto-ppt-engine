@@ -1,0 +1,8 @@
+node_modules/
+output/
+__pycache__/
+*.pyc
+.env
+.git
+.github
+*.pptx

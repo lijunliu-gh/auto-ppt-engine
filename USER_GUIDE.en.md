@@ -145,6 +145,23 @@ Add to your MCP client config:
 
 Then ask your AI assistant to create or revise a deck. The MCP server exposes `create_deck` and `revise_deck` tools.
 
+For remote/hosted deployments, the MCP server also supports streamable HTTP transport:
+
+```bash
+python mcp_server.py --transport streamable-http --host 0.0.0.0 --port 8080
+```
+
+### 8. Docker
+
+```bash
+# One-command launch (HTTP skill server)
+docker compose up --build
+
+# Or run MCP server with remote transport
+docker run --rm -p 8080:8080 -e OPENAI_API_KEY auto-ppt-prototype \
+  python mcp_server.py --transport streamable-http --host 0.0.0.0 --port 8080
+```
+
 ## How Source Material Works
 
 Supported source types include:

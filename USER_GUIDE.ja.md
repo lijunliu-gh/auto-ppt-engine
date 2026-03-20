@@ -125,6 +125,23 @@ MCP クライアントの設定に追加:
 
 その後、AI アシスタントに deck の作成・改訂を依頼できます。MCP サーバーは `create_deck` と `revise_deck` ツールを提供します。
 
+リモート環境では Streamable HTTP トランスポートも利用可能です：
+
+```bash
+python mcp_server.py --transport streamable-http --host 0.0.0.0 --port 8080
+```
+
+### 8. Docker
+
+```bash
+# HTTP skill サーバーをワンコマンドで起動
+docker compose up --build
+
+# または MCP サーバーをリモートトランスポートで実行
+docker run --rm -p 8080:8080 -e OPENAI_API_KEY auto-ppt-prototype \
+  python mcp_server.py --transport streamable-http --host 0.0.0.0 --port 8080
+```
+
 ## ソース資料の扱い
 
 対応しているソース種別:

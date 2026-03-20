@@ -86,6 +86,18 @@ Both tools return a JSON string with: `ok`, `action`, `slideCount`, `deckJsonPat
 - Revision is natural: the AI can chain `create_deck` → review → `revise_deck`
 - Works with mock mode for offline testing
 
+### Remote MCP via Streamable HTTP
+
+For hosted or remote deployments, the MCP server supports streamable HTTP transport:
+
+```bash
+python mcp_server.py --transport streamable-http --host 0.0.0.0 --port 8080
+```
+
+Then configure your MCP client to connect to `http://<server-host>:8080/mcp`.
+
+This is useful when running the server inside Docker, on a cloud VM, or in any environment where stdio is not available.
+
 ## 2. CLI Integration
 
 This is the simplest path. It works well for:
@@ -528,6 +540,37 @@ As of v0.6.0, all API requests and responses include an `apiVersion` field:
 - The server always responds with its own API version regardless of the client-provided value
 
 This field enables forward-compatible API evolution without breaking existing integrations.
+
+## 5. Docker Deployment
+
+The project ships with `Dockerfile` and `docker-compose.yml` for containerized deployment.
+
+### Quick Start with Docker Compose
+
+```bash
+export OPENAI_API_KEY="sk-..."
+docker compose up --build
+```
+
+This starts the HTTP skill server on port 5000.
+
+### MCP Server in Docker
+
+```bash
+# Local stdio MCP
+docker run --rm -it -e OPENAI_API_KEY auto-ppt-prototype python mcp_server.py
+
+# Remote streamable HTTP MCP
+docker run --rm -p 8080:8080 -e OPENAI_API_KEY auto-ppt-prototype \
+  python mcp_server.py --transport streamable-http --host 0.0.0.0 --port 8080
+```
+
+### CLI in Docker
+
+```bash
+docker run --rm -e OPENAI_API_KEY -v $(pwd)/output:/app/output auto-ppt-prototype \
+  python py-generate-from-prompt.py --mock --prompt "Create an 8-slide AI strategy deck"
+```
 
 ## One-Line Integration Advice
 

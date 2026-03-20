@@ -8,6 +8,10 @@ Usage (stdio transport — the default for local MCP):
 
     python mcp_server.py
 
+Remote / Streamable HTTP transport (for hosted deployments):
+
+    python mcp_server.py --transport streamable-http --host 0.0.0.0 --port 8080
+
 Or via the ``mcp`` CLI for development inspection:
 
     mcp dev mcp_server.py
@@ -15,6 +19,7 @@ Or via the ``mcp`` CLI for development inspection:
 
 from __future__ import annotations
 
+import argparse
 import json
 import logging
 from pathlib import Path
@@ -113,4 +118,19 @@ def revise_deck(
 
 
 if __name__ == "__main__":
-    mcp.run()
+    parser = argparse.ArgumentParser(description="auto-ppt-prototype MCP server")
+    parser.add_argument(
+        "--transport",
+        choices=["stdio", "streamable-http"],
+        default="stdio",
+        help="MCP transport type (default: stdio)",
+    )
+    parser.add_argument("--host", default="127.0.0.1", help="Host for HTTP transport (default: 127.0.0.1)")
+    parser.add_argument("--port", type=int, default=8080, help="Port for HTTP transport (default: 8080)")
+    args = parser.parse_args()
+
+    if args.transport == "streamable-http":
+        logger.info("Starting MCP server on %s:%d (streamable-http)", args.host, args.port)
+        mcp.run(transport="streamable-http", host=args.host, port=args.port)
+    else:
+        mcp.run()

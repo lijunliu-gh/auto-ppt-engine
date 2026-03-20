@@ -143,6 +143,23 @@ curl -X POST http://localhost:3010/skill -H "Content-Type: application/json" --d
 
 然后直接让 AI 助手帮你创建或修订 deck。MCP 服务暴露 `create_deck` 和 `revise_deck` 两个 tool。
 
+远程部署时，MCP 服务器也支持 Streamable HTTP 传输：
+
+```bash
+python mcp_server.py --transport streamable-http --host 0.0.0.0 --port 8080
+```
+
+### 8. Docker
+
+```bash
+# 一键启动 HTTP skill 服务
+docker compose up --build
+
+# 或以远程传输模式运行 MCP 服务器
+docker run --rm -p 8080:8080 -e OPENAI_API_KEY auto-ppt-prototype \
+  python mcp_server.py --transport streamable-http --host 0.0.0.0 --port 8080
+```
+
 ## 资料来源现在怎么处理
 
 当前支持的来源包括：
