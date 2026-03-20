@@ -2,6 +2,20 @@ const fs = require('fs');
 const path = require('path');
 const PptxGenJS = require('pptxgenjs');
 
+// Optional: chartjs-node-canvas for cross-platform chart images (Keynote/Google Slides compat)
+let ChartJSNodeCanvas = null;
+try {
+  ChartJSNodeCanvas = require('chartjs-node-canvas').ChartJSNodeCanvas;
+} catch (_) {
+  // chartjs-node-canvas not installed — will use native PPT charts
+}
+
+// Universal font stack: Latin + CJK (Chinese, Japanese, Korean) fallback
+const FONT_BODY = 'Aptos, Microsoft YaHei, PingFang SC, Meiryo, Noto Sans CJK SC';
+const FONT_HEADING = 'Aptos Display, Microsoft YaHei, PingFang SC, Meiryo, Noto Sans CJK SC';
+
+const CHART_COLORS = ['#0F766E', '#2563EB', '#F59E0B', '#DC2626', '#7C3AED', '#059669'];
+
 const allowedLayouts = new Set([
   'title',
   'agenda',
@@ -86,10 +100,11 @@ function addTextBox(slide, text, options = {}) {
   }
 
   slide.addText(text, {
-    fontFace: 'Aptos',
+    fontFace: FONT_BODY,
     color: '1F2937',
     margin: 0.08,
-    breakLine: false,
+    breakLine: true,
+    shrinkText: true,
     ...options
   });
 }
@@ -180,12 +195,13 @@ function addBulletList(slide, bullets, area) {
       y: area.y,
       w: area.w,
       h: area.h,
-      fontFace: 'Aptos',
+      fontFace: FONT_BODY,
       fontSize: area.fontSize || 18,
       color: area.color || '1F2937',
       valign: 'top',
       paraSpaceAfterPt: 10,
-      breakLine: true
+      breakLine: true,
+      shrinkText: true
     }
   );
 }
@@ -529,12 +545,12 @@ function renderTableSlide(slide, deck, current) {
     h: 4.8,
     border: { type: 'solid', color: 'CBD5E1', pt: 1 },
     fill: 'FFFFFF',
-    fontFace: 'Aptos',
+    fontFace: FONT_BODY,
     fontSize: 13,
     color: '1F2937',
     bold: false,
     rowH: 0.42,
-    autoFit: false,
+    autoFit: true,
     margin: 0.05,
     valign: 'mid',
     align: 'left',
@@ -556,6 +572,56 @@ function toChartType(type) {
     default:
       return 'bar';
   }
+}
+
+// Convert chart type to chart.js type name
+function toChartJsType(type) {
+  const t = (type || '').toLowerCase();
+  if (t === 'area') return 'line'; // area = line with fill
+  if (['bar', 'line', 'pie'].includes(t)) return t;
+  return 'bar';
+}
+
+/**
+ * Render chart to PNG buffer using chart.js (cross-platform compatible).
+ * Returns base64 string or null if chartjs-node-canvas unavailable.
+ */
+function renderChartImage(chart, categories, series) {
+  if (!ChartJSNodeCanvas) return null;
+
+  const chartType = toChartJsType(chart.type);
+  const isArea = (chart.type || '').toLowerCase() === 'area';
+
+  const canvas = new ChartJSNodeCanvas({ width: 960, height: 540, backgroundColour: '#FFFFFF' });
+  const datasets = series.map((entry, i) => ({
+    label: entry.name,
+    data: entry.data,
+    backgroundColor: chartType === 'pie'
+      ? CHART_COLORS.slice(0, categories.length)
+      : CHART_COLORS[i % CHART_COLORS.length] + '99',
+    borderColor: CHART_COLORS[i % CHART_COLORS.length],
+    borderWidth: chartType === 'pie' ? 1 : 2,
+    fill: isArea
+  }));
+
+  const config = {
+    type: chartType,
+    data: { labels: categories, datasets },
+    options: {
+      responsive: false,
+      plugins: {
+        title: { display: !!chart.title, text: chart.title || '', font: { size: 16 } },
+        legend: { display: series.length > 1 || chartType === 'pie', position: 'bottom' }
+      },
+      scales: chartType === 'pie' ? {} : {
+        x: { ticks: { font: { size: 12 } } },
+        y: { ticks: { font: { size: 12 } }, beginAtZero: true }
+      }
+    }
+  };
+
+  const buffer = canvas.renderToBufferSync(config);
+  return buffer.toString('base64');
 }
 
 function renderChartSlide(slide, deck, current) {
@@ -593,27 +659,42 @@ function renderChartSlide(slide, deck, current) {
     return;
   }
 
-  const chartData = series.map((entry) => ({
-    name: entry.name,
-    labels: categories,
-    values: entry.data
-  }));
+  // Try image-based rendering first (Keynote/Google Slides compatible)
+  const useNativeCharts = deck._nativeCharts === true;
+  const chartImageBase64 = useNativeCharts ? null : renderChartImage(chart, categories, series);
 
-  slide.addChart(toChartType(chart.type), chartData, {
-    x: 0.95,
-    y: 1.8,
-    w: 8.0,
-    h: 4.5,
-    catAxisLabelFontSize: 11,
-    valAxisLabelFontSize: 11,
-    showLegend: true,
-    legendFontSize: 10,
-    showTitle: true,
-    title: chart.title || current.title,
-    titleFontFace: 'Aptos',
-    titleFontSize: 13,
-    chartColors: ['0F766E', '2563EB', 'F59E0B', 'DC2626']
-  });
+  if (chartImageBase64) {
+    slide.addImage({
+      data: `image/png;base64,${chartImageBase64}`,
+      x: 0.95,
+      y: 1.8,
+      w: 8.0,
+      h: 4.5
+    });
+  } else {
+    // Fallback: native OOXML chart (best in PowerPoint, may not render in Keynote)
+    const chartData = series.map((entry) => ({
+      name: entry.name,
+      labels: categories,
+      values: entry.data
+    }));
+
+    slide.addChart(toChartType(chart.type), chartData, {
+      x: 0.95,
+      y: 1.8,
+      w: 8.0,
+      h: 4.5,
+      catAxisLabelFontSize: 11,
+      valAxisLabelFontSize: 11,
+      showLegend: true,
+      legendFontSize: 10,
+      showTitle: true,
+      title: chart.title || current.title,
+      titleFontFace: FONT_BODY,
+      titleFontSize: 13,
+      chartColors: ['0F766E', '2563EB', 'F59E0B', 'DC2626']
+    });
+  }
 
   if (Array.isArray(current.bullets) && current.bullets.length > 0) {
     slide.addShape('roundRect', {
@@ -769,8 +850,8 @@ async function buildDeck(deck, outputPath) {
   pptx.title = deck.deckTitle;
   pptx.lang = deck.language || 'en-US';
   pptx.theme = {
-    headFontFace: 'Aptos Display',
-    bodyFontFace: 'Aptos',
+    headFontFace: FONT_HEADING,
+    bodyFontFace: FONT_BODY,
     lang: deck.language || 'en-US'
   };
 
@@ -780,10 +861,14 @@ async function buildDeck(deck, outputPath) {
   console.log(`Generated: ${outputPath}`);
 }
 
-async function buildFromFile(inputArg, outputArg) {
+async function buildFromFile(inputArg, outputArg, options = {}) {
   const inputPath = path.resolve(inputArg || 'examples/inputs/sample-input.json');
   const outputPath = path.resolve(outputArg || 'output/sample-deck.pptx');
   const deck = readDeck(inputPath);
+
+  if (options.nativeCharts) {
+    deck._nativeCharts = true;
+  }
 
   await buildDeck(deck, outputPath);
 }
@@ -797,6 +882,8 @@ module.exports = {
 };
 
 if (require.main === module) {
-  const [, , inputArg, outputArg] = process.argv;
-  buildFromFile(inputArg, outputArg).catch((error) => fail(error.message));
+  const args = process.argv.slice(2);
+  const nativeCharts = args.includes('--native-charts');
+  const positional = args.filter(a => !a.startsWith('--'));
+  buildFromFile(positional[0], positional[1], { nativeCharts }).catch((error) => fail(error.message));
 }
