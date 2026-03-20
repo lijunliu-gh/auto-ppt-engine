@@ -80,6 +80,9 @@ def create_parser() -> argparse.ArgumentParser:
         help="Existing deck JSON file to revise (default: the generated deck in your configured output directory)",
     )
 
+    score = subparsers.add_parser("score", help="Run quality scorecard on a deck JSON file")
+    score.add_argument("deck", help="Path to the deck JSON file to score")
+
     return parser
 
 
@@ -105,7 +108,7 @@ def _add_common_generation_args(parser: argparse.ArgumentParser) -> None:
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = create_parser()
     args = parser.parse_args(argv)
-    if args.command == "init":
+    if args.command in ("init", "score"):
         return args
     if args.prompt_file:
         args.prompt = read_text_file(resolve_path(args.prompt_file))
@@ -407,12 +410,40 @@ def format_user_error(error: Exception) -> str:
     return f"auto-ppt: error: {message}"
 
 
+def run_score(args: argparse.Namespace) -> int:
+    import json
+    from python_backend.quality_scorer import score_deck
+
+    deck_path = _resolve_user_path(args.deck)
+    if not deck_path.exists():
+        print(f"auto-ppt: error: Deck file not found: {deck_path}", file=sys.stderr)
+        return 1
+    deck = json.loads(deck_path.read_text(encoding="utf-8"))
+    result = score_deck(deck)
+
+    print(result["summary"])
+    print(f"Hard: {result['hard_score']}  Soft: {result['soft_score']}")
+    if result["hard_failures"]:
+        print("\nHard failures:")
+        for cat, issues in result["hard_failures"].items():
+            for issue in issues:
+                print(f"  [{cat}] {issue}")
+    if result["soft_warnings"]:
+        print("\nSoft warnings:")
+        for cat, issues in result["soft_warnings"].items():
+            for issue in issues:
+                print(f"  [{cat}] {issue}")
+    return 0 if result["pass"] else 1
+
+
 def main(argv: list[str] | None = None) -> int:
     try:
         load_local_env()
         args = parse_args(argv)
         if args.command == "init":
             return run_init(args)
+        if args.command == "score":
+            return run_score(args)
         validate_runtime_inputs(args)
         response = handle_skill_request(build_request(args), response_path=None)
     except Exception as error:  # noqa: BLE001
