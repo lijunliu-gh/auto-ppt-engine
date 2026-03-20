@@ -11,6 +11,7 @@ from python_backend import (
     render_deck_via_node,
     resolve_path,
 )
+from python_backend.template_engine import resolve_theme
 
 DEFAULT_JSON_OUTPUT = ROOT_DIR / "output" / "py-generated-deck.json"
 DEFAULT_PPTX_OUTPUT = ROOT_DIR / "output" / "py-generated-deck.pptx"
@@ -49,6 +50,7 @@ def main() -> None:
     output_json = resolve_path(args.out_json)
     output_pptx = resolve_path(args.out_pptx)
     ensure_parent_dir(output_json)
+    deck['_theme'] = resolve_theme(theme_name=deck.get('theme'))
     render_deck_via_node(deck, output_json, output_pptx, ROOT_DIR)
     print(f"Deck JSON saved to: {output_json}")
     if source_data["loaded_sources"]:

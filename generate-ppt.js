@@ -10,11 +10,71 @@ try {
   // chartjs-node-canvas not installed — will use native PPT charts
 }
 
-// Universal font stack: Latin + CJK (Chinese, Japanese, Korean) fallback
-const FONT_BODY = 'Aptos, Microsoft YaHei, PingFang SC, Meiryo, Noto Sans CJK SC';
-const FONT_HEADING = 'Aptos Display, Microsoft YaHei, PingFang SC, Meiryo, Noto Sans CJK SC';
+// ---------------------------------------------------------------------------
+// Theme system
+// ---------------------------------------------------------------------------
 
-const CHART_COLORS = ['#0F766E', '#2563EB', '#F59E0B', '#DC2626', '#7C3AED', '#059669'];
+const DEFAULT_THEME = {
+  name: 'business-clean',
+  colors: {
+    primary:    '0F766E',
+    secondary:  '2563EB',
+    accent:     'F59E0B',
+    background: 'F8FAFC',
+    slideBg:    'FFFFFF',
+    text:       '1F2937',
+    textLight:  'F8FAFC',
+    textMuted:  '475569',
+    headerBg:   'E2E8F0',
+    border:     'CBD5E1',
+    closingBg:  '0F172A',
+    titleBg:    'F8FAFC',
+  },
+  fonts: {
+    heading: 'Aptos Display, Microsoft YaHei, PingFang SC, Meiryo, Noto Sans CJK SC',
+    body:    'Aptos, Microsoft YaHei, PingFang SC, Meiryo, Noto Sans CJK SC',
+  },
+  chartColors: ['0F766E', '2563EB', 'F59E0B', 'DC2626', '7C3AED', '059669'],
+};
+
+/**
+ * Resolve the theme for this deck. Priority:
+ * 1. deck._theme object (injected by Python backend from template or built-in theme)
+ * 2. Built-in theme file matching deck.theme name
+ * 3. DEFAULT_THEME
+ */
+function resolveTheme(deck) {
+  if (deck._theme && typeof deck._theme === 'object' && deck._theme.colors) {
+    // Merge with defaults to fill any missing fields
+    return mergeTheme(deck._theme);
+  }
+
+  // Try loading a built-in theme file
+  const themeName = deck.theme || 'business-clean';
+  const themePath = path.join(__dirname, 'assets', 'themes', `${themeName}.json`);
+  if (fs.existsSync(themePath)) {
+    try {
+      const loaded = JSON.parse(fs.readFileSync(themePath, 'utf8'));
+      return mergeTheme(loaded);
+    } catch (_) { /* fall through */ }
+  }
+
+  return { ...DEFAULT_THEME };
+}
+
+function mergeTheme(partial) {
+  return {
+    name: partial.name || DEFAULT_THEME.name,
+    colors: { ...DEFAULT_THEME.colors, ...partial.colors },
+    fonts: { ...DEFAULT_THEME.fonts, ...partial.fonts },
+    chartColors: Array.isArray(partial.chartColors) && partial.chartColors.length >= 2
+      ? partial.chartColors
+      : DEFAULT_THEME.chartColors,
+  };
+}
+
+// Active theme — set at the start of buildDeck(), used by all render helpers
+let _t = DEFAULT_THEME;
 
 const allowedLayouts = new Set([
   'title',
@@ -100,8 +160,8 @@ function addTextBox(slide, text, options = {}) {
   }
 
   slide.addText(text, {
-    fontFace: FONT_BODY,
-    color: '1F2937',
+    fontFace: _t.fonts.body,
+    color: _t.colors.text,
     margin: 0.08,
     breakLine: true,
     shrinkText: true,
@@ -117,7 +177,7 @@ function addSlideHeader(slide, deck, current) {
     h: 0.5,
     fontSize: 24,
     bold: true,
-    color: '0F172A'
+    color: _t.colors.closingBg
   });
 
   if (current.objective) {
@@ -127,7 +187,7 @@ function addSlideHeader(slide, deck, current) {
       w: 8.5,
       h: 0.35,
       fontSize: 10,
-      color: '475569',
+      color: _t.colors.textMuted,
       italic: true
     });
   }
@@ -139,7 +199,7 @@ function addSlideHeader(slide, deck, current) {
     h: 0.25,
     fontSize: 9,
     align: 'right',
-    color: '64748B'
+    color: _t.colors.textMuted
   });
 
   slide.addShape('line', {
@@ -147,7 +207,7 @@ function addSlideHeader(slide, deck, current) {
     y: 1.28,
     w: 12.1,
     h: 0,
-    line: { color: 'CBD5E1', pt: 1.2 }
+    line: { color: _t.colors.border, pt: 1.2 }
   });
 }
 
@@ -159,7 +219,7 @@ function addFooter(slide, page) {
     h: 0.2,
     fontSize: 9,
     align: 'right',
-    color: '64748B'
+    color: _t.colors.textMuted
   });
 }
 
@@ -195,9 +255,9 @@ function addBulletList(slide, bullets, area) {
       y: area.y,
       w: area.w,
       h: area.h,
-      fontFace: FONT_BODY,
+      fontFace: _t.fonts.body,
       fontSize: area.fontSize || 18,
-      color: area.color || '1F2937',
+      color: area.color || _t.colors.text,
       valign: 'top',
       paraSpaceAfterPt: 10,
       breakLine: true,
@@ -214,27 +274,27 @@ function addLabel(slide, text, x, y, w) {
     h: 0.25,
     fontSize: 11,
     bold: true,
-    color: '334155'
+    color: _t.colors.textMuted
   });
 }
 
 function renderTitleSlide(slide, deck, current) {
-  slide.background = { color: 'F8FAFC' };
+  slide.background = { color: _t.colors.titleBg };
   slide.addShape('rect', {
     x: 0,
     y: 0,
     w: 13.333,
     h: 7.5,
-    fill: { color: 'E2E8F0', transparency: 70 },
-    line: { color: 'E2E8F0', transparency: 100 }
+    fill: { color: _t.colors.headerBg, transparency: 70 },
+    line: { color: _t.colors.headerBg, transparency: 100 }
   });
   slide.addShape('rect', {
     x: 0.6,
     y: 0.9,
     w: 0.18,
     h: 4.8,
-    fill: { color: '0F766E' },
-    line: { color: '0F766E', transparency: 100 }
+    fill: { color: _t.colors.primary },
+    line: { color: _t.colors.primary, transparency: 100 }
   });
 
   addTextBox(slide, current.title, {
@@ -244,7 +304,7 @@ function renderTitleSlide(slide, deck, current) {
     h: 1.1,
     fontSize: 28,
     bold: true,
-    color: '0F172A'
+    color: _t.colors.closingBg
   });
 
   addTextBox(slide, current.subtitle || deck.scenario || deck.audience || '', {
@@ -253,7 +313,7 @@ function renderTitleSlide(slide, deck, current) {
     w: 7.4,
     h: 0.5,
     fontSize: 16,
-    color: '334155'
+    color: _t.colors.textMuted
   });
 
   const metaLines = [
@@ -268,7 +328,7 @@ function renderTitleSlide(slide, deck, current) {
     w: 4.2,
     h: 1.2,
     fontSize: 12,
-    color: '475569'
+    color: _t.colors.textMuted
   });
 }
 
@@ -344,12 +404,12 @@ function renderVisualsOnSlide(slide, visuals) {
     slide.addShape('roundRect', {
       x: pos.x, y: pos.y, w: pos.w, h: pos.h,
       rectRadius: 0.05,
-      fill: { color: 'F1F5F9' },
-      line: { color: 'CBD5E1', pt: 1 }
+      fill: { color: _t.colors.background },
+      line: { color: _t.colors.border, pt: 1 }
     });
     addTextBox(slide, `🖼 ${ph.prompt || 'Image placeholder'}`, {
       x: pos.x + 0.15, y: pos.y + 0.15, w: pos.w - 0.3, h: pos.h - 0.3,
-      fontSize: 11, italic: true, color: '475569'
+      fontSize: 11, italic: true, color: _t.colors.textMuted
     });
   }
 
@@ -359,8 +419,8 @@ function renderVisualsOnSlide(slide, visuals) {
     slide.addShape('roundRect', {
       x: 8.95, y: 1.65, w: 3.35, h: 3.2,
       rectRadius: 0.08,
-      fill: { color: 'F1F5F9' },
-      line: { color: 'CBD5E1', pt: 1 }
+      fill: { color: _t.colors.background },
+      line: { color: _t.colors.border, pt: 1 }
     });
     addLabel(slide, 'Visual Suggestions', 9.2, 1.92, 2.7);
     addBulletList(slide, descTexts, { x: 9.08, y: 2.25, w: 2.9, h: 2.2, fontSize: 12 });
@@ -386,7 +446,7 @@ function renderTwoColumnSlide(slide, deck, current) {
     y: 1.75,
     w: 0,
     h: 4.65,
-    line: { color: 'CBD5E1', pt: 1.1 }
+    line: { color: _t.colors.border, pt: 1.1 }
   });
 
   addBulletList(slide, current.left, { x: 0.9, y: 1.9, w: 5.1, h: 4.8, fontSize: 18 });
@@ -402,8 +462,8 @@ function renderComparisonSlide(slide, deck, current) {
     w: 5.45,
     h: 4.7,
     rectRadius: 0.05,
-    fill: { color: 'F8FAFC' },
-    line: { color: 'CBD5E1', pt: 1 }
+    fill: { color: _t.colors.background },
+    line: { color: _t.colors.border, pt: 1 }
   });
   slide.addShape('roundRect', {
     x: 6.95,
@@ -411,8 +471,8 @@ function renderComparisonSlide(slide, deck, current) {
     w: 5.45,
     h: 4.7,
     rectRadius: 0.05,
-    fill: { color: 'F8FAFC' },
-    line: { color: 'CBD5E1', pt: 1 }
+    fill: { color: _t.colors.background },
+    line: { color: _t.colors.border, pt: 1 }
   });
 
   addLabel(slide, 'Option A', 1.1, 2.0, 4.5);
@@ -433,7 +493,7 @@ function renderTimelineSlide(slide, deck, current) {
     y: 3.65,
     w: totalWidth,
     h: 0,
-    line: { color: '94A3B8', pt: 1.4 }
+    line: { color: _t.colors.border, pt: 1.4 }
   });
 
   milestones.forEach((item, index) => {
@@ -443,8 +503,8 @@ function renderTimelineSlide(slide, deck, current) {
       y: 3.48,
       w: 0.32,
       h: 0.32,
-      fill: { color: '0F766E' },
-      line: { color: '0F766E', transparency: 100 }
+      fill: { color: _t.colors.primary },
+      line: { color: _t.colors.primary, transparency: 100 }
     });
 
     addTextBox(slide, `Phase ${index + 1}`, {
@@ -455,7 +515,7 @@ function renderTimelineSlide(slide, deck, current) {
       fontSize: 10,
       align: 'center',
       bold: true,
-      color: '0F172A'
+      color: _t.colors.closingBg
     });
 
     addTextBox(slide, item, {
@@ -465,7 +525,7 @@ function renderTimelineSlide(slide, deck, current) {
       h: 1.0,
       fontSize: 11,
       align: 'center',
-      color: '334155'
+      color: _t.colors.textMuted
     });
   });
 }
@@ -484,7 +544,7 @@ function renderProcessSlide(slide, deck, current) {
       h: 1.6,
       rectRadius: 0.05,
       fill: { color: index % 2 === 0 ? 'ECFDF5' : 'EFF6FF' },
-      line: { color: 'CBD5E1', pt: 1 }
+      line: { color: _t.colors.border, pt: 1 }
     });
 
     addTextBox(slide, `${index + 1}`, {
@@ -494,7 +554,7 @@ function renderProcessSlide(slide, deck, current) {
       h: 0.3,
       fontSize: 12,
       bold: true,
-      color: '0F766E'
+      color: _t.colors.primary
     });
 
     addTextBox(slide, item, {
@@ -504,7 +564,7 @@ function renderProcessSlide(slide, deck, current) {
       h: 0.85,
       fontSize: 15,
       bold: true,
-      color: '1E293B',
+      color: _t.colors.text,
       align: 'center',
       valign: 'mid'
     });
@@ -515,8 +575,8 @@ function renderProcessSlide(slide, deck, current) {
         y: 2.72,
         w: 0.4,
         h: 0.55,
-        fill: { color: 'CBD5E1' },
-        line: { color: 'CBD5E1', transparency: 100 }
+        fill: { color: _t.colors.border },
+        line: { color: _t.colors.border, transparency: 100 }
       });
     }
   });
@@ -543,18 +603,18 @@ function renderTableSlide(slide, deck, current) {
     y: 1.8,
     w: 11.6,
     h: 4.8,
-    border: { type: 'solid', color: 'CBD5E1', pt: 1 },
-    fill: 'FFFFFF',
-    fontFace: FONT_BODY,
+    border: { type: 'solid', color: _t.colors.border, pt: 1 },
+    fill: _t.colors.slideBg,
+    fontFace: _t.fonts.body,
     fontSize: 13,
-    color: '1F2937',
+    color: _t.colors.text,
     bold: false,
     rowH: 0.42,
     autoFit: true,
     margin: 0.05,
     valign: 'mid',
     align: 'left',
-    fillHeader: 'E2E8F0',
+    fillHeader: _t.colors.headerBg,
     boldHeader: true
   });
 }
@@ -592,14 +652,16 @@ function renderChartImage(chart, categories, series) {
   const chartType = toChartJsType(chart.type);
   const isArea = (chart.type || '').toLowerCase() === 'area';
 
+  const chartCssColors = _t.chartColors.map(c => `#${c}`);
+
   const canvas = new ChartJSNodeCanvas({ width: 960, height: 540, backgroundColour: '#FFFFFF' });
   const datasets = series.map((entry, i) => ({
     label: entry.name,
     data: entry.data,
     backgroundColor: chartType === 'pie'
-      ? CHART_COLORS.slice(0, categories.length)
-      : CHART_COLORS[i % CHART_COLORS.length] + '99',
-    borderColor: CHART_COLORS[i % CHART_COLORS.length],
+      ? chartCssColors.slice(0, categories.length)
+      : chartCssColors[i % chartCssColors.length] + '99',
+    borderColor: chartCssColors[i % chartCssColors.length],
     borderWidth: chartType === 'pie' ? 1 : 2,
     fill: isArea
   }));
@@ -637,8 +699,8 @@ function renderChartSlide(slide, deck, current) {
       w: 11.2,
       h: 3.8,
       rectRadius: 0.06,
-      fill: { color: 'F8FAFC' },
-      line: { color: 'CBD5E1', pt: 1 }
+      fill: { color: _t.colors.background },
+      line: { color: _t.colors.border, pt: 1 }
     });
     addTextBox(slide, chart.title || 'Chart Placeholder', {
       x: 1.3,
@@ -647,7 +709,7 @@ function renderChartSlide(slide, deck, current) {
       h: 0.35,
       fontSize: 18,
       bold: true,
-      color: '1E293B'
+      color: _t.colors.text
     });
     addBulletList(slide, current.visuals || ['Provide categories and series data to render a real chart.'], {
       x: 1.3,
@@ -690,9 +752,9 @@ function renderChartSlide(slide, deck, current) {
       legendFontSize: 10,
       showTitle: true,
       title: chart.title || current.title,
-      titleFontFace: FONT_BODY,
+      titleFontFace: _t.fonts.body,
       titleFontSize: 13,
-      chartColors: ['0F766E', '2563EB', 'F59E0B', 'DC2626']
+      chartColors: _t.chartColors.slice(0, 4)
     });
   }
 
@@ -703,8 +765,8 @@ function renderChartSlide(slide, deck, current) {
       w: 2.9,
       h: 3.6,
       rectRadius: 0.05,
-      fill: { color: 'F8FAFC' },
-      line: { color: 'CBD5E1', pt: 1 }
+      fill: { color: _t.colors.background },
+      line: { color: _t.colors.border, pt: 1 }
     });
     addLabel(slide, 'Takeaways', 9.6, 2.1, 2.2);
     addBulletList(slide, current.bullets, { x: 9.45, y: 2.45, w: 2.45, h: 2.7, fontSize: 12 });
@@ -719,8 +781,8 @@ function renderQuoteSlide(slide, deck, current) {
     w: 11.0,
     h: 3.2,
     rectRadius: 0.08,
-    fill: { color: 'F8FAFC' },
-    line: { color: 'CBD5E1', pt: 1 }
+    fill: { color: _t.colors.background },
+    line: { color: _t.colors.border, pt: 1 }
   });
   addTextBox(slide, `“${(current.bullets || [current.subtitle || ''])[0] || ''}”`, {
     x: 1.5,
@@ -731,7 +793,7 @@ function renderQuoteSlide(slide, deck, current) {
     italic: true,
     bold: true,
     align: 'center',
-    color: '0F172A',
+    color: _t.colors.text,
     valign: 'mid'
   });
   if (current.subtitle) {
@@ -741,14 +803,14 @@ function renderQuoteSlide(slide, deck, current) {
       w: 2.3,
       h: 0.25,
       fontSize: 11,
-      color: '475569',
+      color: _t.colors.textMuted,
       align: 'right'
     });
   }
 }
 
 function renderClosingSlide(slide, deck, current) {
-  slide.background = { color: '0F172A' };
+  slide.background = { color: _t.colors.closingBg };
   addTextBox(slide, current.title, {
     x: 1.0,
     y: 2.0,
@@ -756,7 +818,7 @@ function renderClosingSlide(slide, deck, current) {
     h: 0.9,
     fontSize: 30,
     bold: true,
-    color: 'F8FAFC'
+    color: _t.colors.textLight
   });
   addTextBox(slide, current.subtitle || 'Questions and discussion', {
     x: 1.02,
@@ -764,16 +826,16 @@ function renderClosingSlide(slide, deck, current) {
     w: 5.4,
     h: 0.45,
     fontSize: 16,
-    color: 'CBD5E1'
+    color: _t.colors.border
   });
   if (Array.isArray(current.bullets) && current.bullets.length > 0) {
-    addBulletList(slide, current.bullets, { x: 1.0, y: 4.1, w: 5.8, h: 1.8, fontSize: 15, color: 'E2E8F0' });
+    addBulletList(slide, current.bullets, { x: 1.0, y: 4.1, w: 5.8, h: 1.8, fontSize: 15, color: _t.colors.headerBg });
   }
 }
 
 function renderSlide(pptx, deck, current) {
   const slide = pptx.addSlide();
-  slide.background = { color: 'FFFFFF' };
+  slide.background = { color: _t.colors.slideBg };
 
   switch (current.layout) {
     case 'title':
@@ -842,6 +904,9 @@ async function buildDeck(deck, outputPath) {
   validateDeck(deck);
   ensureOutputDir(outputPath);
 
+  // Resolve theme for this deck (template → named theme → default)
+  _t = resolveTheme(deck);
+
   const pptx = new PptxGenJS();
   pptx.author = 'GitHub Copilot';
   pptx.company = 'Local Prototype';
@@ -850,8 +915,8 @@ async function buildDeck(deck, outputPath) {
   pptx.title = deck.deckTitle;
   pptx.lang = deck.language || 'en-US';
   pptx.theme = {
-    headFontFace: FONT_HEADING,
-    bodyFontFace: FONT_BODY,
+    headFontFace: _t.fonts.heading,
+    bodyFontFace: _t.fonts.body,
     lang: deck.language || 'en-US'
   };
 

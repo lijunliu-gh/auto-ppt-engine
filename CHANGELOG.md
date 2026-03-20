@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog, and this project follows Semantic Versioning while it remains a prototype.
 
+## [0.7.2] - 2026-03-21
+
+### Added
+
+- **Theme System** (`generate-ppt.js`, `python_backend/template_engine.py`): Full theme architecture — all hardcoded colors, fonts, and chart palette references replaced with `_t` theme variable. Themes resolve from: `deck._theme` object → built-in theme JSON → default `business-clean` theme
+- `resolveTheme()` / `mergeTheme()` in JS renderer — runtime theme resolution with fallback chain
+- `resolve_theme()` / `load_theme()` / `template_config_to_theme()` in Python backend — theme bridge from templates and built-in theme files
+- Theme schema (`assets/themes/theme-schema.json`) defining colors, fonts, and chartColors
+- Default theme file (`assets/themes/business-clean.json`)
+- `_theme` and `_nativeCharts` added to deck-schema.json as optional properties
+
+### Changed
+
+- `buildDeck()` now calls `resolveTheme(deck)` to set the active theme before rendering
+- All render functions (`renderTitleSlide`, `renderClosingSlide`, `renderQuoteSlide`, `renderTableSlide`, `renderChartSlide`, etc.) use theme references instead of hardcoded hex values
+- Python entry points (`skill_api.py`, `py-generate-from-prompt.py`, `py-revise-deck.py`) inject `_theme` into deck JSON before Node rendering
+
 ## [0.7.1] - 2026-03-21
 
 ### Added

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import logging
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -325,3 +326,120 @@ def describe_template(config: TemplateConfig) -> Dict[str, Any]:
             "accent": config.theme_colors.accent,
         },
     }
+
+
+# ---------------------------------------------------------------------------
+# Theme system
+# ---------------------------------------------------------------------------
+
+# CJK fallback fonts appended to any extracted font name
+_CJK_FALLBACK = "Microsoft YaHei, PingFang SC, Meiryo, Noto Sans CJK SC"
+
+# Built-in theme directory (relative to this file)
+_THEMES_DIR = Path(__file__).resolve().parent.parent / "assets" / "themes"
+
+# Default theme name when nothing is specified
+DEFAULT_THEME = "business-clean"
+
+
+def _font_stack(font_name: str) -> str:
+    """Build a font stack with CJK fallbacks from a base font name."""
+    if _CJK_FALLBACK.split(",")[0].strip() in font_name:
+        return font_name  # already has CJK fallbacks
+    return f"{font_name}, {_CJK_FALLBACK}"
+
+
+def template_config_to_theme(config: TemplateConfig) -> Dict[str, Any]:
+    """Convert a parsed TemplateConfig into a theme dict.
+
+    This is the bridge between template_engine's extraction and
+    generate-ppt.js's rendering.
+    """
+    tc = config.theme_colors
+    return {
+        "name": f"brand-{config.source_path.stem}",
+        "colors": {
+            "primary": tc.primary,
+            "secondary": tc.secondary,
+            "accent": tc.accent,
+            "background": tc.background,
+            "slideBg": "FFFFFF",
+            "text": tc.text_dark,
+            "textLight": tc.text_light,
+            "textMuted": "64748B",
+            "headerBg": _lighten_color(tc.primary, 0.85),
+            "border": "CBD5E1",
+            "closingBg": tc.text_dark,
+            "titleBg": tc.background,
+        },
+        "fonts": {
+            "heading": _font_stack(config.font_heading),
+            "body": _font_stack(config.font_body),
+        },
+        "chartColors": [tc.primary, tc.secondary, tc.accent, "DC2626", "7C3AED", "059669"],
+    }
+
+
+def load_theme(theme_name: str | None = None) -> Dict[str, Any]:
+    """Load a built-in theme by name.
+
+    Args:
+        theme_name: Name of a built-in theme (e.g. 'business-clean').
+                    If None or not found, falls back to DEFAULT_THEME.
+
+    Returns:
+        Theme dict matching the theme-schema.json structure.
+    """
+    name = theme_name or DEFAULT_THEME
+    theme_path = _THEMES_DIR / f"{name}.json"
+    if not theme_path.exists():
+        logger.warning("Theme '%s' not found, falling back to '%s'", name, DEFAULT_THEME)
+        theme_path = _THEMES_DIR / f"{DEFAULT_THEME}.json"
+    if not theme_path.exists():
+        raise FileNotFoundError(f"Default theme not found: {theme_path}")
+    with open(theme_path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def resolve_theme(
+    template_path: str | Path | None = None,
+    theme_name: str | None = None,
+) -> Dict[str, Any]:
+    """Resolve the theme to use for rendering.
+
+    Priority:
+    1. If template_path is provided, parse it and extract theme
+    2. If theme_name is provided, load the built-in theme
+    3. Fall back to DEFAULT_THEME
+
+    Returns:
+        Theme dict ready to be injected into the deck JSON.
+    """
+    if template_path:
+        config = parse_template(template_path)
+        theme = template_config_to_theme(config)
+        logger.info("Resolved theme from template: %s", theme["name"])
+        return theme
+
+    theme = load_theme(theme_name)
+    logger.info("Resolved built-in theme: %s", theme["name"])
+    return theme
+
+
+def _lighten_color(hex_color: str, factor: float) -> str:
+    """Lighten a hex color by blending with white.
+
+    Args:
+        hex_color: 6-digit hex color (no # prefix)
+        factor: 0.0 = original, 1.0 = white
+    """
+    try:
+        r = int(hex_color[0:2], 16)
+        g = int(hex_color[2:4], 16)
+        b = int(hex_color[4:6], 16)
+        r = int(r + (255 - r) * factor)
+        g = int(g + (255 - g) * factor)
+        b = int(b + (255 - b) * factor)
+        return f"{r:02X}{g:02X}{b:02X}"
+    except (ValueError, IndexError):
+        return "E2E8F0"

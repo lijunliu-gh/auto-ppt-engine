@@ -12,7 +12,7 @@ from .smart_layer import ROOT_DIR, ensure_parent_dir, execute_planning_flow, rea
 from .source_loader import load_source_contexts
 
 logger = logging.getLogger("auto-ppt.skill-api")
-from .template_engine import parse_template
+from .template_engine import parse_template, resolve_theme
 
 API_VERSION = "1.0"
 
@@ -94,6 +94,11 @@ def handle_skill_request(request: Dict[str, Any], response_path: str | Path | No
         render_deck_with_template(deck, output_json, output_pptx, template_config, base_dir=request_base_dir)
         renderer_used = "python-pptx"
     else:
+        # Resolve theme and inject into deck JSON for the JS renderer
+        deck['_theme'] = resolve_theme(
+            template_path=None,
+            theme_name=deck.get('theme'),
+        )
         render_deck_via_node(deck, output_json, output_pptx, ROOT_DIR)
         renderer_used = "pptxgenjs"
 

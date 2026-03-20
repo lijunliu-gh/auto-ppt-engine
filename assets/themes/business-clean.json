@@ -1,0 +1,22 @@
+{
+  "name": "business-clean",
+  "colors": {
+    "primary":    "0F766E",
+    "secondary":  "2563EB",
+    "accent":     "F59E0B",
+    "background": "F8FAFC",
+    "slideBg":    "FFFFFF",
+    "text":       "1F2937",
+    "textLight":  "F8FAFC",
+    "textMuted":  "475569",
+    "headerBg":   "E2E8F0",
+    "border":     "CBD5E1",
+    "closingBg":  "0F172A",
+    "titleBg":    "F8FAFC"
+  },
+  "fonts": {
+    "heading": "Aptos Display, Microsoft YaHei, PingFang SC, Meiryo, Noto Sans CJK SC",
+    "body":    "Aptos, Microsoft YaHei, PingFang SC, Meiryo, Noto Sans CJK SC"
+  },
+  "chartColors": ["0F766E", "2563EB", "F59E0B", "DC2626", "7C3AED", "059669"]
+}

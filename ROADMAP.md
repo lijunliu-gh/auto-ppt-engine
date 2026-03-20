@@ -172,9 +172,9 @@ The first five roadmap phases are complete. Phase 7 quality control is complete.
 
 ---
 
-## Phase 9 — Theme System + Brand Template Adaptation → v0.8.0
+## Phase 9 — Theme System + Brand Template Adaptation → v0.7.2 ✅
 
-**Status**: Planned (GitHub Issue #31)
+**Status**: Done (v0.7.2, GitHub Issue #31 closed)
 
 **Goal**: Define a theme.json spec and wire template_engine.py output into generate-ppt.js, enabling brand template adaptation.
 

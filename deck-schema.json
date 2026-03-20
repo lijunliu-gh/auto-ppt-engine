@@ -48,6 +48,14 @@
       "type": "string",
       "description": "Path to a .pptx brand template file. When set, uses python-pptx renderer."
     },
+    "_theme": {
+      "type": "object",
+      "description": "Resolved theme object injected by the Python backend. Not set by users directly."
+    },
+    "_nativeCharts": {
+      "type": "boolean",
+      "description": "When true, use native OOXML charts instead of chart.js PNG images."
+    },
     "sourceDisplayMode": {
       "type": "string",
       "enum": [
