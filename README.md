@@ -189,11 +189,23 @@ Then generate your first deck:
 ./auto-ppt generate --mock --prompt "Create an 8-slide AI workspace strategy deck for executives" --source sample-source-brief.md
 ```
 
+If you want predictable filenames for repeated runs, add `--output-name`:
+
+```bash
+./auto-ppt generate --prompt "Create an 8-slide AI workspace strategy deck for executives" --source sample-source-brief.md --output-name workspace-strategy-v1
+```
+
 ### 2. Revise the generated deck
 
 ```bash
 ./auto-ppt revise --deck output/py-generated-deck.json --prompt "Compress this deck to 6 slides and make it more conclusion-driven"
 ```
+
+`revise` now follows the same output rules as `generate`:
+
+- `--output-dir` changes the directory for JSON and PPTX output
+- `--output-name` changes the base filename for JSON and PPTX output
+- if `AUTO_PPT_OUTPUT_DIR` is configured, `revise` also uses it to locate the default input deck
 
 The legacy scripts (`py-generate-from-prompt.py`, `py-revise-deck.py`) remain available, but `auto-ppt` is now the official user-facing CLI entrypoint.
 

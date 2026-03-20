@@ -10,7 +10,6 @@ from python_backend.skill_api import handle_skill_request
 
 DEFAULT_CREATE_JSON = Path("output") / "py-generated-deck.json"
 DEFAULT_CREATE_PPTX = Path("output") / "py-generated-deck.pptx"
-DEFAULT_REVISE_DECK = Path("output") / "py-generated-deck.json"
 DEFAULT_REVISE_JSON = Path("output") / "py-revised-deck.json"
 DEFAULT_REVISE_PPTX = Path("output") / "py-revised-deck.pptx"
 DEFAULT_ENV_PATH = ROOT_DIR / ".env"
@@ -76,8 +75,9 @@ def create_parser() -> argparse.ArgumentParser:
     _add_common_generation_args(revise)
     revise.add_argument(
         "--deck",
-        default=str(DEFAULT_REVISE_DECK),
-        help="Existing deck JSON file to revise (default: output/py-generated-deck.json)",
+        "--input-deck",
+        dest="deck",
+        help="Existing deck JSON file to revise (default: the generated deck in your configured output directory)",
     )
 
     return parser
@@ -97,6 +97,7 @@ def _add_common_generation_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--research", action="store_true", help="Enable optional web research")
     parser.add_argument("--mock", action="store_true", help="Use the local mock planner instead of an LLM")
     parser.add_argument("--output-dir", help="Directory for output files")
+    parser.add_argument("--output-name", help="Base filename for outputs, without extension")
     parser.add_argument("--out-json", help="Explicit path for deck JSON output")
     parser.add_argument("--out-pptx", help="Explicit path for PPTX output")
 
@@ -124,7 +125,7 @@ def _resolve_user_path(value: str) -> Path:
 
 def validate_runtime_inputs(args: argparse.Namespace) -> None:
     if args.command == "revise":
-        deck_path = _resolve_user_path(args.deck)
+        deck_path = _resolve_user_path(resolve_input_deck_path(args))
         if not deck_path.exists():
             raise RuntimeError(
                 f"Deck file not found: {deck_path}. "
@@ -178,7 +179,7 @@ def build_request(args: argparse.Namespace) -> dict:
     if args.template:
         request["template"] = args.template
     if args.command == "revise":
-        request["deckPath"] = args.deck
+        request["deckPath"] = resolve_input_deck_path(args)
 
     output_json, output_pptx = _resolve_output_paths(args)
     request["outputJson"] = str(output_json)
@@ -195,24 +196,36 @@ def _resolve_output_paths(args: argparse.Namespace) -> tuple[Path, Path]:
     else:
         base = None
 
+    default_json_name, default_pptx_name = _default_output_names(args)
+
     if base is not None:
-        if args.command == "generate":
-            default_json = base / DEFAULT_CREATE_JSON.name
-            default_pptx = base / DEFAULT_CREATE_PPTX.name
-        else:
-            default_json = base / DEFAULT_REVISE_JSON.name
-            default_pptx = base / DEFAULT_REVISE_PPTX.name
+        default_json = base / default_json_name
+        default_pptx = base / default_pptx_name
     else:
-        if args.command == "generate":
-            default_json = DEFAULT_CREATE_JSON
-            default_pptx = DEFAULT_CREATE_PPTX
-        else:
-            default_json = DEFAULT_REVISE_JSON
-            default_pptx = DEFAULT_REVISE_PPTX
+        default_json = Path("output") / default_json_name
+        default_pptx = Path("output") / default_pptx_name
 
     output_json = Path(args.out_json) if args.out_json else default_json
     output_pptx = Path(args.out_pptx) if args.out_pptx else default_pptx
     return output_json, output_pptx
+
+
+def _default_output_names(args: argparse.Namespace) -> tuple[str, str]:
+    if args.output_name:
+        stem = args.output_name
+        return f"{stem}.json", f"{stem}.pptx"
+    if args.command == "generate":
+        return DEFAULT_CREATE_JSON.name, DEFAULT_CREATE_PPTX.name
+    return DEFAULT_REVISE_JSON.name, DEFAULT_REVISE_PPTX.name
+
+
+def resolve_input_deck_path(args: argparse.Namespace) -> str:
+    if getattr(args, "deck", None):
+        return args.deck
+    default_output_dir = os.getenv("AUTO_PPT_OUTPUT_DIR")
+    if default_output_dir:
+        return str(Path(default_output_dir) / DEFAULT_CREATE_JSON.name)
+    return str(DEFAULT_CREATE_JSON)
 
 
 def load_local_env(env_path: Path = DEFAULT_ENV_PATH) -> None:
@@ -407,8 +420,9 @@ def main(argv: list[str] | None = None) -> int:
         return 1
 
     verb = "Generated" if response.get("action") == "create" else "Revised"
-    print(f"{verb} deck JSON: {response['deckJsonPath']}")
-    print(f"{verb} PPTX: {response['pptxPath']}")
+    print(f"Action: {response['action']}")
+    print(f"Deck JSON: {response['deckJsonPath']}")
+    print(f"PPTX: {response['pptxPath']}")
     print(f"Renderer: {response['renderer']}")
     print(f"Slides: {response['slideCount']}")
     if response.get("sourcesUsed"):

@@ -29,6 +29,14 @@ class TestParseArgs:
 
 
 class TestBuildRequest:
+    def test_generate_request_uses_output_name(self):
+        args = auto_ppt_cli.parse_args(
+            ["generate", "--prompt", "Create a deck", "--output-name", "board-pack"]
+        )
+        request = auto_ppt_cli.build_request(args)
+        assert request["outputJson"].endswith("output/board-pack.json")
+        assert request["outputPptx"].endswith("output/board-pack.pptx")
+
     def test_generate_request_uses_output_dir(self):
         args = auto_ppt_cli.parse_args(
             [
@@ -55,6 +63,20 @@ class TestBuildRequest:
         assert request["action"] == "revise"
         assert request["deckPath"] == "output/base.json"
         assert request["outputJson"].endswith("output/py-revised-deck.json")
+
+    def test_revise_request_uses_output_name(self):
+        args = auto_ppt_cli.parse_args(
+            ["revise", "--prompt", "Tighten the flow", "--deck", "output/base.json", "--output-name", "board-pack-v2"]
+        )
+        request = auto_ppt_cli.build_request(args)
+        assert request["outputJson"].endswith("output/board-pack-v2.json")
+        assert request["outputPptx"].endswith("output/board-pack-v2.pptx")
+
+    def test_revise_request_uses_configured_output_dir_for_default_input(self, monkeypatch):
+        monkeypatch.setenv("AUTO_PPT_OUTPUT_DIR", "configured-output")
+        args = auto_ppt_cli.parse_args(["revise", "--prompt", "Tighten the flow"])
+        request = auto_ppt_cli.build_request(args)
+        assert request["deckPath"].endswith("configured-output/py-generated-deck.json")
 
 
 class TestMain:
@@ -122,7 +144,8 @@ class TestMain:
 
         assert exit_code == 0
         assert captured["request"]["action"] == "create"
-        assert "Generated deck JSON" in output
+        assert "Action: create" in output
+        assert "Deck JSON:" in output
 
     def test_main_returns_error_code_on_exception(self, monkeypatch, capsys):
         def raise_error(request, response_path=None):
