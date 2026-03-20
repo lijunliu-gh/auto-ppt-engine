@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import sys
 from pathlib import Path
 
@@ -12,6 +13,40 @@ DEFAULT_CREATE_PPTX = Path("output") / "py-generated-deck.pptx"
 DEFAULT_REVISE_DECK = Path("output") / "py-generated-deck.json"
 DEFAULT_REVISE_JSON = Path("output") / "py-revised-deck.json"
 DEFAULT_REVISE_PPTX = Path("output") / "py-revised-deck.pptx"
+DEFAULT_ENV_PATH = ROOT_DIR / ".env"
+
+PROVIDER_PRESETS = {
+    "openai": {
+        "key_name": "OPENAI_API_KEY",
+        "default_model": "gpt-4.1-mini",
+        "base_url": None,
+        "provider_label": "OpenAI / reasoning models",
+    },
+    "openrouter": {
+        "key_name": "OPENROUTER_API_KEY",
+        "default_model": "openai/gpt-4.1-mini",
+        "base_url": None,
+        "provider_label": "OpenRouter",
+    },
+    "anthropic": {
+        "key_name": "ANTHROPIC_API_KEY",
+        "default_model": "claude-sonnet-4-20250514",
+        "base_url": None,
+        "provider_label": "Anthropic Claude",
+    },
+    "gemini": {
+        "key_name": "GOOGLE_API_KEY",
+        "default_model": "gemini-2.5-pro",
+        "base_url": None,
+        "provider_label": "Google Gemini",
+    },
+    "openai-compatible": {
+        "key_name": "OPENAI_API_KEY",
+        "default_model": "qwen-plus",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "provider_label": "OpenAI-compatible endpoint",
+    },
+}
 
 
 def create_parser() -> argparse.ArgumentParser:
@@ -20,6 +55,19 @@ def create_parser() -> argparse.ArgumentParser:
         description="Official CLI for generating and revising PowerPoint decks.",
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
+
+    init = subparsers.add_parser("init", help="Create or update local .env configuration")
+    init.add_argument(
+        "--provider",
+        choices=list(PROVIDER_PRESETS.keys()),
+        help="LLM provider preset to configure",
+    )
+    init.add_argument("--api-key", help="API key to write into the local .env file")
+    init.add_argument("--model", help="Default model to use")
+    init.add_argument("--base-url", help="Base URL for OpenAI-compatible endpoints")
+    init.add_argument("--output-dir", help="Default output directory to write into .env")
+    init.add_argument("--env-file", default=str(DEFAULT_ENV_PATH), help="Path to the .env file to write")
+    init.add_argument("--non-interactive", action="store_true", help="Fail instead of prompting for missing values")
 
     generate = subparsers.add_parser("generate", help="Create a new deck from a prompt")
     _add_common_generation_args(generate)
@@ -56,6 +104,8 @@ def _add_common_generation_args(parser: argparse.ArgumentParser) -> None:
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = create_parser()
     args = parser.parse_args(argv)
+    if args.command == "init":
+        return args
     if args.prompt_file:
         args.prompt = read_text_file(resolve_path(args.prompt_file))
     if not args.prompt or not args.prompt.strip():
@@ -92,8 +142,15 @@ def build_request(args: argparse.Namespace) -> dict:
 
 
 def _resolve_output_paths(args: argparse.Namespace) -> tuple[Path, Path]:
+    default_output_dir = os.getenv("AUTO_PPT_OUTPUT_DIR")
     if args.output_dir:
         base = Path(args.output_dir)
+    elif default_output_dir:
+        base = Path(default_output_dir)
+    else:
+        base = None
+
+    if base is not None:
         if args.command == "generate":
             default_json = base / DEFAULT_CREATE_JSON.name
             default_pptx = base / DEFAULT_CREATE_PPTX.name
@@ -113,9 +170,131 @@ def _resolve_output_paths(args: argparse.Namespace) -> tuple[Path, Path]:
     return output_json, output_pptx
 
 
+def load_local_env(env_path: Path = DEFAULT_ENV_PATH) -> None:
+    if not env_path.exists():
+        return
+    for raw_line in env_path.read_text(encoding="utf-8").splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        key = key.strip()
+        value = value.strip()
+        if value.startswith(('"', "'")) and value.endswith(('"', "'")) and len(value) >= 2:
+            value = value[1:-1]
+        os.environ.setdefault(key, value)
+
+
+def read_env_file(env_path: Path) -> dict[str, str]:
+    values: dict[str, str] = {}
+    if not env_path.exists():
+        return values
+    for raw_line in env_path.read_text(encoding="utf-8").splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        values[key.strip()] = value.strip()
+    return values
+
+
+def write_env_file(env_path: Path, values: dict[str, str]) -> None:
+    lines = [f"{key}={value}" for key, value in values.items()]
+    env_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def _prompt_value(prompt: str, default: str | None = None, secret: bool = False) -> str:
+    suffix = f" [{default}]" if default else ""
+    rendered = f"{prompt}{suffix}: "
+    if secret:
+        import getpass
+
+        value = getpass.getpass(rendered)
+    else:
+        value = input(rendered)
+    value = value.strip()
+    return value or (default or "")
+
+
+def run_init(args: argparse.Namespace) -> int:
+    env_path = resolve_path(args.env_file)
+    current = read_env_file(env_path)
+
+    provider = args.provider
+    if not provider:
+        if args.non_interactive:
+            print("auto-ppt init: --provider is required in non-interactive mode", file=sys.stderr)
+            return 1
+        print("Choose a provider:")
+        names = list(PROVIDER_PRESETS.keys())
+        for index, name in enumerate(names, start=1):
+            print(f"{index}. {name} ({PROVIDER_PRESETS[name]['provider_label']})")
+        choice = _prompt_value("Provider number", "1")
+        try:
+            provider = names[int(choice) - 1]
+        except Exception:  # noqa: BLE001
+            print("auto-ppt init: invalid provider selection", file=sys.stderr)
+            return 1
+
+    preset = PROVIDER_PRESETS[provider]
+    key_name = preset["key_name"]
+    api_key = args.api_key or current.get(key_name) or os.getenv(key_name)
+    if not api_key:
+        if args.non_interactive:
+            print(f"auto-ppt init: --api-key is required for provider {provider}", file=sys.stderr)
+            return 1
+        api_key = _prompt_value(f"{key_name}", secret=True)
+    if not api_key:
+        print(f"auto-ppt init: {key_name} cannot be empty", file=sys.stderr)
+        return 1
+
+    model = args.model or current.get("OPENAI_MODEL") or os.getenv("OPENAI_MODEL") or preset["default_model"]
+    if not args.model and not args.non_interactive:
+        model = _prompt_value("Default model", model)
+
+    base_url_default = args.base_url or current.get("OPENAI_BASE_URL") or os.getenv("OPENAI_BASE_URL") or preset["base_url"] or ""
+    base_url = base_url_default
+    if provider == "openai-compatible" and not args.base_url and not args.non_interactive:
+        base_url = _prompt_value("Base URL", base_url_default)
+
+    output_dir = args.output_dir or current.get("AUTO_PPT_OUTPUT_DIR") or os.getenv("AUTO_PPT_OUTPUT_DIR") or "output"
+    if not args.output_dir and not args.non_interactive:
+        output_dir = _prompt_value("Default output directory", output_dir)
+
+    new_values = {
+        "OPENAI_API_KEY": current.get("OPENAI_API_KEY", ""),
+        "OPENAI_MODEL": model,
+        "OPENAI_BASE_URL": current.get("OPENAI_BASE_URL", ""),
+        "OPENROUTER_API_KEY": current.get("OPENROUTER_API_KEY", ""),
+        "ANTHROPIC_API_KEY": current.get("ANTHROPIC_API_KEY", ""),
+        "GOOGLE_API_KEY": current.get("GOOGLE_API_KEY", ""),
+        "TAVILY_API_KEY": current.get("TAVILY_API_KEY", ""),
+        "AUTO_PPT_OUTPUT_DIR": output_dir,
+    }
+    for env_key in ("OPENAI_API_KEY", "OPENROUTER_API_KEY", "ANTHROPIC_API_KEY", "GOOGLE_API_KEY"):
+        new_values[env_key] = ""
+    new_values[key_name] = api_key
+    new_values["OPENAI_MODEL"] = model
+    new_values["OPENAI_BASE_URL"] = base_url if provider == "openai-compatible" else ""
+
+    env_path.parent.mkdir(parents=True, exist_ok=True)
+    write_env_file(env_path, new_values)
+
+    print(f"Wrote configuration to: {env_path}")
+    print(f"Provider: {provider}")
+    print(f"Model: {model}")
+    print(f"Default output directory: {output_dir}")
+    print("Next step:")
+    print('  ./auto-ppt generate --prompt "Create a 6-slide deck about AI agents"')
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     try:
+        load_local_env()
         args = parse_args(argv)
+        if args.command == "init":
+            return run_init(args)
         response = handle_skill_request(build_request(args), response_path=None)
     except Exception as error:  # noqa: BLE001
         print(f"auto-ppt: error: {error}", file=sys.stderr)

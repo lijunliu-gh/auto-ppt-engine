@@ -122,6 +122,16 @@ python -m pip install -r requirements.txt
 
 ### 1. Official CLI first run
 
+Initialize local config once:
+
+```bash
+./auto-ppt init
+```
+
+This writes a local `.env` file with your provider key, default model, and default output directory.
+
+Then generate your first deck:
+
 ```bash
 ./auto-ppt generate --mock --prompt "Create an 8-slide AI workspace strategy deck for executives" --source sample-source-brief.md
 ```

@@ -8,6 +8,10 @@ import auto_ppt_cli
 
 
 class TestParseArgs:
+    def test_init_does_not_require_prompt(self):
+        args = auto_ppt_cli.parse_args(["init", "--provider", "openai", "--api-key", "sk-test"])
+        assert args.command == "init"
+
     def test_generate_requires_prompt(self):
         with pytest.raises(SystemExit):
             auto_ppt_cli.parse_args(["generate"])
@@ -54,6 +58,50 @@ class TestBuildRequest:
 
 
 class TestMain:
+    def test_load_local_env_sets_defaults(self, tmp_path, monkeypatch):
+        env_file = tmp_path / ".env"
+        env_file.write_text("OPENAI_MODEL=gpt-4.1-mini\nAUTO_PPT_OUTPUT_DIR=custom-output\n", encoding="utf-8")
+        monkeypatch.delenv("OPENAI_MODEL", raising=False)
+        monkeypatch.delenv("AUTO_PPT_OUTPUT_DIR", raising=False)
+
+        auto_ppt_cli.load_local_env(env_file)
+
+        assert auto_ppt_cli.os.environ["OPENAI_MODEL"] == "gpt-4.1-mini"
+        assert auto_ppt_cli.os.environ["AUTO_PPT_OUTPUT_DIR"] == "custom-output"
+
+    def test_run_init_writes_env_file_non_interactive(self, tmp_path):
+        env_file = tmp_path / ".env"
+        args = auto_ppt_cli.parse_args(
+            [
+                "init",
+                "--provider",
+                "openai",
+                "--api-key",
+                "sk-test",
+                "--model",
+                "gpt-4.1-mini",
+                "--output-dir",
+                "build-output",
+                "--env-file",
+                str(env_file),
+                "--non-interactive",
+            ]
+        )
+
+        exit_code = auto_ppt_cli.run_init(args)
+        contents = env_file.read_text(encoding="utf-8")
+
+        assert exit_code == 0
+        assert "OPENAI_API_KEY=sk-test" in contents
+        assert "OPENAI_MODEL=gpt-4.1-mini" in contents
+        assert "AUTO_PPT_OUTPUT_DIR=build-output" in contents
+
+    def test_output_dir_env_is_used_by_generate_defaults(self, monkeypatch):
+        monkeypatch.setenv("AUTO_PPT_OUTPUT_DIR", "configured-output")
+        args = auto_ppt_cli.parse_args(["generate", "--prompt", "Create a deck"])
+        request = auto_ppt_cli.build_request(args)
+        assert request["outputJson"].endswith("configured-output/py-generated-deck.json")
+
     def test_main_calls_handle_skill_request(self, monkeypatch, capsys, tmp_path):
         captured = {}
 
