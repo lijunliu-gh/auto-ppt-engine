@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog, and this project follows Semantic Versioning while it remains a prototype.
 
+## [0.7.1] - 2026-03-21
+
+### Added
+
+- **CJK Font Stack** (`generate-ppt.js`): Universal font fallback chain — `Aptos, Microsoft YaHei, PingFang SC, Meiryo, Noto Sans CJK SC` — ensures correct rendering for Chinese, Japanese, Korean, and mixed-language content on any platform
+- **Chart Image Mode** (`generate-ppt.js`): Charts now render as PNG images by default (via `chart.js` + `chartjs-node-canvas`) for cross-platform compatibility with Keynote, Google Slides, and WPS. Native OOXML charts available via `--native-charts` flag for PowerPoint-only environments
+- New dependencies: `chartjs-node-canvas`, `chart.js`
+
+### Fixed
+
+- **Text Overflow**: `addTextBox` defaults changed to `breakLine: true` + `shrinkText: true` — long text now auto-wraps and auto-shrinks instead of overflowing fixed-size boxes
+- **Bullet List Overflow**: `addBulletList` now includes `shrinkText: true` for auto-fit
+- **Table Overflow**: Table `autoFit` changed from `false` to `true` — cell content adapts to available space
+- **Closing Slide Bullet Color**: `addBulletList` now accepts `color` parameter — closing slide bullets render in light color (`E2E8F0`) instead of invisible dark text on dark background
+
 ## [0.7.0] - 2026-03-20
 
 ### Added

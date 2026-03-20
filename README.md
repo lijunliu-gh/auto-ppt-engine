@@ -43,7 +43,9 @@ Output: `output/py-generated-deck.json` + `.pptx`, `output/py-revised-deck.json`
 | Source ingestion | `.txt` `.md` `.csv` `.json` `.yaml` `.xml` `.html` `.pdf` `.docx`, images, URLs |
 | Schema validation | JSON-schema check before every render |
 | LLM providers | OpenAI, OpenRouter, Claude, Gemini, Qwen, DeepSeek, GLM, MiniMax, any OpenAI-compatible endpoint |
-| PPTX rendering | JS renderer (pptxgenjs) or Python renderer (python-pptx with brand templates) |
+| PPTX rendering | JS renderer (pptxgenjs) with CJK font support and chart image fallback for Keynote/Google Slides |
+| Cross-platform charts | Image-based charts by default; native OOXML via `--native-charts` |
+| Multi-language | CJK + Latin universal font stack — any language mixed with English |
 | Security | Path traversal protection, SSRF blocking, file size limits, subprocess timeout |
 
 ## Entry Points
@@ -111,7 +113,7 @@ prompt + sources ➜ Python smart layer ➜ deck JSON ➜ PPTX renderer ➜ .ppt
 ```
 
 - **Python** (`python_backend/`): planning, revision, source loading, LLM calls, schema validation
-- **Node** (`generate-ppt.js`): pptxgenjs rendering from validated deck JSON
+- **Node** (`generate-ppt.js`): pptxgenjs rendering from validated deck JSON, cross-platform chart images, CJK font stack
 - **deck JSON**: the stable contract between both layers
 
 ## Documentation

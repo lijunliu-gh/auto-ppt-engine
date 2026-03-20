@@ -1,10 +1,12 @@
 # Roadmap
 
-Current version: **v0.7.0**
+Current version: **v0.7.1**
 
 This roadmap reflects the project's current capabilities, known gaps, and planned evolution from experimental prototype to a productized AI-agent PowerPoint backend.
 
-The first five roadmap phases are complete. All 14 original GitHub issues are closed. Phase 5 (v0.7.0) added deployment packaging and chart determinism improvements. The next roadmap focus is first-run product experience: make the project immediately usable for someone who only wants to configure an API key and generate a deck.
+Product positioning: **to-B PPT generation engine** — embeddable into enterprise AI workflows with private deployment, API-driven generation (MCP/CLI/skill), and multi-language support (CJK + English). Core differentiators are data security (no data leaves the enterprise), content intelligence (AI-driven layout and visualization selection), and cross-platform output (PowerPoint, Keynote, Google Slides).
+
+The first five roadmap phases are complete. Phase 7 quality control is complete. v0.7.1 added cross-platform rendering fixes (text overflow, CJK fonts, chart image fallback). The next focus is theme system architecture (Phase 8) to enable brand template adaptation.
 
 ---
 
@@ -152,7 +154,71 @@ The first five roadmap phases are complete. All 14 original GitHub issues are cl
 
 ---
 
-## Phase 8 — Packaging and Distribution → v0.9.0
+## Phase 8 — Rendering Quality + Cross-Platform Compatibility → v0.7.1 ✅
+
+**Status**: Complete — released in v0.7.1
+
+**Goal**: Fix text overflow, add CJK multi-language support, and ensure charts render on all platforms.
+
+| Task | Description | Complexity |
+|------|-------------|------------|
+| Text auto-fit | `breakLine: true` + `shrinkText: true` as defaults for all text boxes and bullet lists | Low |
+| CJK font stack | Universal font chain: Aptos + Microsoft YaHei + PingFang SC + Meiryo + Noto Sans CJK SC | Low |
+| Chart image mode | Default to chart.js PNG rendering for Keynote/Google Slides/WPS compatibility | Medium |
+| Native chart opt-in | `--native-charts` flag preserves OOXML charts for PowerPoint-only environments | Low |
+| Table auto-fit | Enable `autoFit: true` for table cells | Low |
+
+**Why here**: Text overflow and invisible charts on Mac/Google Slides were the most reported usability issues. Multi-language support is a core differentiator for the to-B positioning.
+
+---
+
+## Phase 9 — Theme System + Brand Template Adaptation → v0.8.0
+
+**Status**: Planned (GitHub Issue #31)
+
+**Goal**: Define a theme.json spec and wire template_engine.py output into generate-ppt.js, enabling brand template adaptation.
+
+| Task | Description | Complexity |
+|------|-------------|------------|
+| theme.json schema | Colors (primary/secondary/accent/bg/text), fonts, spacing, chartColors | Medium |
+| Template → theme bridge | template_engine.py outputs theme.json from parsed .pptx templates | Medium |
+| Renderer theming | generate-ppt.js consumes theme.json instead of hardcoded values | High |
+| Brand template pipeline | Upload .pptx → parse → theme.json → branded output | Medium |
+
+**Why next**: Brand template adaptation is the #1 to-B feature request. The template parser already exists in Python but isn't connected to the JS renderer.
+
+---
+
+## Phase 10 — Built-in Professional Themes → v0.8.1
+
+**Status**: Planned (GitHub Issue #32)
+
+**Goal**: Ship 3-5 built-in themes for users without a brand template.
+
+| Task | Description | Complexity |
+|------|-------------|------------|
+| Theme presets | Corporate Blue, Dark Executive, Warm Modern, Minimal, Tech | Medium |
+| Theme selection | deck schema field + CLI `--theme` flag + API parameter | Low |
+| LLM theme suggestion | Planning layer suggests theme based on audience/scenario | Low |
+| Visual QA | Same content rendered across all themes for comparison | Low |
+
+---
+
+## Phase 11 — Layout Variants + New Layout Types → v0.9.0
+
+**Status**: Planned (GitHub Issue #33)
+
+**Goal**: Enrich layout variety with new types (KPI, SWOT, funnel) and variants of existing layouts.
+
+| Task | Description | Complexity |
+|------|-------------|------------|
+| New layouts | KPI dashboard, SWOT matrix, image-text, funnel | High |
+| Layout variants | bullet-icon, bullet-centered, two-column-unequal, timeline-vertical, process-circular | Medium |
+| LLM layout selection | Auto-select layout variant based on content structure | Medium |
+
+---
+
+## Phase 12 — Packaging and Distribution → v0.9.1
 
 **Status**: Planned
 
@@ -169,7 +235,7 @@ The first five roadmap phases are complete. All 14 original GitHub issues are cl
 
 ---
 
-## Phase 9 — Minimal End-User UI → v1.0.0
+## Phase 13 — Minimal End-User UI → v1.0.0
 
 **Status**: Future
 
