@@ -50,13 +50,23 @@ draw.text((60, 183), "revising, and rendering PPTX decks from natural-language p
 
 # --- Flow diagram ---
 flow_y = 250
-colors_flow = ["#f59e0b", "#94a3b8", "#94a3b8", "#94a3b8", "#22c55e"]
-labels = ["Prompt", "→", "Deck JSON", "→", "PPTX"]
+
+def draw_arrow(draw, x, y, color="#94a3b8"):
+    """Draw a small right-pointing arrow (triangle) at (x, y)."""
+    # horizontal line
+    draw.line([(x, y + 10), (x + 20, y + 10)], fill=color, width=2)
+    # arrowhead
+    draw.polygon([(x + 20, y + 4), (x + 30, y + 10), (x + 20, y + 16)], fill=color)
+
+flow_labels = [("Prompt", "#f59e0b"), ("Deck JSON", "#94a3b8"), ("PPTX", "#22c55e")]
 x = 60
-for i, (label, color) in enumerate(zip(labels, colors_flow)):
+for i, (label, color) in enumerate(flow_labels):
     draw.text((x, flow_y), label, fill=color, font=font_flow)
     bbox = draw.textbbox((x, flow_y), label, font=font_flow)
-    x = bbox[2] + 18
+    x = bbox[2] + 14
+    if i < len(flow_labels) - 1:
+        draw_arrow(draw, x, flow_y + 2)
+        x += 44
 
 # --- Feature columns ---
 col1_x, col2_x = 60, 440
