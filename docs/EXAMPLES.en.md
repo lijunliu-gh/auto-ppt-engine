@@ -22,6 +22,16 @@ Expected outputs:
 - `output/py-generated-deck.json`
 - `output/py-generated-deck.pptx`
 
+Optional visual QA before sharing:
+
+```bash
+./auto-ppt qa-visual output/py-generated-deck.pptx --strict
+```
+
+Expected QA artifact:
+
+- `output/py-generated-deck-qa/visual-qa-report.json`
+
 ## Use A Deck Brief File
 
 Natural-language brief example:
@@ -50,6 +60,12 @@ Expected outputs:
 
 - `output/py-revised-deck.json`
 - `output/py-revised-deck.pptx`
+
+Optional visual QA for revised deck:
+
+```bash
+./auto-ppt qa-visual output/py-revised-deck.pptx --strict
+```
 
 ## JSON Skill Example
 

@@ -42,3 +42,13 @@ This directory holds the user-facing, integration, and product documentation for
 2. Agent or service integration: `INTEGRATION_GUIDE.en.md`
 3. Product framing and boundaries: `PRODUCT.en.md`
 4. Repository orientation: `REPOSITORY_MAP.md`
+
+## Visual QA Note
+
+The CLI now includes a visual quality check command:
+
+```bash
+./auto-ppt qa-visual output/py-generated-deck.pptx --strict
+```
+
+This command is documented in all three User Guides and should be used after generation/revision before sharing decks externally.

@@ -24,6 +24,16 @@ python py-generate-from-prompt.py --mock --prompt "Create an 8-slide AI workspac
 - `output/py-generated-deck.json`
 - `output/py-generated-deck.pptx`
 
+对外分享前建议再跑一次可视化质检：
+
+```bash
+./auto-ppt qa-visual output/py-generated-deck.pptx --strict
+```
+
+预期质检产物：
+
+- `output/py-generated-deck-qa/visual-qa-report.json`
+
 ## 使用 Deck Brief 文件
 
 自然语言 brief 示例：
@@ -52,6 +62,12 @@ python py-revise-deck.py --mock --deck output/py-generated-deck.json --prompt "C
 
 - `output/py-revised-deck.json`
 - `output/py-revised-deck.pptx`
+
+修订后同样建议执行：
+
+```bash
+./auto-ppt qa-visual output/py-revised-deck.pptx --strict
+```
 
 ## JSON Skill 示例
 
