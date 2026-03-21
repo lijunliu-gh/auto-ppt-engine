@@ -143,6 +143,6 @@ curl http://localhost:5000/health
 或者执行一次性生成：
 
 ```bash
-docker run --rm -e OPENAI_API_KEY -v $(pwd)/output:/app/output auto-ppt-prototype \
+docker run --rm -e OPENAI_API_KEY -v $(pwd)/output:/app/output auto-ppt-engine \
   python py-generate-from-prompt.py --mock --prompt "做一个8页的AI策略汇报"
 ```

@@ -151,7 +151,7 @@ curl -X POST http://localhost:3010/skill -H "Content-Type: application/json" --d
     "auto-ppt": {
       "command": "python",
       "args": ["mcp_server.py"],
-      "cwd": "/path/to/auto-ppt-prototype"
+      "cwd": "/path/to/auto-ppt-engine"
     }
   }
 }
@@ -172,7 +172,7 @@ python mcp_server.py --transport streamable-http --host 0.0.0.0 --port 8080
 docker compose up --build
 
 # 或以远程传输模式运行 MCP 服务器
-docker run --rm -p 8080:8080 -e OPENAI_API_KEY auto-ppt-prototype \
+docker run --rm -p 8080:8080 -e OPENAI_API_KEY auto-ppt-engine \
   python mcp_server.py --transport streamable-http --host 0.0.0.0 --port 8080
 ```
 

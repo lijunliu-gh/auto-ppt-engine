@@ -141,6 +141,6 @@ curl http://localhost:5000/health
 Or run a one-off generation:
 
 ```bash
-docker run --rm -e OPENAI_API_KEY -v $(pwd)/output:/app/output auto-ppt-prototype \
+docker run --rm -e OPENAI_API_KEY -v $(pwd)/output:/app/output auto-ppt-engine \
   python py-generate-from-prompt.py --mock --prompt "Create an 8-slide AI strategy deck"
 ```

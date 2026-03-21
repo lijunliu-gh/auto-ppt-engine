@@ -1,5 +1,5 @@
 {
-  "name": "auto-ppt-prototype",
+  "name": "auto-ppt-engine",
   "version": "0.7.0",
   "apiVersion": "1.0",
   "description": "Python-first smart layer for planning, revising, validating, and rendering PowerPoint decks through a Node PPTX renderer.",

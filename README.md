@@ -1,8 +1,8 @@
 # Auto PPT
 
-[![Release](https://img.shields.io/github/v/release/lijunliu-gh/auto-ppt-prototype?label=release)](https://github.com/lijunliu-gh/auto-ppt-prototype/releases)
-[![License](https://img.shields.io/github/license/lijunliu-gh/auto-ppt-prototype)](LICENSE)
-[![CI](https://img.shields.io/github/actions/workflow/status/lijunliu-gh/auto-ppt-prototype/smoke.yml?branch=main&label=CI)](https://github.com/lijunliu-gh/auto-ppt-prototype/actions/workflows/smoke.yml)
+[![Release](https://img.shields.io/github/v/release/lijunliu-gh/auto-ppt-engine?label=release)](https://github.com/lijunliu-gh/auto-ppt-engine/releases)
+[![License](https://img.shields.io/github/license/lijunliu-gh/auto-ppt-engine)](LICENSE)
+[![CI](https://img.shields.io/github/actions/workflow/status/lijunliu-gh/auto-ppt-engine/smoke.yml?branch=main&label=CI)](https://github.com/lijunliu-gh/auto-ppt-engine/actions/workflows/smoke.yml)
 
 Open-source PowerPoint generation engine for AI agents.
 Give it a prompt, optional source files, and an LLM key — get back a validated `.pptx`.
@@ -72,7 +72,7 @@ Output: `output/py-generated-deck.json` + `.pptx`, `output/py-revised-deck.json`
   "mcpServers": {
     "auto-ppt": {
       "command": "python",
-      "args": ["/absolute/path/to/auto-ppt-prototype/mcp_server.py"]
+      "args": ["/absolute/path/to/auto-ppt-engine/mcp_server.py"]
     }
   }
 }
@@ -85,7 +85,7 @@ Output: `output/py-generated-deck.json` + `.pptx`, `output/py-revised-deck.json`
   "mcpServers": {
     "auto-ppt": {
       "command": "python",
-      "args": ["/absolute/path/to/auto-ppt-prototype/mcp_server.py"]
+      "args": ["/absolute/path/to/auto-ppt-engine/mcp_server.py"]
     }
   }
 }
@@ -98,7 +98,7 @@ Tools exposed: `create_deck`, `revise_deck`. Both accept `sources`, `mock` mode,
 ```bash
 export OPENAI_API_KEY="sk-..."
 docker compose up --build                          # HTTP skill server
-docker run --rm -it -e OPENAI_API_KEY auto-ppt-prototype python mcp_server.py  # MCP stdio
+docker run --rm -it -e OPENAI_API_KEY auto-ppt-engine python mcp_server.py  # MCP stdio
 ```
 
 ## Testing

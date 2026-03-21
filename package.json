@@ -1,5 +1,5 @@
 {
-  "name": "auto-ppt-prototype",
+  "name": "auto-ppt-engine",
   "version": "0.7.0",
   "description": "Python-first AI-agent-ready PowerPoint workflow for planning, revising, validating, and rendering PPTX decks.",
   "license": "MIT",

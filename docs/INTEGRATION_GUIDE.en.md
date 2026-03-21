@@ -70,7 +70,7 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS)
   "mcpServers": {
     "auto-ppt": {
       "command": "python",
-      "args": ["/absolute/path/to/auto-ppt-prototype/mcp_server.py"]
+      "args": ["/absolute/path/to/auto-ppt-engine/mcp_server.py"]
     }
   }
 }
@@ -85,7 +85,7 @@ Add to `.cursor/mcp.json` or `.windsurf/mcp.json` in your project:
   "mcpServers": {
     "auto-ppt": {
       "command": "python",
-      "args": ["/absolute/path/to/auto-ppt-prototype/mcp_server.py"]
+      "args": ["/absolute/path/to/auto-ppt-engine/mcp_server.py"]
     }
   }
 }
@@ -579,17 +579,17 @@ This starts the HTTP skill server on port 5000.
 
 ```bash
 # Local stdio MCP
-docker run --rm -it -e OPENAI_API_KEY auto-ppt-prototype python mcp_server.py
+docker run --rm -it -e OPENAI_API_KEY auto-ppt-engine python mcp_server.py
 
 # Remote streamable HTTP MCP
-docker run --rm -p 8080:8080 -e OPENAI_API_KEY auto-ppt-prototype \
+docker run --rm -p 8080:8080 -e OPENAI_API_KEY auto-ppt-engine \
   python mcp_server.py --transport streamable-http --host 0.0.0.0 --port 8080
 ```
 
 ### CLI in Docker
 
 ```bash
-docker run --rm -e OPENAI_API_KEY -v $(pwd)/output:/app/output auto-ppt-prototype \
+docker run --rm -e OPENAI_API_KEY -v $(pwd)/output:/app/output auto-ppt-engine \
   python py-generate-from-prompt.py --mock --prompt "Create an 8-slide AI strategy deck"
 ```
 

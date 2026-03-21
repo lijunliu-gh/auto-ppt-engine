@@ -1,4 +1,4 @@
-"""MCP Server for auto-ppt-prototype.
+"""MCP Server for auto-ppt-engine.
 
 Exposes ``create_deck`` and ``revise_deck`` as MCP tools so that
 Claude Desktop, Cursor, Windsurf, and other MCP-compatible AI environments
@@ -34,7 +34,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(levelname
 logger = logging.getLogger("auto-ppt.mcp")
 
 mcp = FastMCP(
-    "auto-ppt-prototype",
+    "auto-ppt-engine",
     instructions="AI-agent-ready PowerPoint backend: plan, revise, and render PPTX decks from natural-language prompts.",
 )
 
@@ -118,7 +118,7 @@ def revise_deck(
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="auto-ppt-prototype MCP server")
+    parser = argparse.ArgumentParser(description="auto-ppt-engine MCP server")
     parser.add_argument(
         "--transport",
         choices=["stdio", "streamable-http"],

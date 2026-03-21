@@ -61,7 +61,7 @@
   "mcpServers": {
     "auto-ppt": {
       "command": "python",
-      "args": ["/absolute/path/to/auto-ppt-prototype/mcp_server.py"]
+      "args": ["/absolute/path/to/auto-ppt-engine/mcp_server.py"]
     }
   }
 }
@@ -76,7 +76,7 @@
   "mcpServers": {
     "auto-ppt": {
       "command": "python",
-      "args": ["/absolute/path/to/auto-ppt-prototype/mcp_server.py"]
+      "args": ["/absolute/path/to/auto-ppt-engine/mcp_server.py"]
     }
   }
 }
@@ -472,10 +472,10 @@ HTTP skill 服务启动在端口 5000。
 
 ```bash
 # 本地 stdio MCP
-docker run --rm -it -e OPENAI_API_KEY auto-ppt-prototype python mcp_server.py
+docker run --rm -it -e OPENAI_API_KEY auto-ppt-engine python mcp_server.py
 
 # 远程 Streamable HTTP MCP
-docker run --rm -p 8080:8080 -e OPENAI_API_KEY auto-ppt-prototype \
+docker run --rm -p 8080:8080 -e OPENAI_API_KEY auto-ppt-engine \
   python mcp_server.py --transport streamable-http --host 0.0.0.0 --port 8080
 ```
 

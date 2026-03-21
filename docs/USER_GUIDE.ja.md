@@ -133,7 +133,7 @@ MCP クライアントの設定に追加:
     "auto-ppt": {
       "command": "python",
       "args": ["mcp_server.py"],
-      "cwd": "/path/to/auto-ppt-prototype"
+      "cwd": "/path/to/auto-ppt-engine"
     }
   }
 }
@@ -154,7 +154,7 @@ python mcp_server.py --transport streamable-http --host 0.0.0.0 --port 8080
 docker compose up --build
 
 # または MCP サーバーをリモートトランスポートで実行
-docker run --rm -p 8080:8080 -e OPENAI_API_KEY auto-ppt-prototype \
+docker run --rm -p 8080:8080 -e OPENAI_API_KEY auto-ppt-engine \
   python mcp_server.py --transport streamable-http --host 0.0.0.0 --port 8080
 ```
 

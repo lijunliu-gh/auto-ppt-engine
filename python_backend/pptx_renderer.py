@@ -108,7 +108,7 @@ def render_deck_with_template(
         _render_slide(prs, deck, slide_def, template, colors, fonts, resolved_base)
 
     # Set presentation metadata
-    prs.core_properties.author = "auto-ppt-prototype"
+    prs.core_properties.author = "auto-ppt-engine"
     prs.core_properties.title = deck.get("deckTitle", "Untitled")
     prs.core_properties.subject = deck.get("scenario", "Auto-generated presentation")
 

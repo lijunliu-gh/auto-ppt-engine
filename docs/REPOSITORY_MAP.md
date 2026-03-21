@@ -3,7 +3,7 @@
 ## Top-Level Layout
 
 ```text
-auto-ppt-prototype/
+auto-ppt-engine/
 |-- python_backend/
 |   |-- __init__.py            # package init + version metadata
 |   |-- smart_layer.py         # planning, revision, validation

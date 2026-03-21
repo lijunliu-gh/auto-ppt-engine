@@ -1,4 +1,4 @@
-"""Generate GitHub social preview image (1280x640) for auto-ppt-prototype."""
+"""Generate GitHub social preview image (1280x640) for auto-ppt-engine."""
 from PIL import Image, ImageDraw, ImageFont
 import os
 
@@ -119,7 +119,7 @@ for i, feat in enumerate(features_3):
 draw.line([(60, 530), (W - 60, 530)], fill="#334155", width=1)
 
 # --- Bottom bar ---
-draw.text((60, 555), "github.com/lijunliu-gh/auto-ppt-prototype", fill="#64748b", font=font_url)
+draw.text((60, 555), "github.com/lijunliu-gh/auto-ppt-engine", fill="#64748b", font=font_url)
 
 # Right side: agent compatibility
 draw.text((700, 555), "Works with Claude Desktop · Cursor · Windsurf · any MCP client", fill="#64748b", font=font_url)

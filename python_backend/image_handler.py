@@ -151,7 +151,7 @@ def _load_url_image(url_str: str) -> Optional[Tuple[bytes, str]]:
         req = urllib.request.Request(
             url_str,
             headers={
-                "User-Agent": "auto-ppt-prototype/0.5.0",
+                "User-Agent": "auto-ppt-engine/0.5.0",
                 "Accept": "image/*",
             },
         )

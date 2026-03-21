@@ -1,5 +1,5 @@
 ---
-name: auto-ppt-prototype
+name: auto-ppt-engine
 description: Plan, revise, validate, and render PowerPoint decks from user requirements and trusted source material.
 user-invocable: true
 ---

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.local/auto-ppt-prototype/deck-schema.json",
+  "$id": "https://example.local/auto-ppt-engine/deck-schema.json",
   "title": "Auto PPT Deck",
   "type": "object",
   "additionalProperties": false,
