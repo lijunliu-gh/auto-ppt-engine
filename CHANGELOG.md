@@ -6,22 +6,14 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ## [Unreleased]
 
+## [0.7.2] - 2026-03-21
+
 ### Added
 
 - **`pyproject.toml`**: standard Python packaging — `pip install .` replaces `pip install -r requirements.txt`; optional extras `[test]`, `[anthropic]`, `[gemini]`; `auto-ppt` CLI entry point registered via `[project.scripts]`
 - **Visual QA CLI command** (`auto_ppt_cli.py`, `python_backend/visual_qa.py`): new `./auto-ppt qa-visual <deck.pptx>` workflow that runs structural visual heuristics (edge crowding, overlap candidates, empty slides), writes `visual-qa-report.json`, and optionally exports slide images when `soffice` + `pdftoppm` are available
 - `--strict` mode for `qa-visual` to return non-zero on detected issues (CI-friendly quality gate)
 - CLI tests for `qa-visual` command parsing and strict behavior (`tests/test_auto_ppt_cli.py`)
-
-### Changed
-
-- README quick start now includes `qa-visual` usage
-- User guides (EN / ZH-CN / JA) now document visual QA usage and expected output artifacts
-
-## [0.7.2] - 2026-03-21
-
-### Added
-
 - **Theme System** (`generate-ppt.js`, `python_backend/template_engine.py`): Full theme architecture — all hardcoded colors, fonts, and chart palette references replaced with `_t` theme variable. Themes resolve from: `deck._theme` object → built-in theme JSON → default `business-clean` theme
 - `resolveTheme()` / `mergeTheme()` in JS renderer — runtime theme resolution with fallback chain
 - `resolve_theme()` / `load_theme()` / `template_config_to_theme()` in Python backend — theme bridge from templates and built-in theme files

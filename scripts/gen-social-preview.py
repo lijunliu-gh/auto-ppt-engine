@@ -42,7 +42,7 @@ draw.text((60, 50), "Auto PPT Engine", fill="#ffffff", font=font_title)
 vx = 60
 vy = 115
 draw.rounded_rectangle([(vx, vy), (vx + 68, vy + 24)], radius=4, fill="#3b82f6")
-draw.text((vx + 10, vy + 3), "v0.7.0", fill="#ffffff", font=font_version)
+draw.text((vx + 10, vy + 3), "v0.7.2", fill="#ffffff", font=font_version)
 
 # --- Subtitle ---
 draw.text((60, 155), "AI-agent-ready PowerPoint backend for planning,", fill="#94a3b8", font=font_subtitle)
