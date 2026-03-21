@@ -105,9 +105,9 @@ for i, feat in enumerate(features_2):
 col3_x = 870
 draw.text((col3_x, feat_y_start), "ECOSYSTEM", fill=col_label_color, font=font_label)
 features_3 = [
-    "5 LLM providers supported",
+    "8+ LLM providers supported",
     "Docker one-command deploy",
-    "282 tests, 85% coverage",
+    "365 tests across CI matrix",
     "EN / JA / ZH-CN docs",
 ]
 for i, feat in enumerate(features_3):
