@@ -12,3 +12,4 @@ venv/
 .tmp-commit-msg.txt
 .tmp-commit-msg*.txt
 .coverage
+*.egg-info/

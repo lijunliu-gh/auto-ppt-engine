@@ -9,8 +9,7 @@
 先安装依赖：
 
 ```bash
-npm install
-python -m pip install -r requirements.txt
+npm install && pip install .
 ```
 
 使用内置 source brief 生成一版 deck：

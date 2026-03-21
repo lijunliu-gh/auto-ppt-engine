@@ -57,8 +57,7 @@ This is the best option for AI-native workflows. The MCP server exposes `create_
 Install dependencies:
 
 ```bash
-python -m pip install -r requirements.txt
-npm install
+npm install && pip install .
 ```
 
 ### Claude Desktop

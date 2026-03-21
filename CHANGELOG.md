@@ -8,6 +8,7 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ### Added
 
+- **`pyproject.toml`**: standard Python packaging — `pip install .` replaces `pip install -r requirements.txt`; optional extras `[test]`, `[anthropic]`, `[gemini]`; `auto-ppt` CLI entry point registered via `[project.scripts]`
 - **Visual QA CLI command** (`auto_ppt_cli.py`, `python_backend/visual_qa.py`): new `./auto-ppt qa-visual <deck.pptx>` workflow that runs structural visual heuristics (edge crowding, overlap candidates, empty slides), writes `visual-qa-report.json`, and optionally exports slide images when `soffice` + `pdftoppm` are available
 - `--strict` mode for `qa-visual` to return non-zero on detected issues (CI-friendly quality gate)
 - CLI tests for `qa-visual` command parsing and strict behavior (`tests/test_auto_ppt_cli.py`)

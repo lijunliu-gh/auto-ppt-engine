@@ -9,8 +9,7 @@
 依存関係をインストールします。
 
 ```bash
-npm install
-python -m pip install -r requirements.txt
+npm install && pip install .
 ```
 
 内蔵の source brief から deck を生成します。

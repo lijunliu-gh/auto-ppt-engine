@@ -15,8 +15,7 @@ Thanks for contributing to Auto PPT Prototype.
 3. Install dependencies:
 
 ```bash
-npm install
-pip install -r requirements.txt
+npm install && pip install -e ".[test]"
 ```
 
 4. Copy `.env.example` to `.env` only if you need model-backed runs.

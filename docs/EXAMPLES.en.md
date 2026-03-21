@@ -7,8 +7,7 @@ This file is for people who want to run the project quickly without reading the 
 Install dependencies:
 
 ```bash
-npm install
-python -m pip install -r requirements.txt
+npm install && pip install .
 ```
 
 Generate a deck from the built-in source brief:

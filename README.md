@@ -14,7 +14,7 @@ Give it a prompt, optional source files, and an LLM key — get back a validated
 
 ```bash
 # 1. Install
-npm install && python -m pip install -r requirements.txt
+npm install && pip install .
 
 # 2. Configure (writes .env with your LLM key)
 ./auto-ppt init

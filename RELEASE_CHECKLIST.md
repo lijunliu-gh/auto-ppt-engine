@@ -49,7 +49,7 @@ Files and folders that should normally not be committed:
 ## Validation
 
 - [ ] `npm install` works on a clean checkout
-- [ ] `pip install -r requirements.txt` works on a clean checkout
+- [ ] `pip install .` works on a clean checkout
 - [ ] `npm run ci:smoke` passes (smoke tests)
 - [ ] `python -m pytest tests/ -v` passes (all tests green)
 - [ ] `docker build -t auto-ppt-engine .` succeeds

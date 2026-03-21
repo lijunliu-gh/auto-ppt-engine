@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "auto-ppt-engine"
+version = "0.7.0"
+description = "Embeddable PowerPoint generation engine for AI agents — prompt in, validated .pptx out."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+authors = [{ name = "lijunliu-gh" }]
+keywords = ["pptx", "powerpoint", "llm", "ai-agent", "mcp", "presentation"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Office/Business",
+    "Topic :: Software Development :: Libraries",
+]
+dependencies = [
+    "openai>=1.68.2",
+    "jsonschema>=4.23.0",
+    "pypdf>=5.4.0",
+    "python-docx>=1.1.2",
+    "python-pptx>=1.0.0",
+    "mcp>=1.26.0",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=8.0.0"]
+anthropic = ["anthropic>=0.40.0"]
+gemini = ["google-generativeai>=0.8"]
+
+[project.urls]
+Homepage = "https://github.com/lijunliu-gh/auto-ppt-engine"
+Repository = "https://github.com/lijunliu-gh/auto-ppt-engine"
+Changelog = "https://github.com/lijunliu-gh/auto-ppt-engine/blob/main/CHANGELOG.md"
+
+[project.scripts]
+auto-ppt = "auto_ppt_cli:main"
+
+[tool.setuptools.packages.find]
+include = ["python_backend*"]
+
+[tool.setuptools]
+py-modules = ["auto_ppt_cli"]
+
+[tool.setuptools.package-data]
+"*" = ["deck-schema.json", "assets/themes/*.json"]
