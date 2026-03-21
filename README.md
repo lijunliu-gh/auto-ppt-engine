@@ -1,7 +1,7 @@
 # Auto PPT
 
-[![Release](https://img.shields.io/github/v/release/lijunliu-gh/auto-ppt-engine?label=release)](https://github.com/lijunliu-gh/auto-ppt-engine/releases)
-[![License](https://img.shields.io/github/license/lijunliu-gh/auto-ppt-engine)](LICENSE)
+[![Release](https://img.shields.io/github/v/tag/lijunliu-gh/auto-ppt-engine?label=release&sort=semver)](https://github.com/lijunliu-gh/auto-ppt-engine/tags)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![CI](https://img.shields.io/github/actions/workflow/status/lijunliu-gh/auto-ppt-engine/smoke.yml?branch=main&label=CI)](https://github.com/lijunliu-gh/auto-ppt-engine/actions/workflows/smoke.yml)
 
 Open-source PowerPoint generation engine for AI agents.
