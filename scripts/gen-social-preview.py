@@ -18,10 +18,10 @@ for y in range(6):
 # --- Helper: try system fonts, fall back to default ---
 def get_font(size, bold=False):
     candidates = [
-        "/System/Library/Fonts/SFPro-Bold.otf" if bold else "/System/Library/Fonts/SFPro-Regular.otf",
-        "/System/Library/Fonts/Helvetica.ttc",
+        # San Francisco — the actual macOS system font
+        "/System/Library/Fonts/SFNS.ttf",
+        "/System/Library/Fonts/SFNSMono.ttf" if bold else "/System/Library/Fonts/SFNS.ttf",
         "/System/Library/Fonts/HelveticaNeue.ttc",
-        "/Library/Fonts/Arial Bold.ttf" if bold else "/Library/Fonts/Arial.ttf",
         "/System/Library/Fonts/Supplemental/Arial Bold.ttf" if bold else "/System/Library/Fonts/Supplemental/Arial.ttf",
     ]
     for path in candidates:
@@ -86,7 +86,7 @@ bullet_color = "#f59e0b"
 draw.text((col1_x, feat_y_start), "INTERFACES", fill=col_label_color, font=font_label)
 features_1 = [
     "MCP Server (stdio + remote HTTP)",
-    "CLI for generate & revise",
+    "CLI (generate, revise, score, QA)",
     "HTTP skill endpoint",
     "JSON agent workflow",
 ]
@@ -98,7 +98,7 @@ for i, feat in enumerate(features_1):
 # Column 2: Capabilities
 draw.text((col2_x, feat_y_start), "CAPABILITIES", fill=col_label_color, font=font_label)
 features_2 = [
-    "Source ingestion (PDF, DOCX, URL)",
+    "12+ source formats (PDF … CSV)",
     "Chart auto-repair & validation",
     "Brand template engine (.pptx)",
     "Image pipeline & placeholders",
