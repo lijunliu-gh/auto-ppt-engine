@@ -3,6 +3,9 @@
 [![Release](https://img.shields.io/github/v/tag/lijunliu-gh/auto-ppt-engine?label=release&sort=semver)](https://github.com/lijunliu-gh/auto-ppt-engine/tags)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![CI](https://img.shields.io/github/actions/workflow/status/lijunliu-gh/auto-ppt-engine/smoke.yml?branch=main&label=CI)](https://github.com/lijunliu-gh/auto-ppt-engine/actions/workflows/smoke.yml)
+[![Python](https://img.shields.io/badge/python-3.10%2B-blue)](requirements.txt)
+[![Node](https://img.shields.io/badge/node-18%2B-green)](package.json)
+[![Docker](https://img.shields.io/badge/docker-ready-2496ED?logo=docker&logoColor=white)](Dockerfile)
 
 Open-source PowerPoint generation engine for AI agents.
 Give it a prompt, optional source files, and an LLM key — get back a validated `.pptx`.
