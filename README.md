@@ -1,4 +1,4 @@
-# Auto PPT
+# Auto PPT Engine
 
 <p align="center">
   <a href="https://github.com/lijunliu-gh/auto-ppt-engine/tags"><img src="https://img.shields.io/github/v/tag/lijunliu-gh/auto-ppt-engine?label=release&sort=semver" alt="Release"></a>
