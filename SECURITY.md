@@ -29,7 +29,7 @@ Examples include:
 
 ## Implemented Mitigations
 
-As of v0.6.0, the following security controls are in place:
+As of v0.7.3, the following security controls are in place:
 
 - **Path traversal prevention**: file paths are resolved and validated to stay within the project directory
 - **SSRF blocking**: URL targets are validated to reject private/internal network addresses
@@ -37,6 +37,7 @@ As of v0.6.0, the following security controls are in place:
 - **Subprocess timeout**: the Node.js renderer subprocess has a configurable timeout to prevent hangs
 - **LLM credential isolation**: API keys are read from environment variables and never logged
 - **Image security**: image files are limited to 10 MB, only common formats accepted (PNG, JPG, GIF, BMP, TIFF, SVG, WebP), local image paths must stay within the project directory, URL images undergo SSRF validation
+- **Template file validation**: brand template uploads are limited to 100 MB, must be valid `.pptx` files, and paths are resolved to prevent traversal
 
 ## Prototype Warning
 

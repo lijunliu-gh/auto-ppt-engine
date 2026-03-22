@@ -1,12 +1,12 @@
 # Roadmap
 
-Current version: **v0.7.1**
+Current version: **v0.7.3**
 
 This roadmap reflects the project's current capabilities, known gaps, and planned evolution from experimental prototype to a productized AI-agent PowerPoint backend.
 
 Product positioning: **to-B PPT generation engine** — embeddable into enterprise AI workflows with private deployment, API-driven generation (MCP/CLI/skill), and multi-language support (CJK + English). Core differentiators are data security (no data leaves the enterprise), content intelligence (AI-driven layout and visualization selection), and cross-platform output (PowerPoint, Keynote, Google Slides).
 
-The first five roadmap phases are complete. Phase 7 quality control is complete. v0.7.1 added cross-platform rendering fixes (text overflow, CJK fonts, chart image fallback). The next focus is theme system architecture (Phase 8) to enable brand template adaptation.
+The first five roadmap phases are complete. Phase 7 quality control is complete. v0.7.1 added cross-platform rendering fixes. v0.7.2 added theme system architecture and brand template adaptation. v0.7.3 expanded test coverage (409 tests, 84%) and aligned all documentation.
 
 ---
 
