@@ -9,7 +9,6 @@
 [![Node](https://img.shields.io/badge/node-18%2B-green)](package.json)
 [![Docker](https://img.shields.io/badge/docker-ready-2496ED?logo=docker&logoColor=white)](Dockerfile)
 [![MCP](https://img.shields.io/badge/MCP-compatible-8A2BE2?logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiLz48L3N2Zz4=)](mcp_server.py)
-[![GitHub stars](https://img.shields.io/github/stars/lijunliu-gh/auto-ppt-engine?style=flat&logo=github)](https://github.com/lijunliu-gh/auto-ppt-engine/stargazers)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 Open-source PowerPoint generation engine — built to be called by AI agents.
