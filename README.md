@@ -3,9 +3,14 @@
 [![Release](https://img.shields.io/github/v/tag/lijunliu-gh/auto-ppt-engine?label=release&sort=semver)](https://github.com/lijunliu-gh/auto-ppt-engine/tags)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![CI](https://img.shields.io/github/actions/workflow/status/lijunliu-gh/auto-ppt-engine/smoke.yml?branch=main&label=CI)](https://github.com/lijunliu-gh/auto-ppt-engine/actions/workflows/smoke.yml)
+[![Tests](https://img.shields.io/badge/tests-409%20passed-brightgreen)](tests/)
+[![Coverage](https://img.shields.io/badge/coverage-84%25-green)](tests/)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue)](requirements.txt)
 [![Node](https://img.shields.io/badge/node-18%2B-green)](package.json)
 [![Docker](https://img.shields.io/badge/docker-ready-2496ED?logo=docker&logoColor=white)](Dockerfile)
+[![MCP](https://img.shields.io/badge/MCP-compatible-8A2BE2?logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiLz48L3N2Zz4=)](mcp_server.py)
+[![GitHub stars](https://img.shields.io/github/stars/lijunliu-gh/auto-ppt-engine?style=flat&logo=github)](https://github.com/lijunliu-gh/auto-ppt-engine/stargazers)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 Open-source PowerPoint generation engine — built to be called by AI agents.
 
