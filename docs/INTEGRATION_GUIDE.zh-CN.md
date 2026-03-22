@@ -466,7 +466,7 @@ export OPENAI_API_KEY="sk-..."
 docker compose up --build
 ```
 
-HTTP skill 服务启动在端口 5000。
+HTTP skill 服务启动在端口 5000（通过 Dockerfile 中的 `ENV PORT=5000` 设置）。本地开发时默认端口为 3010，均可通过 `PORT` 环境变量调整。
 
 ### Docker 运行 MCP 服务器
 

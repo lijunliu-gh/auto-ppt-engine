@@ -572,7 +572,7 @@ export OPENAI_API_KEY="sk-..."
 docker compose up --build
 ```
 
-This starts the HTTP skill server on port 5000.
+This starts the HTTP skill server on port 5000 (set via `ENV PORT=5000` in the Dockerfile). Outside Docker, the default is port 3010. Both are controlled by the `PORT` environment variable.
 
 ### MCP Server in Docker
 

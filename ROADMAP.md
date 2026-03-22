@@ -22,7 +22,7 @@ The first five roadmap phases are complete. Phase 7 quality control is complete.
 | Pluggable LLM provider abstraction | ✅ Added in v0.3.1 |
 | Structured logging | ✅ Added in v0.3.1 |
 | Schema versioning | ✅ Added in v0.3.1 |
-| Unit tests (39 pytest cases) | ✅ Added in v0.3.1 (now 282 tests, 85% coverage as of v0.7.0) |
+| Unit tests (39 pytest cases) | ✅ Added in v0.3.1 (now 409 tests, 84% coverage as of v0.7.2) |
 | CLI / JSON Skill / HTTP Server | ✅ |
 
 ---
@@ -257,7 +257,7 @@ The first five roadmap phases are complete. Phase 7 quality control is complete.
 | Task | Description |
 |------|-------------|
 | Remove legacy JS code | ~~After Phase 1, delete `deck-agent-core.js` and `source-loader.js` entirely~~ ✅ Done in v0.4.1 |
-| Expand test coverage | ✅ Achieved 85% coverage with 282 tests in v0.7.0 (Issue #12) |
+| Expand test coverage | ✅ Achieved 84% coverage with 409 tests in v0.7.2 (Issue #12) |
 | API versioning | ✅ `apiVersion: "1.0"` in all requests and responses (v0.6.0, Issue #13) |
 | CI hardening | ✅ pytest on Python 3.10/3.11/3.12 + Node.js 18/20/22 smoke matrix (v0.6.0, Issue #14) |
 | Documentation sync | Update EN / ZH / JA docs with each release |

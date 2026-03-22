@@ -1,6 +1,6 @@
 {
   "name": "auto-ppt-engine",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "apiVersion": "1.0",
   "description": "Python-first smart layer for planning, revising, validating, and rendering PowerPoint decks through a Node PPTX renderer.",
   "entrypoint": "python py-agent-skill.py --request <request-json>",

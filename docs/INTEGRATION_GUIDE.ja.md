@@ -447,7 +447,7 @@ export OPENAI_API_KEY="sk-..."
 docker compose up --build
 ```
 
-HTTP skill サーバーがポート 5000 で起動します。
+HTTP skill サーバーがポート 5000 で起動します（Dockerfile 内の `ENV PORT=5000` で設定）。ローカル開発時のデフォルトはポート 3010 です。いずれも `PORT` 環境変数で変更できます。
 
 ### Docker で MCP サーバー
 

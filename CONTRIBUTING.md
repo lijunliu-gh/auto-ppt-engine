@@ -43,7 +43,7 @@ The test suite includes:
 - `tests/test_image_handler.py` — image pipeline and security tests
 - `tests/test_coverage_boost.py` — cross-module coverage tests (LLM provider, skill API, smart layer)
 
-Total: 282 tests, 85% line coverage. CI runs pytest across Python 3.10, 3.11, 3.12 and Node.js 18, 20, 22.
+Total: 409 tests, 84% line coverage. CI runs pytest across Python 3.10, 3.11, 3.12 and Node.js 18, 20, 22.
 
 ## Contribution Scope
 

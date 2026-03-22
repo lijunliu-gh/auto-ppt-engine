@@ -6,6 +6,17 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ## [Unreleased]
 
+## [0.7.3] - 2026-03-22
+
+### Added
+
+- **Visual QA test suite** (`tests/test_visual_qa.py`): 44 new tests covering Issue dataclass, EMU helpers, bounding-box overlap, `_export_images` graceful degradation (soffice/pdftoppm missing), `analyze_visual_quality` heuristics (edge margin, overlap, empty slide, text-only), and `run_visual_qa` end-to-end report generation — `visual_qa.py` coverage from 18% → 98%
+
+### Changed
+
+- **Documentation alignment**: updated test count and coverage figures across CHANGELOG, CONTRIBUTING, ROADMAP, PRODUCT (EN/JA/ZH-CN), and README to reflect actual 409 tests / 84% coverage
+- **HTTP port clarification**: integration guides (EN/JA/ZH-CN) now explain that local dev defaults to port 3010, Docker defaults to 5000, both controlled by `PORT` environment variable
+
 ## [0.7.2] - 2026-03-21
 
 ### Added
@@ -73,7 +84,7 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 - **OpenRouter Provider** (`python_backend/llm_provider.py`): New `OpenRouterProvider` class — access 200+ models (OpenAI, Anthropic, Google, Meta, Mistral, etc.) through a single API key via OpenRouter's OpenAI-compatible gateway
 - OpenRouter auto-detection: when `OPENROUTER_API_KEY` is set, it takes priority over direct provider keys
 - `.env.example` updated with `OPENROUTER_API_KEY`
-- 8 new tests for OpenRouterProvider (init, chat, error handling, factory priority) — **282 total**
+- 8 new tests for OpenRouterProvider (init, chat, error handling, factory priority) — **409 total**
 
 ### Changed
 
@@ -86,7 +97,7 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 - **API Versioning**: `apiVersion: "1.0"` field in all requests and responses for forward-compatible API evolution
 - **CI Hardening**: pytest matrix (Python 3.10/3.11/3.12) + Node.js 18/20/22 smoke matrix in GitHub Actions
-- **Test Coverage Expansion**: 255 automated tests achieving 85% line coverage (up from 143 tests / 72%)
+- **Test Coverage Expansion**: 255 automated tests achieving 84% line coverage (up from 143 tests / 72%)
   - `tests/test_coverage_boost.py`: 111 new cross-module tests covering llm_provider, skill_api, source_loader, smart_layer
 - All 14 GitHub issues closed
 

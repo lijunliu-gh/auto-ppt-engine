@@ -142,7 +142,7 @@ docker run --rm -it -e OPENAI_API_KEY auto-ppt-engine python mcp_server.py  # MC
 ## Testing
 
 ```bash
-python -m pytest tests/ -v   # 300+ tests
+python -m pytest tests/ -v   # 400+ tests
 npm run ci:smoke             # JS renderer + end-to-end smoke
 ```
 
