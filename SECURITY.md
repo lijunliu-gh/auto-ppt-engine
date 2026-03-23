@@ -29,7 +29,7 @@ Examples include:
 
 ## Implemented Mitigations
 
-As of v0.7.5, the following security controls are in place:
+As of v0.7.7, the following security controls are in place:
 
 - **Path traversal prevention**: file paths are resolved and validated to stay within the project directory
 - **SSRF blocking**: URL targets are validated to reject private/internal network addresses

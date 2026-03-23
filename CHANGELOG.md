@@ -6,6 +6,15 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ## [Unreleased]
 
+## [0.7.7] - 2026-03-23
+
+### Changed
+
+- Align public documentation around a current-scope release posture
+- Remove future roadmap commitments that are no longer planned
+- Reframe `ROADMAP.md` as a current project status and maintenance document
+- Update README wording so the repository is presented as a completed personal-project release in maintenance mode
+
 ## [0.7.6] - 2026-03-23
 
 ### Changed
@@ -13,6 +22,8 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 - Audit and align release metadata after the 0.7.5 positioning update
 - Update current-version references and current test-count references to match the repository state
 - Sync `skill-manifest.json` version with the current release
+- Update repository metadata and current-state docs to match the public `v0.7.6` release baseline
+- Verify public entrypoints remain usable: CLI, MCP server, JSON skill, HTTP skill server, generate flow, revise flow, and full test suite
 
 ## [0.7.5] - 2026-03-23
 

@@ -21,6 +21,7 @@ Create and revise `.pptx` decks from natural language through MCP, CLI, or HTTP.
 > Status: beta-quality personal project.
 > Not a SaaS. Not a polished end-user GUI.
 > This repository is an embeddable engine for agent workflows and internal automation.
+> Current scope is considered complete for this personal release; no additional roadmap items are currently committed.
 
 ### Who is this for?
 
@@ -181,7 +182,7 @@ prompt + sources ➜ Python smart layer ➜ deck JSON ➜ PPTX renderer ➜ .ppt
 | [User Guide](docs/USER_GUIDE.en.md) | Day-to-day usage |
 | [Integration Guide](docs/INTEGRATION_GUIDE.en.md) | HTTP, MCP, JSON skill patterns |
 | [Changelog](CHANGELOG.md) | Version history |
-| [Roadmap](ROADMAP.md) | Planned evolution |
+| [Roadmap](ROADMAP.md) | Current scope, maintenance status, and version history |
 
 Multilingual: all guides available in [English](docs/EXAMPLES.en.md), [中文](docs/EXAMPLES.zh-CN.md), [日本語](docs/EXAMPLES.ja.md).
 

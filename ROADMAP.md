@@ -1,12 +1,14 @@
-# Roadmap
+# Project Status
 
-Current version: **v0.7.5**
+Current version: **v0.7.7**
 
 Product positioning: **to-B PPT generation engine** — embeddable into enterprise AI workflows with private deployment, API-driven generation (MCP / CLI / HTTP), and multi-language support (CJK + English). Core differentiators are data security (no data leaves the enterprise), content intelligence (AI-driven layout and visualization selection), and cross-platform output (PowerPoint, Keynote, Google Slides).
 
+Current release posture: **published in its current scope**. This repository is being released as a personal open-source project in maintenance mode. No additional roadmap items are currently committed.
+
 ---
 
-## Current Capabilities (v0.7.5)
+## Current Capabilities (v0.7.7)
 
 | Area | What's Included |
 |------|----------------|
@@ -27,25 +29,13 @@ Product positioning: **to-B PPT generation engine** — embeddable into enterpri
 
 ---
 
-## What's Next
+## Maintenance Status
 
-### Packaging and Distribution
+This repository is published as a stable personal-project snapshot.
 
-**Goal**: Reduce installation friction so users can run the tool without understanding the Python + Node implementation split.
-
-- Publish a clean install path (`pipx`, `uvx`, or similar)
-- Bootstrap assets: `.env.example`, provider presets, install-time validation
-- Docker as the zero-dependency fallback
-- Improved default output location, naming, and success messages
-
-### Minimal End-User UI → v1.0.0
-
-**Goal**: Expose the generate/revise loop to non-command-line users through a minimal interface.
-
-- Prompt input, source upload, optional audience/page controls, PPTX download
-- Job status feedback with progress and artifact locations
-- Template and source upload flows
-- Reuse the same CLI core interfaces — no forked product logic
+- No additional feature roadmap is currently committed
+- Future updates, if any, are expected to be limited to bug fixes, small documentation corrections, or metadata cleanup
+- The recommended way to evaluate the project is to use the current CLI, MCP, HTTP, and JSON skill entrypoints as documented
 
 ---
 
@@ -53,6 +43,8 @@ Product positioning: **to-B PPT generation engine** — embeddable into enterpri
 
 | Version | Milestone |
 |---------|-----------|
+| v0.7.7 | Current-scope release alignment; roadmap converted to project status / maintenance posture |
+| v0.7.6 | Release metadata audit cleanup and public baseline verification |
 | v0.7.5 | README positioning update for personal-project release |
 | v0.7.4 | Switch to Apache 2.0 license |
 | v0.7.3 | 409 tests, 84% coverage, documentation alignment |
@@ -70,4 +62,4 @@ Product positioning: **to-B PPT generation engine** — embeddable into enterpri
 
 ## Contributing
 
-If you are interested in contributing to any of these areas, see [CONTRIBUTING.md](CONTRIBUTING.md) and open an issue to discuss your approach before starting work.
+If you are interested in contributing fixes or documentation improvements, see [CONTRIBUTING.md](CONTRIBUTING.md) and open an issue to discuss your approach before starting work.
