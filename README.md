@@ -4,7 +4,7 @@
   <a href="https://github.com/lijunliu-gh/auto-ppt-engine/tags"><img src="https://img.shields.io/github/v/tag/lijunliu-gh/auto-ppt-engine?label=release&sort=semver" alt="Release"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg" alt="License"></a>
   <a href="https://github.com/lijunliu-gh/auto-ppt-engine/actions/workflows/smoke.yml"><img src="https://img.shields.io/github/actions/workflow/status/lijunliu-gh/auto-ppt-engine/smoke.yml?branch=main&label=CI" alt="CI"></a>
-  <a href="tests/"><img src="https://img.shields.io/badge/tests-409%20passed-brightgreen" alt="Tests"></a>
+  <a href="tests/"><img src="https://img.shields.io/badge/tests-408%20passed-brightgreen" alt="Tests"></a>
   <a href="tests/"><img src="https://img.shields.io/badge/coverage-84%25-green" alt="Coverage"></a>
   <br>
   <a href="requirements.txt"><img src="https://img.shields.io/badge/python-3.10%2B-blue" alt="Python"></a>
@@ -14,21 +14,27 @@
   <a href="CONTRIBUTING.md"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome"></a>
 </p>
 
-Open-source PowerPoint generation engine — built to be called by AI agents.
+Personal open-source PowerPoint generation engine — built to be called by AI agents.
 
-Give your agent (Claude Desktop, Cursor, Windsurf, or any MCP-compatible host) the ability to create and revise `.pptx` decks from natural language. Also works as a standalone CLI for developers.
+Create and revise `.pptx` decks from natural language through MCP, CLI, or HTTP. Best suited for developers, AI workflow builders, and technical teams.
+
+> Status: beta-quality personal project.
+> Not a SaaS. Not a polished end-user GUI.
+> This repository is an embeddable engine for agent workflows and internal automation.
 
 ### Who is this for?
 
 | You are… | How you use it |
 |:---|:---|
-| **AI agent builder** | Connect via MCP / HTTP / JSON skill — your agent says "make a deck", this engine does the rest |
-| **Developer / power user** | Run `./auto-ppt generate` from the terminal, pipe into your workflow |
-| **Enterprise team** | Deploy via Docker behind your VPN, let internal agents call it as a tool |
+| **AI agent builder** | Connect via MCP / HTTP / JSON skill and let your agent create or revise decks |
+| **Developer / power user** | Run `./auto-ppt generate` from the terminal or script it into your workflow |
+| **Technical team** | Deploy via Docker for internal automation or experimentation |
 
 > **Not a SaaS.** Not a GUI. This is an embeddable engine — the backend behind "make me a PPT".
 
 ## Quick Start
+
+Prerequisites: Python 3.10+, Node.js 18+, and optionally an LLM API key for non-mock generation.
 
 ```bash
 # 1. Install

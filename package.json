@@ -1,6 +1,6 @@
 {
   "name": "auto-ppt-engine",
-  "version": "0.7.4",
+  "version": "0.7.5",
   "description": "Python-first AI-agent-ready PowerPoint workflow for planning, revising, validating, and rendering PPTX decks.",
   "license": "Apache-2.0",
   "main": "generate-ppt.js",

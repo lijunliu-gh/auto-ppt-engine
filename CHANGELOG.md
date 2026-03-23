@@ -6,6 +6,14 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ## [Unreleased]
 
+## [0.7.5] - 2026-03-23
+
+### Changed
+
+- Tighten README positioning around the current scope: personal project, beta quality, developer-focused engine
+- Clarify prerequisites and target audience on the README front page
+- Update the visible test count after repository cleanup
+
 ## [0.7.4] - 2026-03-23
 
 ### Changed
