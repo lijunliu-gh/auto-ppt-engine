@@ -82,7 +82,7 @@ Sources:   1
   8. [closing     ] Key recommendations
 ```
 
-The engine produces a validated deck JSON (schema-checked) and a ready-to-open `.pptx` file. Download a sample: [output/py-generated-deck.pptx](output/py-generated-deck.pptx).
+The engine produces a validated deck JSON (schema-checked) and a ready-to-open `.pptx` file.
 
 ## What It Does
 
@@ -95,6 +95,7 @@ The engine produces a validated deck JSON (schema-checked) and a ready-to-open `
 | LLM providers | OpenAI, OpenRouter, Claude, Gemini, Qwen, DeepSeek, GLM, MiniMax, any OpenAI-compatible endpoint |
 | PPTX rendering | JS renderer (pptxgenjs) with CJK font support and chart image fallback for Keynote/Google Slides |
 | Cross-platform charts | Image-based charts by default; native OOXML via `--native-charts` |
+| Built-in themes | 6 themes (business-clean, corporate-blue, dark-executive, warm-modern, minimal, tech); `--theme` flag or API param |
 | Multi-language | CJK + Latin universal font stack — any language mixed with English |
 | Security | Path traversal protection, SSRF blocking, file size limits, subprocess timeout |
 
@@ -173,8 +174,6 @@ prompt + sources ➜ Python smart layer ➜ deck JSON ➜ PPTX renderer ➜ .ppt
 | [Examples](docs/EXAMPLES.en.md) | Copy-paste usage flows |
 | [User Guide](docs/USER_GUIDE.en.md) | Day-to-day usage |
 | [Integration Guide](docs/INTEGRATION_GUIDE.en.md) | HTTP, MCP, JSON skill patterns |
-| [Product Overview](docs/PRODUCT.en.md) | Positioning and boundaries |
-| [Repository Map](docs/REPOSITORY_MAP.md) | File-by-file structure |
 | [Changelog](CHANGELOG.md) | Version history |
 | [Roadmap](ROADMAP.md) | Planned evolution |
 

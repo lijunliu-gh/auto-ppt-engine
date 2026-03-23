@@ -199,7 +199,6 @@ npm run revise:mock
 ### 利用者にとって重要なファイル
 
 - `README.md`
-- `docs/PRODUCT.en.md`
 - `examples/inputs/sample-input.json`
 - `examples/inputs/sample-source-brief.md`
 - `examples/inputs/sample-agent-request.json`
@@ -214,12 +213,25 @@ npm run revise:mock
 - `py-skill-server.py`
 - `generate-ppt.js`
 
-### 互換ラッパー
+## テーマ
 
-- `compat/generate-from-prompt.js`
-- `compat/revise-deck.js`
-- `compat/agent-skill.js`
-- `compat/skill-server.js`
+エンジンには 6 つのビルトインテーマが付属しています。`--theme` フラグで生成される deck の外観を切り替えられます。
+
+利用可能なテーマ: `business-clean`、`corporate-blue`、`dark-executive`、`warm-modern`、`minimal`、`tech`。
+
+### CLI
+
+```bash
+./auto-ppt generate --theme dark-executive --prompt "8スライドの製品戦略 deck を作成"
+```
+
+### MCP / API
+
+リクエスト JSON または MCP ツールパラメータに `"theme": "corporate-blue"` を含めてください。
+
+### カスタムテーマ
+
+`assets/themes/theme-schema.json` のスキーマに従って JSON ファイルを作成します。`--theme /path/to/my-brand.json` でカスタムテーマファイルを指定できます。
 
 ## チャートデータの処理
 

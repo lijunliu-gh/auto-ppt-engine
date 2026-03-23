@@ -129,6 +129,16 @@ python mcp_server.py --transport streamable-http --host 0.0.0.0 --port 8080
 
 MCP クライアントから `http://<server-host>:8080/mcp` に接続してください。
 
+## テーマの例
+
+ビルトインテーマで生成される deck のビジュアルスタイルを変更：
+
+```bash
+./auto-ppt generate --mock --theme dark-executive --prompt "AI戦略 deck を 8 スライドで作成"
+```
+
+利用可能なテーマ: `business-clean`、`corporate-blue`、`dark-executive`、`warm-modern`、`minimal`、`tech`。
+
 ## Docker の例
 
 Docker Compose でビルド・起動：

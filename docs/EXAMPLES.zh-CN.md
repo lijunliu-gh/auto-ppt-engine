@@ -129,6 +129,16 @@ python mcp_server.py --transport streamable-http --host 0.0.0.0 --port 8080
 
 MCP 客户端连接 `http://<server-host>:8080/mcp` 即可。
 
+## 主题示例
+
+使用内置主题切换生成 deck 的视觉风格：
+
+```bash
+./auto-ppt generate --mock --theme dark-executive --prompt "创建一份 8 页的 AI 策略 deck"
+```
+
+可用主题：`business-clean`、`corporate-blue`、`dark-executive`、`warm-modern`、`minimal`、`tech`。
+
 ## Docker 示例
 
 通过 Docker Compose 构建并启动：

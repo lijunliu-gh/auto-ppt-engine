@@ -217,7 +217,6 @@ npm run revise:mock
 ### 面向使用者最相关的文件
 
 - `README.md`
-- `docs/PRODUCT.en.md`
 - `examples/inputs/sample-input.json`
 - `examples/inputs/sample-source-brief.md`
 - `examples/inputs/sample-agent-request.json`
@@ -232,12 +231,50 @@ npm run revise:mock
 - `py-skill-server.py`
 - `generate-ppt.js`
 
-### 兼容入口
+## 主题
 
-- `compat/generate-from-prompt.js`
-- `compat/revise-deck.js`
-- `compat/agent-skill.js`
-- `compat/skill-server.js`
+引擎自带 6 个内置主题，使用 `--theme` 参数可以切换生成 deck 的外观风格。
+
+可用主题：`business-clean`、`corporate-blue`、`dark-executive`、`warm-modern`、`minimal`、`tech`。
+
+### CLI 用法
+
+```bash
+./auto-ppt generate --theme dark-executive --prompt "创建一份 8 页的产品策略 deck"
+```
+
+### MCP / API 用法
+
+在请求 JSON 或 MCP tool 参数中加入 `"theme": "corporate-blue"`。
+
+### 自定义主题
+
+按照 `assets/themes/theme-schema.json` 的格式创建 JSON 文件：
+
+```json
+{
+  "name": "my-brand",
+  "colors": {
+    "primary": "1A365D",
+    "secondary": "2B6CB0",
+    "accent": "ED8936",
+    "background": "F7FAFC",
+    "slideBg": "FFFFFF",
+    "text": "1A202C",
+    "textLight": "F7FAFC",
+    "textMuted": "718096",
+    "headerBg": "E2E8F0",
+    "border": "CBD5E0"
+  },
+  "fonts": {
+    "heading": "Aptos Display, Microsoft YaHei, PingFang SC",
+    "body": "Aptos, Microsoft YaHei, PingFang SC"
+  },
+  "chartColors": ["1A365D", "2B6CB0", "ED8936", "E53E3E"]
+}
+```
+
+通过 `--theme /path/to/my-brand.json` 传入自定义主题文件。
 
 ## 图表数据处理
 

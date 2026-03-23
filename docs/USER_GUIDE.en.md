@@ -223,7 +223,6 @@ The better workflow is:
 
 - `README.md`
 - `docs/EXAMPLES.en.md`
-- `docs/PRODUCT.en.md`
 - `examples/inputs/sample-deck-brief.md`
 - `examples/inputs/sample-deck-brief.json`
 - `examples/inputs/sample-input.json`
@@ -260,12 +259,50 @@ Useful brief fields include:
 - `py-skill-server.py`
 - `generate-ppt.js`
 
-### Compatibility wrappers
+## Themes
 
-- `compat/generate-from-prompt.js`
-- `compat/revise-deck.js`
-- `compat/agent-skill.js`
-- `compat/skill-server.js`
+The engine ships with 6 built-in themes. Use `--theme` to change the look of generated decks.
+
+Available themes: `business-clean`, `corporate-blue`, `dark-executive`, `warm-modern`, `minimal`, `tech`.
+
+### CLI
+
+```bash
+./auto-ppt generate --theme dark-executive --prompt "Create an 8-slide strategy deck"
+```
+
+### MCP / API
+
+Include `"theme": "corporate-blue"` in your request JSON or MCP tool parameters.
+
+### Custom Themes
+
+Create a JSON file following the schema in `assets/themes/theme-schema.json`:
+
+```json
+{
+  "name": "my-brand",
+  "colors": {
+    "primary": "1A365D",
+    "secondary": "2B6CB0",
+    "accent": "ED8936",
+    "background": "F7FAFC",
+    "slideBg": "FFFFFF",
+    "text": "1A202C",
+    "textLight": "F7FAFC",
+    "textMuted": "718096",
+    "headerBg": "E2E8F0",
+    "border": "CBD5E0"
+  },
+  "fonts": {
+    "heading": "Aptos Display, Microsoft YaHei, PingFang SC",
+    "body": "Aptos, Microsoft YaHei, PingFang SC"
+  },
+  "chartColors": ["1A365D", "2B6CB0", "ED8936", "E53E3E"]
+}
+```
+
+Pass a custom theme file path via `--theme /path/to/my-brand.json`.
 
 ## Chart Data Handling
 

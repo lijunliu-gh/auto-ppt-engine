@@ -5,7 +5,7 @@ Thanks for contributing to Auto PPT Engine.
 ## Before You Start
 
 - Read `README.md` for project scope and usage modes.
-- Read `docs/PRODUCT.en.md` for positioning and boundaries.
+- Read `docs/USER_GUIDE.en.md` for day-to-day usage.
 - Read `docs/INTEGRATION_GUIDE.en.md` if your change affects agent or service integration.
 
 ## Development Setup

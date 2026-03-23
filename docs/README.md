@@ -1,14 +1,12 @@
 # Documentation Index
 
-This directory holds the user-facing, integration, and product documentation for Auto PPT Engine.
+This directory holds the user-facing and integration documentation for Auto PPT Engine.
 
 ## Start Here
 
 - [EXAMPLES.en.md](EXAMPLES.en.md): shortest copy-paste examples for first-time users
 - [USER_GUIDE.en.md](USER_GUIDE.en.md): what the project does and how to use it day to day
 - [INTEGRATION_GUIDE.en.md](INTEGRATION_GUIDE.en.md): file, HTTP, and MCP integration patterns
-- [PRODUCT.en.md](PRODUCT.en.md): product framing, boundaries, and positioning
-- [REPOSITORY_MAP.md](REPOSITORY_MAP.md): repository structure and file layout
 
 ## Multilingual Documents
 
@@ -30,18 +28,10 @@ This directory holds the user-facing, integration, and product documentation for
 - [INTEGRATION_GUIDE.zh-CN.md](INTEGRATION_GUIDE.zh-CN.md)
 - [INTEGRATION_GUIDE.ja.md](INTEGRATION_GUIDE.ja.md)
 
-### Product Overviews
-
-- [PRODUCT.en.md](PRODUCT.en.md)
-- [PRODUCT.zh-CN.md](PRODUCT.zh-CN.md)
-- [PRODUCT.ja.md](PRODUCT.ja.md)
-
 ## Suggested Reading Order
 
-1. First-time evaluation: `EXAMPLES.en.md` -> `USER_GUIDE.en.md`
+1. First-time evaluation: `EXAMPLES.en.md` → `USER_GUIDE.en.md`
 2. Agent or service integration: `INTEGRATION_GUIDE.en.md`
-3. Product framing and boundaries: `PRODUCT.en.md`
-4. Repository orientation: `REPOSITORY_MAP.md`
 
 ## Visual QA Note
 

@@ -127,6 +127,16 @@ python mcp_server.py --transport streamable-http --host 0.0.0.0 --port 8080
 
 Then point your MCP client to `http://<server-host>:8080/mcp`.
 
+## Theme Example
+
+Apply a built-in theme to change the deck's visual style:
+
+```bash
+./auto-ppt generate --mock --theme dark-executive --prompt "Create an 8-slide AI strategy deck"
+```
+
+Available themes: `business-clean`, `corporate-blue`, `dark-executive`, `warm-modern`, `minimal`, `tech`.
+
 ## Docker Example
 
 Build and run with Docker Compose:

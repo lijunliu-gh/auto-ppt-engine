@@ -367,10 +367,6 @@ curl -X POST http://localhost:3010/skill -H "Content-Type: application/json" --d
 
 这些应由上游 agent 完成。
 
-## 兼容说明
-
-`compat/generate-from-prompt.js`、`compat/revise-deck.js`、`compat/agent-skill.js`、`compat/skill-server.js` 仍然保留，用于兼容旧接入，但现在它们会转发到 Python 智能层。新接入应把 Python 入口视为主入口。
-
 ## 2. 图片可以插入，但没有内置视觉理解
 
 v0.5.1 起，渲染器可以将本地图片和 URL 图片插入 slide。但这个项目本身不做真正的 OCR 或图像推理 — 这些属于上游 agent 的职责。

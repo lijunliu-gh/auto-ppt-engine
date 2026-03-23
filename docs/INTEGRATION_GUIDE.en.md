@@ -544,13 +544,7 @@ As of v0.4.1, the system automatically validates chart slides:
 - `python_backend/pptx_renderer.py`: python-pptx renderer (brand template mode)
 - `python_backend/image_handler.py`: image resolution, validation, and insertion
 - `generate-ppt.js`: PPT renderer (no-template mode)
-- `deck-schema.json`: deck schema contract
-
-## Compatibility Note
-
-The JavaScript entrypoints still exist for older integrations, but they now forward to the Python smart layer. New integrations should treat Python as the primary entrypoint surface.
-
-## API Versioning
+- `deck-schema.json`: deck schema contract\n\n## API Versioning
 
 As of v0.6.0, all API requests and responses include an `apiVersion` field:
 

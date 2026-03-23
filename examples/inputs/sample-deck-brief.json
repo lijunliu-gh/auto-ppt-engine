@@ -25,7 +25,6 @@
   ],
   "materials": [
     "README.md",
-    "docs/PRODUCT.en.md",
     "docs/USER_GUIDE.en.md",
     "docs/INTEGRATION_GUIDE.en.md",
     "examples/inputs/sample-source-brief.md"
