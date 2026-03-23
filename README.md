@@ -186,6 +186,10 @@ prompt + sources ➜ Python smart layer ➜ deck JSON ➜ PPTX renderer ➜ .ppt
 
 Multilingual: all guides available in [English](docs/EXAMPLES.en.md), [中文](docs/EXAMPLES.zh-CN.md), [日本語](docs/EXAMPLES.ja.md).
 
+## Acknowledgments
+
+Built with the assistance of [Claude](https://claude.ai/) (Anthropic) and [GitHub Copilot](https://github.com/features/copilot).
+
 ## License
 
 Apache 2.0 — see [LICENSE](LICENSE) for details.
