@@ -38,20 +38,13 @@ font_label = get_font(16, bold=True)
 font_feature = get_font(18)
 font_url = get_font(16)
 font_flow = get_font(20, bold=True)
-font_version = get_font(14, bold=True)
 
 # --- Title ---
 draw.text((MARGIN, 50), "Auto PPT Engine", fill="#ffffff", font=font_title)
 
-# --- Version badge ---
-vx = MARGIN
-vy = 115
-draw.rounded_rectangle([(vx, vy), (vx + 68, vy + 24)], radius=4, fill="#3b82f6")
-draw.text((vx + 10, vy + 3), "v0.7.2", fill="#ffffff", font=font_version)
-
 # --- Subtitle ---
-draw.text((MARGIN, 155), "AI-agent-ready PowerPoint backend for planning,", fill="#94a3b8", font=font_subtitle)
-draw.text((MARGIN, 183), "revising, and rendering PPTX decks from natural-language prompts.", fill="#94a3b8", font=font_subtitle)
+draw.text((MARGIN, 125), "AI-agent-ready PowerPoint backend for planning,", fill="#94a3b8", font=font_subtitle)
+draw.text((MARGIN, 153), "revising, and rendering PPTX decks from natural-language prompts.", fill="#94a3b8", font=font_subtitle)
 
 # --- Flow diagram ---
 flow_y = 240

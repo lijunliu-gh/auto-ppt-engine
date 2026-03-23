@@ -6,6 +6,13 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ## [Unreleased]
 
+## [0.7.4] - 2026-03-23
+
+### Changed
+
+- Switch license from MIT to Apache 2.0 for better patent protection and enterprise adoption
+- Remove version badge from social preview image to avoid frequent updates
+
 ## [0.7.3] - 2026-03-22
 
 ### Added
@@ -223,7 +230,7 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ### Added
 
-- open-source publishing baseline with MIT license, governance docs, issue templates, PR template, and smoke CI
+- open-source publishing baseline with Apache 2.0 license, governance docs, issue templates, PR template, and smoke CI
 - agent-callable create and revise flows with JSON skill and local HTTP service support
 - source-aware planning from local files and URLs
 - multilingual documentation in English, Simplified Chinese, and Japanese

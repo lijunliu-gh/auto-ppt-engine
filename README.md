@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://github.com/lijunliu-gh/auto-ppt-engine/tags"><img src="https://img.shields.io/github/v/tag/lijunliu-gh/auto-ppt-engine?label=release&sort=semver" alt="Release"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg" alt="License"></a>
   <a href="https://github.com/lijunliu-gh/auto-ppt-engine/actions/workflows/smoke.yml"><img src="https://img.shields.io/github/actions/workflow/status/lijunliu-gh/auto-ppt-engine/smoke.yml?branch=main&label=CI" alt="CI"></a>
   <a href="tests/"><img src="https://img.shields.io/badge/tests-409%20passed-brightgreen" alt="Tests"></a>
   <a href="tests/"><img src="https://img.shields.io/badge/coverage-84%25-green" alt="Coverage"></a>
@@ -182,4 +182,4 @@ Multilingual: all guides available in [English](docs/EXAMPLES.en.md), [中文](d
 
 ## License
 
-MIT
+Apache 2.0 — see [LICENSE](LICENSE) for details.
