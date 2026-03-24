@@ -241,10 +241,35 @@ CI: pytest on Python 3.10 / 3.11 / 3.12, smoke on Node.js 18 / 20 / 22.
 
 ## Architecture
 
+```mermaid
+flowchart LR
+  MCP["MCP\ncreate_deck / revise_deck"]
+  CLI["CLI\ngenerate / revise"]
+  HTTP["HTTP skill server\nPOST /skill"]
+  JSON["JSON skill\nrequest file"]
+  Sources["Prompt + sources"]
+  Smart["Python smart layer\nplanning · revision · source loading\nschema validation"]
+  Deck["Validated deck JSON"]
+  JS["JS renderer\npptxgenjs + chart fallback"]
+  PY["Python template renderer\npython-pptx"]
+  QA["Visual QA / audit"]
+  PPTX["Editable .pptx"]
+
+  MCP --> Smart
+  CLI --> Smart
+  HTTP --> Smart
+  JSON --> Smart
+  Sources --> Smart
+  Smart --> Deck
+  Deck --> JS
+  Deck --> PY
+  JS --> QA
+  PY --> QA
+  QA --> PPTX
+  PPTX -. revise loop .-> Smart
 ```
-prompt + sources ➜ Python smart layer ➜ deck JSON ➜ PPTX renderer ➜ .pptx
-                        ↑ revise loop ↲
-```
+
+Default output goes through the JS renderer; the Python renderer is used for template-oriented rendering paths.
 
 - **Python** (`python_backend/`): planning, revision, source loading, LLM calls, schema validation
 - **Node** (`generate-ppt.js`): pptxgenjs rendering from validated deck JSON, cross-platform chart images, CJK font stack

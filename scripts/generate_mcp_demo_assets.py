@@ -161,7 +161,7 @@ def _render_frame(title: str, blocks: list[str], path: Path) -> None:
     img.save(path)
 
 
-def _build_frames(transcript: list[str], result: dict) -> list[Path]:
+def _build_frames(transcript: list[str]) -> list[Path]:
     ASSET_DIR.mkdir(parents=True, exist_ok=True)
 
     blocks = [block for block in "\n".join(transcript).split("\n\n") if block.strip()]
@@ -177,9 +177,6 @@ def _build_frames(transcript: list[str], result: dict) -> list[Path]:
         _render_frame(title, frame_blocks, frame_path)
         frame_paths.append(frame_path)
 
-    poster_path = ASSET_DIR / "mcp-demo-poster.png"
-    frame_paths[-1].replace(poster_path)
-    frame_paths[-1] = poster_path
     return frame_paths
 
 
@@ -203,14 +200,8 @@ def _build_gif(frame_paths: list[Path]) -> Path:
 
 def main() -> None:
     transcript, result = asyncio.run(_run_demo())
-    frame_paths = _build_frames(transcript, result)
+    frame_paths = _build_frames(transcript)
     gif_path = _build_gif(frame_paths)
-
-    transcript_path = ASSET_DIR / "mcp-demo-transcript.txt"
-    transcript_path.write_text("\n".join(transcript) + "\n", encoding="utf-8")
-
-    print(f"Wrote transcript: {transcript_path}")
-    print(f"Wrote poster: {ASSET_DIR / 'mcp-demo-poster.png'}")
     print(f"Wrote GIF: {gif_path}")
     print(f"Deck JSON: {result.get('deckJsonPath')}")
     print(f"PPTX: {result.get('pptxPath')}")
