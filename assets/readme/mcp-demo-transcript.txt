@@ -1,0 +1,25 @@
+$ python mcp_server.py
+[stdio MCP server started]
+
+$ MCP initialize
+tools: create_deck, revise_deck
+
+$ MCP call create_deck
+{
+  "prompt": "Create an 8-slide AI strategy deck for executives",
+  "mock": true,
+  "sources": [
+    "examples/inputs/sample-source-brief.md"
+  ],
+  "output_dir": "output/readme-mcp-demo"
+}
+
+$ MCP result
+{
+  "ok": true,
+  "action": "create",
+  "slideCount": 8,
+  "renderer": "pptxgenjs",
+  "deckJsonPath": "output/readme-mcp-demo/mcp-generated-deck.json",
+  "pptxPath": "output/readme-mcp-demo/mcp-generated-deck.pptx"
+}

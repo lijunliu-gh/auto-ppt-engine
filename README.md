@@ -179,6 +179,19 @@ Quality controls already in the repository include:
 | **JSON skill** | `python py-agent-skill.py --request req.json` | File-based agent orchestration |
 | **Docker** | `docker compose up --build` | One-command deploy |
 
+## MCP Demo
+
+Below is a terminal-style demo generated from a real MCP stdio round-trip against the current `mcp_server.py` implementation.
+
+![MCP stdio demo](assets/readme/mcp-demo.gif)
+
+What it demonstrates:
+
+- MCP server initialization over stdio
+- Tool discovery (`create_deck`, `revise_deck`)
+- A real `create_deck` tool call with `mock: true`
+- Returned artifact paths for generated deck JSON and PPTX
+
 ## MCP Configuration
 
 **Claude Desktop** — add to `claude_desktop_config.json`:
