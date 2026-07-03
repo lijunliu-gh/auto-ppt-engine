@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://github.com/lijunliu-gh/auto-ppt-engine/tags"><img src="https://img.shields.io/github/v/tag/lijunliu-gh/auto-ppt-engine?label=release&sort=semver" alt="Release"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg" alt="License"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL%20v3-blue.svg" alt="License"></a>
   <a href="https://github.com/lijunliu-gh/auto-ppt-engine/actions/workflows/smoke.yml"><img src="https://img.shields.io/github/actions/workflow/status/lijunliu-gh/auto-ppt-engine/smoke.yml?branch=main&label=CI" alt="CI"></a>
   <a href="tests/"><img src="https://img.shields.io/badge/tests-408%20passed-brightgreen" alt="Tests"></a>
   <a href="tests/"><img src="https://img.shields.io/badge/coverage-84%25-green" alt="Coverage"></a>
@@ -293,4 +293,4 @@ Built with the assistance of [Claude](https://claude.ai/) (Anthropic) and [GitHu
 
 ## License
 
-Apache 2.0 — see [LICENSE](LICENSE) for details.
+This project is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0). See [LICENSE](LICENSE) for the full text.
